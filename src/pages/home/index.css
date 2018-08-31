@@ -1,0 +1,24 @@
+.set{
+    color:#000;
+}
+.box{
+    width: 100px;
+    height: 100px;
+    background:#000;
+}
+.fade-enter{
+    transition: all 1s ease;
+}
+.fade-enter-active{
+    width: 300px;
+    height: 300px;
+    opacity: 1;
+}
+.fade-exit{
+    width: 300px;
+    height: 300px;
+    transition: all 1s ease;
+}
+.fade-exit-active{
+ 
+}

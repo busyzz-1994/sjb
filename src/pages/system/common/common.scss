@@ -1,0 +1,14 @@
+.container{
+    background: #fff;
+    .content{
+        padding: 30px 56px;
+        box-sizing: border-box;
+    }
+}
+// 操作的link样式 点击  停用
+.handleLink{
+    margin: 0 5px;
+    color: #D11E16;
+    text-decoration: underline;
+    cursor: pointer;
+}

@@ -1,0 +1,33 @@
+.active{
+    color: #00f;
+}
+.container{
+    padding: 0 50px;
+    box-sizing: border-box;
+    border-bottom: 2px solid #F8F8F8;
+    height: 58px;
+    position: relative;
+    ul{
+        position: absolute;
+        left:56px;
+        top:0;
+        li{
+            float:left;
+            margin-right: 56px;
+            a{
+                display: block;
+                height: 58px;
+                line-height: 58px;
+                box-sizing: border-box;
+                position: relative;
+                color: #666666;
+                font-size: 16px;
+            }
+            a.active{
+                color: #6EB7ED;
+                border-bottom:2px solid #6EB7ED;
+            }
+        }
+    }
+    
+}

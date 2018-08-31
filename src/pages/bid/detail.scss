@@ -1,0 +1,25 @@
+.bidDetail-table{
+    margin-top: 40px;
+    tr td:first-child,tr td:nth-child(3){
+        width: 200px;
+    }
+    tr td:nth-child(4),tr td:nth-child(2){
+        text-align: left;
+    }
+    th{
+        background: #e4e4e4;
+        text-align: left;
+    }
+    td{
+        vertical-align: middle!important;
+    }
+}
+.account-list{
+    th{
+        background: #e4e4e4;
+        vertical-align: middle!important;
+    }
+    .account-add-btn{
+        display: inline-block
+    }
+}

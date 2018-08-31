@@ -1,0 +1,17 @@
+.uploadDiv{
+    position: relative;
+    display: inline-block;
+    img{
+        display: block;
+    }
+    input[type=file]{
+        display: block;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+        position: absolute;
+        left:0;
+        top:0;
+    }
+}

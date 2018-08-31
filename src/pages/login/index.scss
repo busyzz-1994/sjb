@@ -1,0 +1,165 @@
+body,html{
+    height: 100%;
+    width: 100%;
+    
+}
+.container{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    iframe{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top:0;
+    }
+}
+.loginBox{
+    width: 466px;
+    height: 467px;
+    box-sizing: border-box;
+    // margin: 0 auto;
+    border-radius: 10px;
+    background: #ffffff;
+    overflow: hidden;
+    position: absolute;
+    z-index: 99;
+    top:0;
+    bottom:0;
+    left:0;
+    right: 0;
+    margin: auto;
+    img{
+        display: block;
+        width: 250px;
+        height: auto;
+        margin: 0 auto;
+        margin-top: 50px;
+        margin-bottom: 25px;
+    }
+    .errorBox{
+        width: 80%;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .loginInput{
+        width: 80%;
+        height: 40px;
+        margin: 0 auto;
+        border: 1px solid #e5e5e5;
+        border-radius: 5px;
+        background: #fff;
+        overflow: hidden;
+        margin-bottom: 25px;
+        div{
+            width: 20%;
+            height: 100%;
+            float: left;
+            overflow: hidden;
+        }
+        img{
+            display: block;
+            width: 18px;
+            height: auto;
+            margin: 0 auto;
+            margin-top: 10px;
+        }
+        input{
+            display: block;
+            width: 79%;
+            height: 100%;
+            float: right;
+            border: none;
+            outline: none;
+            line-height: 40px;
+            color: #666666;
+            font-size: 15px;
+            letter-spacing: 1px;
+        }
+    }
+    .verCode {
+        width: 80%;
+        height: 40px;
+        margin: 0 auto;
+        input {
+            display: block;
+            border: 1px solid #e5e5e5;
+            border-radius: 5px;
+            background: #fff;
+            width: 50%;
+            float: left;
+            height: 100%;
+            outline: none;
+            line-height: 40px;
+            color: #666666;
+            font-size: 15px;
+            letter-spacing: 1px;
+            text-indent: 15px;
+        }
+        > div {
+            width: 40%;
+            height: 100%;
+            float: right;
+            background: #e2eff5;
+            color: #c6c6c6;
+        }
+        .cl {
+            background: #edeefc;
+            color: #0dabed;
+            &:hover{
+                transition: all 0.35s;
+                color: #fff;
+                background: #1284e7;
+            }
+        }
+        .disabled{
+            color: #fff;
+            background: #666666;
+        }
+        .verCodes {
+            position: relative;
+            cursor: pointer;
+            span {
+                display: block;
+                width: 100%;
+                height: 100%;
+                line-height: 40px;
+                text-align: center;
+            }
+            div {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                left: 0;
+                top: 0;
+            }
+        }
+    }
+    .loginStart {
+        width: 80%;
+        height: 45px;
+        margin: 0 auto;
+        line-height: 45px;
+        text-align: center;
+        font-size: 16px;
+        color: #fcf9ee;
+        border-radius: 5px;
+        margin-top: 30px;
+        cursor: pointer;
+        letter-spacing: 6px;
+        background: -moz-linear-gradient(left top, #f59d14, #f8b448);
+        background: linear-gradient(left top, #f59d14, #f8b448);
+        background: -webkit-gradient(
+          linear,
+          left top,
+          right bottom,
+          from(#f59d14),
+          to(#f8b448)
+        );
+        &:hover{
+            transition: all 0.35s;
+            box-shadow: 0px 0px 6px rgba(247, 171, 47, 0.6);
+        }
+    }
+}

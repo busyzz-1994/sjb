@@ -1,0 +1,32 @@
+.tableList{
+    width: 100%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    table-layout: fixed;
+    th,td{
+        vertical-align: middle;
+        text-align: left;
+        font-size: 16px;
+        color: #666666;
+    }
+    th{
+        height: 56px;
+        background: #f5f5f5;
+        font-weight: 300;
+    }
+    td{
+        height: 88px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+    td:last-child{
+        overflow:visible;
+    }
+    tbody > tr:nth-child(2n){
+        background: #f5f5f5;
+    }
+    tbody > tr > td:nth-child(1){
+        text-align: center;
+    }
+}

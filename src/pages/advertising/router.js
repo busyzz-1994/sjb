@@ -1,0 +1,19 @@
+import React,{Component} from 'react';
+import { Switch , Route } from 'react-router-dom';
+import AdvertisingEditRouter from './advertisingEdit/router.js';
+
+class AdvertisingRouter extends Component{
+    constructor(props){
+        super(props)
+    }
+    render(){
+        return (
+            <div>
+                <Switch>
+                    <Route path='/advertising/advertisingEdit' component={AdvertisingEditRouter}/>
+                </Switch>
+            </div>
+        )
+    }
+}
+export default AdvertisingRouter;

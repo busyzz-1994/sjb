@@ -1,0 +1,140 @@
+html,body{
+	background: #EDEDED!important;
+	/* height: 100%; */
+	/* width: 100%; */
+}
+:global(html){
+	background: #EDEDED!important;
+	/* height: 100%;
+	width: 100%; */
+}
+/* :global(body){
+	background: #EDEDED!important;
+	height: 100%;
+	width: 100%;
+} */
+/* :global(#app){
+	height: 100%;
+	width: 100%;
+} */
+
+:global(.error-message){
+	color: #E21918
+}
+.table-list{
+    margin-top: 30px;
+}
+.clearfix:after{
+	content: '';
+	display: block;
+	height: 0;
+	clear: both;
+	overflow: hidden;
+}
+:global(.clearfix:after){
+	content: '';
+	display: block;
+	height: 0;
+	clear: both;
+	overflow: hidden;
+}
+:global(.fl){
+	float: left;
+}
+:global(.fr){
+	float: right;
+}
+.fl{
+	float: left;
+}
+.fr{
+	float: right;
+}
+/*全局loading*/
+:global(#loading-wrapper){
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+}
+:global(#request-loading){
+	position: fixed;
+	width: 100px;
+	height: 100px;
+	/*opacity: 0.1;*/
+	background: rgba(0,0,0,.8);
+	border-radius: 10px;
+	text-align: center;
+	line-height: 100px;
+	top:calc(50% - 200px);
+	left:calc(50% - 50px);
+	z-index: 1000;
+}
+:global(#request-loading img){
+	display: inline-block;
+	width: 50px;
+	height: 50px;
+	position: relative;
+}
+/* :global(#loading-wrapper){
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+} */
+#loading-wrapper{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+}
+#request-loading{
+	position: fixed;
+	width: 100px;
+	height: 100px;
+	/*opacity: 0.1;*/
+	background: rgba(0,0,0,.8);
+	border-radius: 10px;
+	text-align: center;
+	line-height: 100px;
+	top:calc(50% - 200px);
+	left:calc(50% - 50px);
+	z-index: 1000;
+}
+#request-loading img{
+	display: inline-block;
+	width: 50px;
+	height: 50px;
+	position: relative;
+	/*top:16px;*/
+}
+/* 保单容器 灰色的box */
+:global(.form-container){
+	background: #F5F5F5;
+	min-height: 650px;
+	margin-top: 29px;
+	padding-bottom: 58px;
+	box-sizing: border-box;
+    font-size: 16px;
+	color:#7E7E7E;
+    padding-top:40px;
+    // 表单样式
+    :global(.form-item){
+        line-height:32px;
+        margin-bottom:20px;
+        :global(.ant-row > div:first-child){
+            text-align: right;
+		}
+		:global(.ant-checkbox-group-item){
+			margin-right: 20px;
+		}
+    }
+    :global(.btn-item){
+        :global(.ant-row > div:first-child){
+            text-align: left!important;
+        }
+        :global(button){
+            margin-right: 20px;
+        }
+    }
+}

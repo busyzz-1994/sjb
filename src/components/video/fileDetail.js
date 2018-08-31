@@ -1,0 +1,236 @@
+import React,{Component} from 'react';
+import _mm from 'util/mm.js';
+import style from 'common/layout.scss';
+import defaultImg from 'images/newsas.png';
+import ImgUpload from 'components/global/uploadImg';
+import SignList from 'components/global/signList/indexNew.js';
+import AuditForm from 'components/global/auditForm';
+// import self from './bannerAdd.scss';
+import {Link} from 'react-router-dom';
+import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,Checkbox } from 'antd';
+import { withRouter } from 'react-router-dom';
+import config from 'base/config.json';
+const Option = Select.Option;
+const TextArea = Input.TextArea;
+// import NewsCategorySave from '../components/newsCategorySave';
+class TypeSave extends Component{
+    constructor(props){
+        super(props)
+        this.state = {
+            checked:_mm.getParam('checked'),
+            category:[{name:'推荐',value:0},{name:'热门',value:1},{name:'体育',value:2}],
+            title:'',
+            // 服务缩略图
+            tpImg:'',
+            //是否显示新闻来源
+            newsOrigin:false,
+            //是否热门推荐
+            hot:false,
+            //video地址
+            videoUrl:'',
+            //视频长度
+            videoMin:'',
+            videoSec:'',
+            //视频概要
+            videoDetail:'',
+            //选中的signList:
+            signList:[2],
+            signChecked:false,
+            authStatus:0,
+            authString:''
+        }
+    }
+    selectCategory(value){
+        this.setState({
+            categoryValue:value
+        })
+    }
+    onInput(e){
+        let name = e.target.name,
+        value = e.target.value;
+        this.setState({
+            [name]:value
+        })  
+    }
+    //获取缩略图
+    getUrl(data,index){
+        let url =config.server + data[0].attachFilenames;
+        this.setState({
+            tpImg:url
+        })
+    }
+    //获取signList
+    getSignList(arr){
+        this.setState({
+            signList:arr
+        })
+    }
+    //获取选中状态
+    getChecked(value){
+        this.setState({
+            signChecked:value
+        })
+    }
+    //获取审核状态
+    getAuthStatus(status){
+        this.setState({
+            authStatus:status
+        })
+    }
+    //获取审核结果字符串
+    getAuthString(string){
+        this.setState({
+            authString:string
+        })
+    }
+    //切换新闻来源
+    changeNewsOrigin(e){
+        let status = e.target.checked;
+        this.setState({
+            newsOrigin:status
+        })
+    }
+    //热门推荐
+    changeHot(e){
+        let status = e.target.checked;
+        this.setState({
+            hot:status
+        })
+    }
+    render(){
+        let {category,tpImg,signList,signChecked,authStatus,authString,checked,
+            newsOrigin,hot,videoUrl,videoMin,videoSec,videoDetail
+        } = this.state;
+        console.log(checked)
+        return (
+            <div className='form-container'>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>选择类型*</Col>
+                        <Col offset='1' span='6'>
+                            <Select
+                                showSearch
+                                style={{ width: 200 }}
+                                optionFilterProp="children"
+                                value = {category[0].value}
+                                onChange={(value)=>{this.selectCategory(value)}}
+                            >
+                                {
+                                    category.map((item,index)=>{
+                                        return (
+                                            <Option key={index} value={item.value}>{item.name}</Option>
+                                        )
+                                    })
+                                }
+                            </Select>
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>视频标题*</Col>
+                        <Col offset='1' span='12'>
+                            <Input maxLength='30' value={this.state.title} onChange={(e)=>this.onInput(e)} name='title' placeholder='请输入不超过30个字的视频标题' />
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>新闻来源*</Col>
+                        <Col offset='1' span='12'>
+                            <Input maxLength='10' value={this.state.title} onChange={(e)=>this.onInput(e)} name='title' placeholder='请输入不超过10个字的视频来源' />
+                        </Col>
+                        <Col offset='1' span='4'>
+                            <Checkbox
+                                checked={newsOrigin}
+                                onChange={(e)=>this.changeNewsOrigin(e)}
+                            >
+                            显示来源
+                            </Checkbox>
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>视频封面图*</Col>
+                        <Col offset='1' span='12'>
+                            <ImgUpload imgWidth={160} imgUrl={tpImg}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'></Col>
+                        <Col offset='1' span='16'>
+                            建议上传尺寸228*152,10-65KB
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>视频时长*</Col>
+                        <Col offset='1' span='6'>
+                            <Input addonAfter="分" maxLength='3' value={videoMin} onChange={(e)=>this.onInput(e)} name='videoMin' placeholder='请输入视频时长（分）' />
+                        </Col>
+                        <Col offset='1' span='6'>
+                            <Input addonAfter="秒" maxLength='3' value={videoSec} onChange={(e)=>this.onInput(e)} name='videoSec' placeholder='请输入视频时长（秒）' />
+                        </Col>
+                    </Row>
+                </div>
+                <SignList
+                    signList = {signList}
+                    checked = {signChecked}
+                    getList = {(list)=>this.getSignList(list)}
+                    getStatus = {(val)=>this.getChecked(val)}
+                />
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>热门推荐*</Col>
+                        <Col offset='1' span='12'>
+                            <Checkbox
+                                checked={hot}
+                                onChange={(e)=>this.changeHot(e)}
+                            >
+                            显示热门推荐
+                            </Checkbox>
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>上传视频文件*</Col>
+                        <Col offset='1' span='12'>
+                            <Input maxLength='100' value={videoUrl} onChange={(e)=>this.onInput(e)} name='videoUrl' placeholder='请输入视频连接URL地址 (建议先用浏览器测试该URL是否有效)' />
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>视频概要</Col>
+                        <Col offset='1' span='12'>
+                            <TextArea rows={5} value={videoDetail}  onChange={(e)=>this.setState({videoDetail:e.target.value})} /> 
+                        </Col>
+                    </Row>
+                </div>
+                {    checked == 2 ?
+                        <AuditForm
+                        status = {authStatus}
+                        detail = {authString}
+                        getStatus = {(status)=>this.getAuthStatus(status)}
+                        getDetail = {(string)=>this.getAuthString(string)}
+                    />:
+                    null
+                }
+                <div className='form-item btn-item'>
+                    <Row>
+                        <Col offset='5' span='10'>
+                            <Button onClick={()=>{this.save()}} type='primary' size='large'>保存</Button>
+                            <Button onClick={()=>{this.props.history.goBack()}} size='large'>取消</Button>
+                        </Col>
+                    </Row>
+                </div>
+            </div>
+        )
+    }
+}
+export default withRouter(TypeSave);

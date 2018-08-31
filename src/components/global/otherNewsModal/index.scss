@@ -1,0 +1,41 @@
+.otherNewsModal{
+   font-size: 16px;
+   color: #666666;
+   table{
+        tbody{
+            td{
+                height: 58px!important;
+            }
+        }
+   }
+}
+.footer{
+    text-align: left;
+    position: relative;
+}
+.head{
+    ul{
+        margin-bottom: 10px;
+        li{
+            cursor: pointer;
+            float: left;
+            margin-right: 44px;
+        }
+        li.active{
+            color: #1A8DFF!important;
+        }
+    }
+}
+.footerHandle{
+    position: absolute;
+    bottom: 0px;
+    right: 10px;
+}
+.selectImg{
+    cursor: pointer;
+}
+.row{
+    td{
+        text-align: left;
+    }
+}
