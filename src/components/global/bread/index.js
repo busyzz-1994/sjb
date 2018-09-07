@@ -6,7 +6,7 @@ import _mm from 'util/mm.js';
 //1.breadList 见默认属性 ;
 //2.check 查看时候传入的文字；
 //3.edit  修改时候传入的文字；
-//4.auth  审核时候传入的文字；
+//4.audit  审核时候传入的文字；
 class Bread extends Component{
     constructor(props){
         super(props)
@@ -23,7 +23,7 @@ class Bread extends Component{
     }
     setBreadList(props){
         let {checked} = this.state;
-        let { breadList , check , edit , auth } = props;
+        let { breadList , check , edit , audit } = props;
         let newList = JSON.parse(JSON.stringify(breadList));
         let breadListLength = newList.length;
         if(checked == 0){
@@ -37,7 +37,7 @@ class Bread extends Component{
                 breadList:newList
             })
         }else if(checked == 2){
-            newList[breadListLength-1].name = auth;
+            newList[breadListLength-1].name = audit;
             this.setState({
                 breadList:newList
             })
@@ -85,7 +85,7 @@ Bread.defaultProps = {
         }
     ],
     check:'查看banner',
-    auth:'审核banner',
+    audit:'审核banner',
     edit:'修改banner'
 }
 export default Bread;

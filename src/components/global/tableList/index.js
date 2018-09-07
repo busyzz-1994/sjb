@@ -27,13 +27,16 @@ class tableList extends Component{
             isFirstLoading:true
         }
     }
-    componentWillReceiveProps(){
+    componentWillReceiveProps(nextProps){
         // 列表只有在第一次挂载的时候，isFirstLoading为true，其他情况为false
         this.setState({
             isFirstLoading : false
         });
     }
     componentDidMount(){
+        $('tbody').find('td').css({height:this.props.tdHeight});
+    }
+    componentDidUpdate(){
         $('tbody').find('td').css({height:this.props.tdHeight});
     }
     render(){
@@ -51,7 +54,6 @@ class tableList extends Component{
         })
          // 列表内容
          let listBody = this.props.children;
-         console.log(listBody)
          // 列表的信息
          let listInfo = (
              <tr>

@@ -37,7 +37,7 @@ class TypeSave extends Component{
             //新闻内容detail
             detail:'',
             //选中的signList:
-            signList:[2],
+            signList:['推荐'],
             signChecked:false,
             defaultDetail:'',
             authStatus:0,

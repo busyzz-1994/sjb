@@ -138,3 +138,14 @@ html,body{
         }
     }
 }
+/* td 操作栏超出 显示不隐藏 */
+:global(.td-handle){
+	overflow: visible!important;
+}
+/* 关联标签样式 */
+:global(.gl-link){
+	color: #2770AF;
+	:global(i){
+		margin-right: 6px;
+	}
+}

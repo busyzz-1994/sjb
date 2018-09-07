@@ -4,7 +4,7 @@ import TableList from 'components/global/tableList';
 import style from 'common/layout.scss';
 import { Select , Input , Button ,message,Pagination,Modal,Icon} from 'antd';
 import { withRouter,Link } from 'react-router-dom'; 
-import fileApi from 'api/discounts/file.js';
+import typeApi from 'api/discounts/type.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
 const Option = Select.Option;
@@ -25,7 +25,7 @@ class Banner extends Component{
             isSearch:false,
             searchValue:'',
             originData:[],
-            pageSize:2,
+            pageSize:6,
             total:10,
             pageNum:1
         }
@@ -40,6 +40,7 @@ class Banner extends Component{
             typeApi.searchType({
                 currPage:pageNum,
                 pageSize,
+                type:'2',
                 name:searchValue
             }).then(res=>{
                 let totalCount = res[0].totalCount;
@@ -50,11 +51,10 @@ class Banner extends Component{
                 })
             })
         }else{
-            console.log(selectValue)
-            fileApi.getFileList({
+            typeApi.getTypeList({
                 currPage:pageNum,
                 pageSize,
-                checkview:selectValue
+                type:'2'
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -87,14 +87,14 @@ class Banner extends Component{
         }
     }
     //选择类型
-    select(value){
-        this.setState({
-            selectValue:value,
-            pageNum:1
-        },()=>{
-            this.loadList();
-        })
-    }
+    // select(value){
+    //     this.setState({
+    //         selectValue:value,
+    //         pageNum:1
+    //     },()=>{
+    //         this.loadList();
+    //     })
+    // }
     //点击分页
     changePage(pageNum){
 		this.setState({
@@ -105,16 +105,17 @@ class Banner extends Component{
     }
     //跳转到添加页面
     goAddBanner(){
-        this.props.history.push(`/discounts/discountsEdit/file/fileDetail`);
+        let { selectValue } = this.state;
+        this.props.history.push(`/discounts/discountsEdit/type/typeDetail/?type=2`);
     }
     //点击查看图标
-    clickCheck(id,name){
-        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
+    clickCheck(id){
+        // this.props.history.push(`/news/newsEdit/banner/add/${id}/?checked=0`)
     }
     //点击编辑图标
-    clickEdit(id,name){
+    clickEdit(id,name,type){
         this.props.history.push({
-            pathname:`/discounts/discountsEdit/file/fileDetail/${id}/?checked=1&name=${name}`
+            pathname:`/discounts/discountsEdit/type/typeDetail/${id}/?checked=1&name=${name}&type=${type}`
         })
     }
     //点击删除图标
@@ -139,7 +140,7 @@ class Banner extends Component{
                 <div className={style.content}>
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>
-                        <div className='fl'>
+                        {/* <div className='fl'>
                             <Select
                                 showSearch
                                 style={{ width: 200 }}
@@ -153,7 +154,7 @@ class Banner extends Component{
                                 <Option value="1">审核未通过</Option>
                                 <Option value="2">审核已通过</Option>
                             </Select>
-                        </div>
+                        </div> */}
                         <div className='fr'>
                             <Search
                                 placeholder="输入关键字进行搜索"
@@ -162,7 +163,7 @@ class Banner extends Component{
                             />
                             <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
-                                    新增文件
+                                    新增类型
                                 </Button>
                             </div>
                         </div>
@@ -170,19 +171,23 @@ class Banner extends Component{
                     {/* 操作栏结束 */}
                     <TableList
                         tdHeight='58px'
-                        thead={[{width:'5%',name:' '},{width:'40%',name:'商品标题'},{width:'10%',name:'类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
+                        thead={[{width:'5%',name:' '},{width:'30%',name:'类型名称'},{width:'20%',name:'创建时间'},{width:'25%',name:'操作'},{width:'20%',name:'管理'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
                                <tr key={index}>
                                    <td>{index + 1}</td>
-                                   <td>{item.title}</td>
-                                   <td>{item.typeName}</td>
+                                   <td>{item.name}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
+                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.name,item.type)}}/>
                                         <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id)}}/>
+                                   </td>
+                                   <td>
+                                        <Link className='gl-link' to={`/discounts/discountsEdit/type/typeList/${item.id}/?name=${item.name}`} >
+                                        <Icon type="link" />
+                                        关联商品文件
+                                        </Link>
                                    </td>
                                </tr>
                            )

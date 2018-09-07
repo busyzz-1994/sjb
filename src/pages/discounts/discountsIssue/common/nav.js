@@ -6,11 +6,11 @@ class Nav extends Component{
         this.navList = [
             {
                 name:'商品类型',
-                url:'/discounts/discountsEdit/type'
+                url:'/discounts/discountsIssue/type'
             },
             {
                 name:'商品文件',
-                url:'/discounts/discountsEdit/file'
+                url:'/discounts/discountsIssue/file'
             }
         ]
     }

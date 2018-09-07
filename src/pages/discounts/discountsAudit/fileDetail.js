@@ -18,7 +18,7 @@ class TypeSave extends Component{
             breadList:[
                 {
                     name:'商品文件',
-                    path:'/discounts/discountsEdit/file'
+                    path:'/discounts/discountsAudit/file'
                 },
                 {
                     name:'新增商品',
@@ -36,8 +36,8 @@ class TypeSave extends Component{
                 <NavTab/>
                 <div className={style.content}>
                     <Bread breadList={breadList}
-                        edit={name}
                         check = {name}
+                        audit = {name}
                     />
                     <DiscountsFileDetail/>
                 </div>

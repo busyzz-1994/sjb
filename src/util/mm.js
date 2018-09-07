@@ -20,8 +20,9 @@ const mm = {
                 type:'get',
                 async:(typeof obj.async)===undefined?true:obj.async,
                 beforeSend:function(xhr){
-                    if(obj.token){
-                        xhr.setRequestHeader("x-auth-token", obj.token);
+                    var token = _this.getToken();
+                    if(token){
+                        xhr.setRequestHeader("x-auth-token", token);
                     }
                 },
                 data:obj.data?obj.data:'',
@@ -62,14 +63,17 @@ const mm = {
 			    contentType:'application/json',
                 async:(typeof obj.async)===undefined?true:obj.async,
                 beforeSend:function(xhr){
-                    if(obj.token){
-                        xhr.setRequestHeader("x-auth-token", obj.token);
+                    var token = _this.getToken();
+                    if(token){
+                        console.log(token)
+                        xhr.setRequestHeader("x-auth-token", token);
                     }
                 },
                 data:obj.data?JSON.stringify(obj.data):'',
                 success:function(data){
+                    console.log(111)
                     if(data.statusCode == 7700 || data.statusCode == 200){
-                        resolve(data.checkdate,data.message)
+                        resolve(data.data,data.message)
                     }else if(data.code ===7701){
                         _this.doLogin();
                     }else{

@@ -56,7 +56,6 @@ class Login extends Component{
         loginApi.getVerifyCode({name:username}).then(res=>{
             this.setState({
                 errorMsg:'',
-                verifyCode:res[0]
             },()=>{
                 this.openTimer();
             })
@@ -103,6 +102,8 @@ class Login extends Component{
                 number:this.state.password,
                 code:this.state.verifyCode
             }).then(res=>{
+                console.log(res);
+                // return;
                 let token = res[0].token,
                     userInfo = res[0].userList;
                 _mm.setStorage('token',token);

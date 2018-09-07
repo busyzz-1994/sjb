@@ -108,14 +108,19 @@ class Banner extends Component{
         this.props.history.push(`/discounts/discountsEdit/file/fileDetail`);
     }
     //点击查看图标
-    clickCheck(id,name){
-        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
+    clickCheck(id,title){
+        console.log(id)
+        this.props.history.push(`/discounts/discountsAudit/file/fileDetail/${id}/?checked=0&name=${title}`);
     }
     //点击编辑图标
-    clickEdit(id,name){
+    clickEdit(id,name,type){
         this.props.history.push({
-            pathname:`/discounts/discountsEdit/file/fileDetail/${id}/?checked=1&name=${name}`
+            pathname:`/discounts/discountsEdit/type/typeDetail/${id}/?checked=1&name=${name}&type=${type}`
         })
+    }
+    //点击去审核
+    clickAudit(id,title){
+        this.props.history.push(`/discounts/discountsAudit/file/fileDetail/${id}/?checked=2&name=${title}`);
     }
     //点击删除图标
     clickDel(id){
@@ -133,6 +138,29 @@ class Banner extends Component{
         })
     }
     render(){
+        //未审核的icon列表 
+        let handle_1 = (index,title) => {
+            return (
+                <div>
+                    <IconHandle type='0' id={index} iconClick={(id)=>{this.clickAudit(id,title)}}/>
+                </div>
+            )
+        }
+        //审核过的icon列表
+        let handle_2 = (index,title) => {
+            return (
+                <div>
+                    <IconHandle type='1' id={index} iconClick={(id)=>{this.clickCheck(id,title)}}/>
+                </div>
+            )
+        }
+        let {selectValue} = this.state;
+        let handleList;
+        if(selectValue ==0){
+            handleList = handle_1;
+        }else{
+            handleList = handle_2;
+        }
         return (
             <div className={style.container}>
                 <NavTab/>
@@ -160,11 +188,11 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
-                            <div style={{display:'inline-block',marginLeft:'10px'}}>
+                            {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
                                     新增文件
                                 </Button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     {/* 操作栏结束 */}
@@ -180,9 +208,7 @@ class Banner extends Component{
                                    <td>{item.typeName}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
-                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id)}}/>
+                                       {handleList(item.id,item.title)}
                                    </td>
                                </tr>
                            )

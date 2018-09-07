@@ -29,6 +29,16 @@ const Api = {
                 pageSize:data.pageSize
             }
         })
+    },
+    //获取标签列表
+    getSignList(data){
+        return _mm.POST({
+            url:'/tags/getTagsList',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
 }
 export default Api;

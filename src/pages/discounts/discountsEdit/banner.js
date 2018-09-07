@@ -4,7 +4,7 @@ import TableList from 'components/global/tableList';
 import style from 'common/layout.scss';
 import { Select , Input , Button ,message,Pagination,Modal} from 'antd';
 import { withRouter } from 'react-router-dom'; 
-import newsEditApi from 'api/news/banner.js';
+import bannerApi from 'api/discounts/banner.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
 const Option = Select.Option;
@@ -32,14 +32,19 @@ class Banner extends Component{
     }
     //加载数据
     loadList(){
-        newsEditApi.getBannerList().then(res=>{
-            this.setState({
-                dataList:res,
-                originData:res,
-                originDataList:res
-            },()=>{
-                this.choiceType();
-            })
+        let {pageSize,pageNum} = this.state ;
+        bannerApi.getBannerList({
+            currPage:pageNum,
+            pageSize
+        }).then(res=>{
+            console.log(res)
+            // this.setState({
+            //     dataList:res,
+            //     originData:res,
+            //     originDataList:res
+            // },()=>{
+            //     // this.choiceType();
+            // })
         })
     }
     //选择类型
@@ -127,20 +132,6 @@ class Banner extends Component{
                 <div className={style.content}>
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>
-                        <div className='fl'>
-                            <Select
-                                showSearch
-                                style={{ width: 200 }}
-                                optionFilterProp="children"
-                                // defaultValue = {this.state.selectValue}
-                                defaultValue = '待审核'
-                                onChange={(value)=>{this.select(value)}}
-                            >
-                                <Option value="0">待审核</Option>
-                                <Option value="1">审核未通过</Option>
-                                <Option value="2">审核已通过</Option>
-                            </Select>
-                        </div>
                         <div className='fr'>
                             <Search
                                 placeholder="输入关键字进行搜索"

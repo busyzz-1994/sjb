@@ -1,6 +1,7 @@
 import React,{Component,Fragments} from 'react';
 import { Input , Button ,message,Breadcrumb,Row, Col,Checkbox,Icon,Select } from 'antd';
 import style from './index.scss';
+import commonApi from 'api/common.js';
 const Option = Select.Option;
 //参数必须传入
 //1.signList 即标签的列表 选中的list array signList
@@ -12,13 +13,24 @@ class SignList extends Component{
         super(props)
         this.state = {
             signAllList:[
-                {name:'推荐',value:0},
-                {name:'热门',value:1},
-                {name:'体育',value:2},
-                {name:'美食',value:3},
-                {name:'娱乐',value:4}
+                {name:'推荐'},
+                {name:'热门'},
+                {name:'体育'},
+                {name:'美食'},
+                {name:'娱乐'}
             ]
         }
+    }
+    componentDidMount(){
+        commonApi.getSignList({
+            currPage:1,
+            pageSize:9999
+        }).then(res=>{
+            let signList = res[0];
+            this.setState({
+                signAllList:signList
+            })
+        })
     }
     //清空所有标签
     cleanSignList(){
@@ -55,7 +67,7 @@ class SignList extends Component{
                                 {
                                     this.state.signAllList.map((item,index)=>{
                                         return (
-                                            <Option key={item.value} value={item.value}>{item.name}</Option>
+                                            <Option key={item.name} value={item.name}>{item.name}</Option>
                                         )
                                     })
                                 }

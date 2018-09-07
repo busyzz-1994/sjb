@@ -86,15 +86,15 @@ const menuConfig = [
         icon:'shopping-cart',
         children:[
             {
-                key:'/discounts/discountsEdit/banner',
+                key:'/discounts/discountsEdit/type',
                 title:'商品编辑'
             },
             {
-                key:'/discounts/discountsAudit/banner',
+                key:'/discounts/discountsAudit/file',
                 title:'商品审核'
             },
             {
-                key:'/discounts/discountsIssue/banner',
+                key:'/discounts/discountsIssue/type',
                 title:'商品发布'
             },
             {

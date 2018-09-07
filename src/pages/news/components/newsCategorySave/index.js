@@ -45,7 +45,7 @@ class NewsCategorySave extends Component{
                     <Row>
                         <Col span='4'>新闻类型</Col>
                         <Col offset='1' span='12'>
-                        <Input maxLength='6' onChange = {(e) => this.Input(e.target.value)} value={this.state.name}   placeholder ='请输入2~6个字的新闻类型' />
+                            <Input maxLength='6' onChange = {(e) => this.Input(e.target.value)} value={this.state.name}   placeholder ='请输入2~6个字的新闻类型' />
                         </Col>
                     </Row>
                 </div>
