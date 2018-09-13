@@ -35,19 +35,23 @@ class BannerAdd extends Component{
                     path:''
                 }
             ],
-            checked:_mm.getParam('checked')
+            checked:_mm.getParam('checked'),
+            name:_mm.getParam('name')
         }
     }
     componentDidMount(){
        
     }
     render(){
-        let {breadList} = this.state;
+        let {breadList,name} = this.state;
         return (
             <div className={style.container}>
                 <NavTab navList={this.navList} />
                 <div className={style.content}>
-                    <Bread breadList={breadList}/>
+                    <Bread breadList={breadList}
+                        check = {name}
+                        edit = {name}
+                    />
                     <BannerDetail/>
                 </div>
             </div>

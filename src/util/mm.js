@@ -65,13 +65,11 @@ const mm = {
                 beforeSend:function(xhr){
                     var token = _this.getToken();
                     if(token){
-                        console.log(token)
                         xhr.setRequestHeader("x-auth-token", token);
                     }
                 },
                 data:obj.data?JSON.stringify(obj.data):'',
                 success:function(data){
-                    console.log(111)
                     if(data.statusCode == 7700 || data.statusCode == 200){
                         resolve(data.data,data.message)
                     }else if(data.code ===7701){
@@ -194,7 +192,9 @@ const mm = {
                          .replace('>','&gt;')
     },
     getToken(){
+        // return '2129d21664fb7a7c0165037dfbdabbeb8416f273';
         return this.getStorage('token');
+        // this.getStorage('token')
     },
     confirm(options){
         confirm({
@@ -205,6 +205,19 @@ const mm = {
             okText:'确认',
             cancelText:'取消'
         })
+    },
+    //处理imgUrl  http://xxxxx/sjb/Upload/xxx.png -> /Upload/xxx.png;
+    processImgUrl(data){
+        let type = typeof data;
+        let reg = /(\/Upload\/.*)/;
+        if(type == 'object'){
+            let newData = data.map((item)=>{
+                return item.match(reg)[0];
+            })
+            return newData;
+        }else{
+            return data.match(reg)[0];
+        }
     }
 }
 export default mm;

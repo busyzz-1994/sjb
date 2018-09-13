@@ -54,6 +54,7 @@ class Login extends Component{
         if(!buttonIs) return ;
         let username = this.state.username;
         loginApi.getVerifyCode({name:username}).then(res=>{
+            console.log(res)
             this.setState({
                 errorMsg:'',
             },()=>{

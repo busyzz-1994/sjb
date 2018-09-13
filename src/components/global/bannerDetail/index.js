@@ -20,10 +20,10 @@ class BannerDetail extends Component{
             id:this.props.match.params.id,
             checked:_mm.getParam('checked'),
             //链接类型
-            type:1,
+            type:'1',
             //banner类型
             breadName:'新增banner',
-            bannerType:0,
+            bannerType:_mm.getParam('bannerType'),
             bannerTitle:'',
             bannerDetail:'',
             linkUrl:'',
@@ -45,6 +45,7 @@ class BannerDetail extends Component{
         let { id } = this.state;
         newsEditApi.getBannerDetai({id})
         .then(res=>{
+            console.log(res)
             let {baType,type,reUrl,title,titleImg,fkId} = res[0];
             this.setState({
                 type:baType,
@@ -102,6 +103,13 @@ class BannerDetail extends Component{
        if(msg){
             message.error(msg)
        }else{
+            let {checked} = this.state;
+            if(checked === null){
+                this.addBanner();
+            }
+       }
+    }
+    addBanner(){
         let {id,type,fkId,linkUrl,bannerTitle,imgUrl,bannerType} = this.state;
             newsEditApi.addBanner({
                 baType:type,
@@ -111,10 +119,9 @@ class BannerDetail extends Component{
                 titleImg:imgUrl,
                 type:bannerType
             })
-       }
     }
     render(){
-        let {type,bannerType} = this.state;
+        let {type,bannerType,isAdd} = this.state;
         return (
             <div className='form-container'>
                     <OtherNewsModal visible={this.state.modalVisible} 
@@ -130,6 +137,7 @@ class BannerDetail extends Component{
                                 style={{ width: 200 }}
                                 onChange={(value)=>{this.select(value)}}
                                 value = {type}
+                                
                             >
                                 <Option value="1">内链</Option>
                                 <Option value="0">外链</Option>
@@ -149,7 +157,7 @@ class BannerDetail extends Component{
                     </div>
                     : null
                 }
-                <div className='form-item'>
+                {/* <div className='form-item'>
                     <Row>
                         <Col span='4'>banner类别*</Col>
                         <Col offset='1' span='6'>
@@ -157,7 +165,8 @@ class BannerDetail extends Component{
                                 showSearch
                                 style={{ width: 200 }}
                                 onChange={(value)=>{this.selectBannerType(value)}}
-                                defaultValue = '新闻'
+                                defaultValue = {bannerType}
+                                disabled = {true}
                             >
                                 <Option value="0">新闻</Option>
                                 <Option value="1">商家</Option>
@@ -169,7 +178,7 @@ class BannerDetail extends Component{
                             </Select>
                         </Col>
                     </Row>
-                </div>
+                </div> */}
                 <div className='form-item'>
                     <Row>
                         <Col span='4'>banner标题*</Col>
@@ -191,10 +200,10 @@ class BannerDetail extends Component{
                     <Row>
                         <Col span='4'>banner详情*</Col>
                         <Col offset='1' span='8'>
-                            <Input value={this.state.bannerDetail} name='bannerDetail' onChange={(e)=>{this.onInput(e)}} placeholder ='请选择banner关联的新闻' />
+                            <Input disabled={type == 0 ? false : true}  value={this.state.bannerDetail} name='bannerDetail' onChange={(e)=>{this.onInput(e)}} placeholder ='请选择banner关联的新闻' />
                         </Col>
                         <Col offset='1' span='4'>
-                            <Button type='primary' onClick={()=>{this.newsListOther()}}  icon='plus'>关联相关新闻</Button>
+                            <Button disabled={type == 0 ? true : false} type='primary' onClick={()=>{this.newsListOther()}}  icon='plus'>关联相关新闻</Button>
                         </Col>
                     </Row>
                 </div>

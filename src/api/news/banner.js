@@ -10,7 +10,8 @@ const Api = {
                 token:getToken(),
                 currPage:data.currPage,
                 pageSize:data.pageSize,
-                checkview:data.checkview
+                checkview:data.checkview,
+                type:data.type
             }
         })
     },
@@ -37,6 +38,16 @@ const Api = {
         return _mm.POST({
             url:'/admin/news/banner/addBanner',
             data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    delBanner(data){
+        return _mm.POST({
+            url:'/admin/banner/deletebanner',
+            data:{
+                ...data,
                 token:getToken()
             }
         })

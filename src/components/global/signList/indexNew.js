@@ -26,6 +26,7 @@ class SignList extends Component{
             currPage:1,
             pageSize:9999
         }).then(res=>{
+            console.log(res)
             let signList = res[0];
             this.setState({
                 signAllList:signList

@@ -1,31 +1,29 @@
 import _mm from 'util/mm.js';
 const getToken = () =>{
     return _mm.getStorage('token')
-    // return 'a083e8435af9b4c7f3ebc5cbe2a0e16ec0e0763b';
 }
 const Api = {
-    getFileList(data){
+    getSignList(data){
         return _mm.POST({
-            url:'/admin/Merchandise/queryCheckLists',
+            url:'/admin/tags/getTagsList',
             data:{
                 ...data,
                 token:getToken()
             }
         })
     },
-    getFileDetail(data){
+    delSign(data){
         return _mm.POST({
-            url:'/admin/Merchandise/selectMerchandise',
+            url:'/admin/tags/deleteTags',
             data:{
                 ...data,
                 token:getToken()
             }
         })
     },
-    //添加商品文件
-    addFile(data){
+    addSign(data){
         return _mm.POST({
-            url:'/admin/Merchandise/addMerchandise',
+            url:'/admin/tags/addTags',
             data:{
                 ...data,
                 token:getToken()

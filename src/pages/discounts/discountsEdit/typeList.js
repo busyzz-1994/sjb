@@ -37,6 +37,8 @@ class Banner extends Component{
                     }
                 ],
             originData:[],
+            //商品类型id
+            categoryId:this.props.match.params.id,
             pageSize:6,
             total:10,
             pageNum:1
@@ -47,13 +49,14 @@ class Banner extends Component{
     }
     //加载数据
     loadList(){
-        let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
+        let {pageSize,pageNum,selectValue,isSearch,searchValue,categoryId} = this.state;
         if(isSearch){
             typeApi.searchType({
                 currPage:pageNum,
                 pageSize,
                 type:'2',
-                name:searchValue
+                name:searchValue,
+                id:categoryId
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -63,13 +66,15 @@ class Banner extends Component{
                 })
             })
         }else{
-            typeApi.getTypeList({
+            typeApi.getDetailList({
                 currPage:pageNum,
                 pageSize,
-                type:'2'
+                type:'2',
+                id:categoryId
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
+                console.log(list)
                 this.setState({
                     dataList:list,
                     total:totalCount
@@ -117,25 +122,26 @@ class Banner extends Component{
     }
     //跳转到添加页面
     goAddBanner(){
-        let { selectValue } = this.state;
-        this.props.history.push(`/discounts/discountsEdit/type/typeDetail/?type=2`);
+        this.props.history.push(`/discounts/discountsEdit/file/fileDetail`);
     }
     //点击查看图标
-    clickCheck(id){
-        // this.props.history.push(`/news/newsEdit/banner/add/${id}/?checked=0`)
+    clickCheck(id,title){
+        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${title}`)
     }
     //点击编辑图标
     clickEdit(id,name,type){
-        this.props.history.push({
-            pathname:`/discounts/discountsEdit/type/typeDetail/${id}/?checked=1&name=${name}&type=${type}`
-        })
+        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=1&name=${title}`)
+    }
+    //点击置顶图标
+    clickTop(id){
+
     }
     //点击删除图标
     clickDel(id){
         confirm({
             title:'删除的内容无法恢复，确认删除？',
             onOk:()=>{
-                typeApi.delType({id}).then(res=>{
+                typeApi.delDetail({id}).then(res=>{
                     this.loadList();
                 }).catch(res=>{
                     message.error(res);
@@ -164,7 +170,7 @@ class Banner extends Component{
                             />
                             <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
-                                    新增类型
+                                    新增商品
                                 </Button>
                             </div>
                         </div>
@@ -172,23 +178,19 @@ class Banner extends Component{
                     {/* 操作栏结束 */}
                     <TableList
                         tdHeight='58px'
-                        thead={[{width:'5%',name:' '},{width:'30%',name:'类型名称'},{width:'20%',name:'创建时间'},{width:'25%',name:'操作'},{width:'20%',name:'管理'}]}
+                        thead={[{width:'5%',name:' '},{width:'30%',name:'商品名称'},{width:'20%',name:'类型'},{width:'20%',name:'创建时间'},{width:'25%',name:'操作'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
                                <tr key={index}>
                                    <td>{index + 1}</td>
-                                   <td>{item.name}</td>
+                                   <td>{item.title}</td>
+                                   <td>{item.tagIds}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.name,item.type)}}/>
-                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id)}}/>
-                                   </td>
-                                   <td>
-                                        <Link className='gl-link' to={`/discounts/discountsEdit/typeList/${item.id}`} >
-                                        <Icon type="link" />
-                                        关联商品文件
-                                        </Link>
+                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
+                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id)}}/>
+                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item.name,item.type)}}/>
                                    </td>
                                </tr>
                            )

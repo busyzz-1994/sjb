@@ -45,10 +45,30 @@ const Api = {
             }
         })
     },
-    //模糊查询
+    //模糊查询商品类型
     searchType(data){
         return _mm.POST({
             url:'/admin/category/selectCategory',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //获取具体商品类型列表
+    getDetailList(data){
+        return _mm.POST({
+            url:'/admin/Merchandise/dataList',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //删除具体的商品
+    delDetail(data){
+        return _mm.POST({
+            url:'/admin/Merchandise/deletMerchandise',
             data:{
                 ...data,
                 token:getToken()

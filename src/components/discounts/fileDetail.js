@@ -13,9 +13,11 @@ import AuditForm from 'components/global/auditForm';
 import {Link} from 'react-router-dom';
 import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon} from 'antd';
 import { withRouter } from 'react-router-dom';
-import newsEditApi from 'api/news/banner';
 import commonApi from 'api/common.js';
 import config from 'base/config.json';
+import typeApi from 'api/discounts/type.js';
+import fileApi from 'api/discounts/file.js';
+import Validate from 'util/validate';
 const Option = Select.Option;
 // import NewsCategorySave from '../components/newsCategorySave';
 class TypeSave extends Component{
@@ -23,7 +25,7 @@ class TypeSave extends Component{
         super(props)
         this.state = {
             checked:_mm.getParam('checked'),
-            category:[{name:'推荐',value:0},{name:'热门',value:1},{name:'体育',value:2}],
+            category:[],
             categoryValue:'',
             title:'',
             // 缩略图
@@ -53,7 +55,7 @@ class TypeSave extends Component{
         })
     }
     componentDidMount(){
-        
+        this.loadTypeList()
     }
     onInput(e){
         let name = e.target.name,
@@ -61,6 +63,19 @@ class TypeSave extends Component{
         this.setState({
             [name]:value
         })  
+    }
+    //添加类型选项
+    loadTypeList(){
+        typeApi.getTypeList({currPage:1,pageSize:9999,type:'2'}).then(res=>{
+            let list = res[0].lists;
+            this.setState({
+                category:list
+            },()=>{
+                this.setState({
+                    categoryValue:list[0]?list[0].id:''
+                })
+            })
+        })
     }
     //获取缩略图
     getUrl(data,index){
@@ -99,9 +114,42 @@ class TypeSave extends Component{
             authString:string
         })
     }
+    //验证表单信息
+    validate(){
+        let {title,tpImg,price,count,signList,fwImgList,editDetail} = this.state;
+        let validate = new Validate();
+        validate.add(title,'notEmpty','商品标题不能为空！');
+        validate.add(tpImg,'notEmpty','商品缩略图不能为空！');
+        validate.add(price,'notFloatMinus','商品价格只能为正数！');
+        validate.add(count,'notMinus','库存只能为整数！');
+        validate.add(signList,'notEmptyArray','标签绑定不能为空！');
+        validate.add(fwImgList,'notEmptyArrayWithItem','服务主图不能为空！');
+        validate.add(editDetail,'notEmpty','内容编辑不能为空！');
+        return validate.start();
+    }
+    //保存save
+    save(){
+        let msg = this.validate();
+        if(msg){
+            message.error(msg)
+        }else{
+            let {categoryValue,title,tpImg,price,count,signList,fwImgList,editDetail} = this.state;
+            let obj = {
+                typeId:categoryValue,
+                title,
+                thumbnail:_mm.processImgUrl(tpImg),
+                price,
+                inventory:count,
+                tagIds:signList,
+                positiveImg:_mm.processImgUrl(fwImgList),
+                introduce:editDetail
+            }
+            fileApi.addFile()
+        }
+    }
     render(){
         let {category,tpImg,signList,signChecked,fwImgList,defaultDetail
-            ,authStatus,authString,checked
+            ,authStatus,authString,checked,categoryValue
         } = this.state;
         return (
             <div className='form-container'>
@@ -114,13 +162,13 @@ class TypeSave extends Component{
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
                                 // defaultValue = {this.state.selectValue}
-                                value = {category[0].value}
+                                value = {categoryValue}
                                 onChange={(value)=>{this.selectCategory(value)}}
                             >
                                 {
                                     category.map((item,index)=>{
                                         return (
-                                            <Option key={index} value={item.value}>{item.name}</Option>
+                                            <Option key={index} value={item.id}>{item.name}</Option>
                                         )
                                     })
                                 }
@@ -154,7 +202,7 @@ class TypeSave extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>商品价格*</Col>
+                        <Col span='4'>商品价格（元）*</Col>
                         <Col offset='1' span='12'>
                             <Input value={this.state.price} onChange={(e)=>this.onInput(e)} name='price' placeholder='请输入价格' />
                         </Col>

@@ -5,6 +5,7 @@ import style from 'common/layout.scss';
 import { Select , Input , Button ,message,Pagination,Modal,Icon} from 'antd';
 import { withRouter,Link } from 'react-router-dom'; 
 import fileApi from 'api/discounts/file.js';
+
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
 const Option = Select.Option;
@@ -50,7 +51,6 @@ class Banner extends Component{
                 })
             })
         }else{
-            console.log(selectValue)
             fileApi.getFileList({
                 currPage:pageNum,
                 pageSize,
@@ -58,6 +58,7 @@ class Banner extends Component{
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
+                console.log(list)
                 this.setState({
                     dataList:list,
                     total:totalCount
@@ -177,7 +178,7 @@ class Banner extends Component{
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>{item.title}</td>
-                                   <td>{item.typeName}</td>
+                                   <td>{item.tagIds}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
                                         <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>

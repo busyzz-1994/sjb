@@ -3,15 +3,18 @@ import style from '../common/common.scss';
 import NavBar from './common/nav.js';
 import TableList from 'components/global/tableList';
 import IconHandle from 'components/global/icon';
-import {Pagination} from 'antd';
+import {Pagination,Modal,Button} from 'antd';
+import systemApi from 'api/system';
+const confirm = Modal.confirm;
 class Sign extends Component{
     constructor(props){
         super(props)
         console.log(Pagination)
         this.state={
             pageNum : 1,
-            total : 5,
-            pageSize : 10
+            total : 0,
+            pageSize : 6,
+            dataList:[]
         }
         //mock数据
         this.data = [
@@ -22,33 +25,78 @@ class Sign extends Component{
             }
         ]
     }
-    clickDel(index){
-        console.log(index);
+    componentDidMount(){
+        this.loadList();
     }
-    changePage(pageNum){
-        this.setState({
-            pageNum
+    loadList(){
+        let {pageNum,pageSize} = this.state;
+        systemApi.getSignList({
+            currPage:pageNum,pageSize
+        }).then(res=>{
+            if(res.length>0){
+                let total = res[0].totalCount,
+                    list = res[0].lists;
+                this.setState({
+                    total,
+                    dataList:list
+                })    
+            }
         })
     }
+     //点击分页
+     changePage(pageNum){
+		this.setState({
+            pageNum
+        },()=>{
+            this.loadList();
+        })
+    }
+    clickDel(name){
+        confirm({
+            title:'删除的内容无法恢复，确认删除？',
+            onOk:()=>{
+                systemApi.delSign({name}).then(res=>{
+                    this.loadList();
+                }).catch(res=>{
+                    message.error(res);
+                })
+            },
+            okText:'确认',
+            cancelText:'取消'
+        })
+    }
+    goAdd(){
+        this.props.history.push('/system/sign/detail')
+    }
     render(){
+        let {dataList} = this.state;
         return (
             <div className={style.container}>
                 <NavBar/>
                 <div className={style.content}>
+                <div className={style.handle + ' clearfix'}>
+                        <div className='fr'>
+                            <div style={{display:'inline-block',marginLeft:'10px'}}>
+                                <Button onClick={()=>{this.goAdd()}} type="primary" icon="plus" >
+                                    新增标签
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
                     <TableList
                         thead={[{width:'5%',name:' '},{width:'75%',name:'标签名'},{width:'20%',name:'操作'}]}
                         tdHeight = '56px'
                     >
                         {
-                            this.data.map((item,index)=>{
+                            dataList.map((item,index)=>{
                                 return (
                                     <tr key={index}>
                                        <td>{index+1}</td>
                                        <td>
                                            {item.name}
                                        </td>
-                                       <td>
-                                           <IconHandle type='2' id={index} iconClick={(id)=>this.clickDel(id)} />
+                                       <td className='td-handle'>
+                                           <IconHandle  type='2' id={item.name} iconClick={(id)=>this.clickDel(id)} />
                                        </td>
                                     </tr>
                                 )

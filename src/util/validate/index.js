@@ -8,14 +8,28 @@ var rule = {
 	//不是空数组
 	notEmptyArray:function(arr,msg){
 		let type = typeof arr;
-		console.log(type);
 		if(type !='object'){
 			return msg ;
 		}else{
-			console.log(arr);
 			let length = arr.length;
 			if(length<1){
 				return msg;
+			}
+		}
+	},
+	//不能为空数组，且里面的内容不能为空
+	notEmptyArrayWithItem:function(arr,msg){
+		let type = typeof arr;
+		if(type !='object'){
+			return msg ;
+		}else{
+			let length = arr.length;
+			if(length<1){
+				return msg;
+			}else{
+				for(var i = 0 ;i<length;i++){
+					if(!arr[i]) return msg;
+				}
 			}
 		}
 	},
