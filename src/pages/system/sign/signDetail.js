@@ -46,7 +46,6 @@ class Banner extends Component{
             let {signName} = this.state;
             console.log(signName)
             systemApi.addSign({name:signName}).then(res=>{
-                console.log(res)
                 message.success('添加成功！');
                 this.props.history.goBack();
             }).catch(msg=>{

@@ -27,7 +27,7 @@ const Api = {
     },
     getBannerDetai(data){
         return _mm.POST({
-            url:'/admin/news/banner/editBanner',
+            url:'/admin/banner/bannerdetails',
             data:{
                 token:getToken(),
                 id:data.id
@@ -36,7 +36,7 @@ const Api = {
     },
     addBanner(data){
         return _mm.POST({
-            url:'/admin/news/banner/addBanner',
+            url:'/admin/banner/addbanner',
             data:{
                 ...data,
                 token:getToken()
@@ -46,6 +46,72 @@ const Api = {
     delBanner(data){
         return _mm.POST({
             url:'/admin/banner/deletebanner',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    updateBanner(data){
+        return _mm.POST({
+            url:'/admin/banner/saveeditbanner',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    auditBanner(data){
+        return _mm.POST({
+            url:'/admin/banner/saveexaminebanner',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    getAuditBannerList(data){
+        return _mm.POST({
+            url:'/admin/banner/bannerrelatedlist',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //发布banner
+    issueBanner(data){
+        return _mm.POST({
+            url:'/admin/banner/updatereleasebanner',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //审核状态模糊查询
+    auditSearch(data){
+        return _mm.POST({
+            url:'/admin/banner/findstatusbannerlike',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //发布状态模糊查询
+    issueSearch(data){
+        return _mm.POST({
+            url:'/admin/banner/findrelatedbannerlike',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    bannerTop(data){
+        return _mm.POST({
+            url:'/admin/banner/topreleasebanner',
             data:{
                 ...data,
                 token:getToken()

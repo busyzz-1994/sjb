@@ -26,8 +26,7 @@ class SignList extends Component{
             currPage:1,
             pageSize:9999
         }).then(res=>{
-            console.log(res)
-            let signList = res[0];
+            let signList = res[0].lists;
             this.setState({
                 signAllList:signList
             })
@@ -44,8 +43,8 @@ class SignList extends Component{
     }
     //选中select
     Select(val){
-        if(val.length > 4){
-            message.warning('最多可以添加4条标签！')
+        if(val.length > 3){
+            message.warning('最多可以添加3条标签！')
         }else{
             this.props.getList(val)
         }

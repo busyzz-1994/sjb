@@ -4,13 +4,15 @@ import General from './general.js';
 import Picture from './picture';
 import Text from './text';
 import AuditForm from 'components/global/auditForm'
+import fileApi from 'api/news/file.js';
 const Option = Select.Option;
 class NewsDetail extends Component{
     constructor(props){
         super(props)
         this.state = {
             //新闻类别
-            category:0,
+            category:'',
+            categoryList:[],
             //新闻类型
             type:0,
             //新闻标题
@@ -52,6 +54,25 @@ class NewsDetail extends Component{
             wbDefaultDetail:'<p>6666666</p>',
             wbDetail:''
         }
+    }
+    componentDidMount(){
+        this.loadTypeList()
+    }
+    //添加类型选项
+    loadTypeList(){
+        fileApi.getTypeList({currPage:1,pageSize:9999,type:0}).then(res=>{
+            console.log(res);
+            console.log('类型')
+            return ;
+            let list = res[0].lists;
+            this.setState({
+                categoryList:list
+            },()=>{
+                this.setState({
+                    category:list[0]?list[0].id:''
+                })
+            })
+        })
     }
     changeOriginState(e){
        let status = e.target.checked;
@@ -96,6 +117,7 @@ class NewsDetail extends Component{
         console.log(this.state)
     }
     render(){
+        let {category,categoryList} = this.state;
         //普通新闻的数据
         let {ptImg,ptSingleImg,ptMoreImg,ptSignList,ptSignChecked,ptHotChecked,ptDefaultDetail,ptDetail} = this.state;
         //图片新闻的数据
@@ -114,12 +136,13 @@ class NewsDetail extends Component{
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
                                 // defaultValue = {this.state.selectValue}
-                                defaultValue = '推荐'
                                 onChange={(value)=>{this.selectCategory(value)}}
                             >
-                                <Option value="0">推荐</Option>
-                                <Option value="1">热门</Option>
-                                <Option value="2">体育</Option>
+                                {
+                                    categoryList.map((item,index)=>{
+                                        return <Option key={index} value="0">推荐</Option>
+                                    })
+                                }
                             </Select>
                         </Col>
                     </Row>

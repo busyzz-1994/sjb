@@ -118,6 +118,7 @@ class TypeSave extends Component{
     validate(){
         let {title,tpImg,price,count,signList,fwImgList,editDetail} = this.state;
         let validate = new Validate();
+        console.log(signList)
         validate.add(title,'notEmpty','商品标题不能为空！');
         validate.add(tpImg,'notEmpty','商品缩略图不能为空！');
         validate.add(price,'notFloatMinus','商品价格只能为正数！');
@@ -129,7 +130,8 @@ class TypeSave extends Component{
     }
     //保存save
     save(){
-        let msg = this.validate();
+        // let msg = this.validate();
+        let msg = false;
         if(msg){
             message.error(msg)
         }else{
@@ -137,14 +139,18 @@ class TypeSave extends Component{
             let obj = {
                 typeId:categoryValue,
                 title,
-                thumbnail:_mm.processImgUrl(tpImg),
+                thumbnail: _mm.processImgUrl(tpImg),
                 price,
                 inventory:count,
                 tagIds:signList,
                 positiveImg:_mm.processImgUrl(fwImgList),
                 introduce:editDetail
             }
-            fileApi.addFile()
+            fileApi.addFile(obj).then(res=>{
+                console.log(res)
+            }).catch(err=>{
+                console.log(err)
+            })
         }
     }
     render(){

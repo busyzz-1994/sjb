@@ -4,7 +4,8 @@ import style from '../common/common.scss';
 import NavBar from './common/nav.js';
 import TableList from 'components/global/tableList';
 import IconHandle from 'components/global/icon';
-import {Pagination,Button,Input} from 'antd';
+import {Pagination,Button,Input,message} from 'antd';
+import systemApi from 'api/system';
 const Search = Input.Search
 class Sign extends Component{
     constructor(props){
@@ -13,40 +14,92 @@ class Sign extends Component{
             searchValue : '',
             pageNum : 1,
             total : 5,
-            pageSize : 10,
+            pageSize : 12,
             //mock数据
-            dataList:[
-                {
-                    id:1,
-                    userName:'hhhh',
-                    email:'540548050@qq.com',
-                    name:'qzz',
-                    createTime:'2018-8-20 15:10',
-                },
-                {
-                    id:9,
-                    userName:'xx',
-                    email:'54048050@qq.com',
-                    name:'qzzss',
-                    createTime:'2018-8-20 12:10',
-                }
-            ]
+            dataList:[],
+            //是否处于搜索状态
+            isSearch:false,
+            searchValue:''
         }
+    }
+    componentDidMount(){
+        this.loadList()
+    }
+      //加载数据
+      loadList(){
+        let {pageSize,pageNum,isSearch,searchValue} = this.state;
+        if(isSearch){
+            systemApi.searchUser({
+                currPage:pageNum,
+                pageSize,
+                keyword:searchValue,
+                type:1
+            }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let list = res[0].lists ;
+                this.setState({
+                    dataList:list,
+                    total:totalCount
+                })
+            })
+        }else{
+            systemApi.getUserList({
+                currPage:pageNum,
+                pageSize,
+                isInternal:1
+            }).then(res=>{
+                console.log(res);
+                let totalCount = res[0].totalCount;
+                let list = res[0].lists ;
+                this.setState({
+                    dataList:list,
+                    total:totalCount
+                })
+            })
+        }
+    }
+    //恢复初始密码
+    resetPassword(){
+        systemApi.resetPassword({
+            initialPassword:'123456',
+            isInternal:1
+        }).then(res=>{
+                message.success('重置密码成功！')
+        }).catch(err=>{
+                message.success(err)
+        })
     }
     goAdd(){
         this.props.history.push('/system/auth/outer/detail');
     }
     searchTitle(value){
-        this.setState({
-            searchValue:value
-        })
+        if(!value){
+            this.setState({
+                searchValue:'',
+                pageNum:1,
+                isSearch:false
+            },()=>{
+                this.loadList()
+            })
+        }else{
+            this.setState({
+                searchValue:value,
+                pageNum:1,
+                isSearch:true
+            },()=>{
+                this.loadList()
+            })
+        }
+        
     }
-    clickEidt(id){
-        this.props.history.push(`/system/auth/outer/detail/${id}`);
+    clickEidt(id,name){
+        this.props.history.push(`/system/auth/outer/detail/${id}/?checked=1&name=${name}`);
     }
     changePage(pageNum){
         this.setState({
             pageNum
+        },()=>{
+            this.loadList()
         })
     }
     render(){
@@ -58,11 +111,11 @@ class Sign extends Component{
                     {/* 操作开始 */}
                     <div className={style.handle + ' clearfix'}>
                         <div className='fl'>
-                            <button className="btn btn-danger btn-sm">恢复所有地方用户初始密码</button>
+                            <button onClick={()=>{this.resetPassword()}} className="btn btn-danger btn-sm">恢复所有地方用户初始密码</button>
                         </div>
                         <div className='fr'>
                             <Search
-                                placeholder="输入关键字进行搜索"
+                                placeholder="输入用户名关键字进行搜索"
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
@@ -82,12 +135,12 @@ class Sign extends Component{
                             return (
                                 <tr key={index}>
                                     <td>{index+1}</td>
-                                    <td>{item.userName}</td>
-                                    <td>{item.email}</td>
                                     <td>{item.name}</td>
-                                    <td>{item.createTime}</td>
-                                    <td>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>this.clickEidt(id)} />
+                                    <td>{item.email}</td>
+                                    <td>{item.nickname}</td>
+                                    <td>{item.creatTime}</td>
+                                    <td className='td-handle' >
+                                        <IconHandle type='3' id={item.id} iconClick={(id)=>this.clickEidt(id,item.name)} />
                                     </td>
                                 </tr>
                             )

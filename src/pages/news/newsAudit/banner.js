@@ -28,14 +28,17 @@ class Banner extends Component{
         ]
         this.state={
             //当前的状态
-            selectValue:0,
+            selectValue:'0',
             //当前render的数据
             dataList:[],
+            //是否处于搜索状态
+            isSearch:false,
+            searchValue:'',
             //当前的原数据
             originDataList:[],
             //原数据
             originData:[],
-            pageSize:1,
+            pageSize:3,
             total:10,
             pageNum:1
         }
@@ -45,61 +48,73 @@ class Banner extends Component{
     }
     //加载数据
     loadList(){
-        newsEditApi.getBannerList().then(res=>{
-            this.setState({
-                dataList:res,
-                originData:res,
-                originDataList:res
-            },()=>{
-                this.choiceType();
+        let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
+        if(isSearch){
+            newsEditApi.auditSearch({
+                currPage:pageNum,
+                checkview:selectValue,
+                pageSize,
+                type:0,
+                title:searchValue
+             }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let lists = res[0].lists;
+                this.setState({
+                    dataList:lists,
+                    total:totalCount
+                })
+             })
+        }else{
+            newsEditApi.getBannerList({
+                currPage:pageNum,
+                checkview:selectValue,
+                pageSize,
+                type:0
+            }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let lists = res[0].lists;
+                this.setState({
+                    dataList:lists,
+                    total:totalCount
+                })
             })
-        })
-    }
-    //选择类型
-    choiceType(){
-        let type = this.state.selectValue;
-        let dataList = this.state.originData.filter((item,index)=>{
-            return item.baType == type ;
-        })
-        this.setState({
-            dataList,
-            originDataList:dataList
-        },()=>{
-           this.renderPagination()
-        })
+        }
     }
     //搜索
     searchTitle(value){
         if(!value){
-            this.loadList();
-            return;
-        }
-        newsEditApi.search({title:value,type:this.state.selectValue}).then(res=>{
             this.setState({
-                dataList:res,
-                originDataList:res
+                searchValue:'',
+                pageNum:1,
+                isSearch:false
             },()=>{
-                this.renderPagination()
+                this.loadList()
             })
-        }).catch(err=>{
-            message.error(err);
-        })
+        }else{
+            this.setState({
+                searchValue:value,
+                pageNum:1,
+                isSearch:true
+            },()=>{
+                this.loadList()
+            })
+        }
     }
-    //选择类型
+   //选择类型
     select(value){
         this.setState({
-            selectValue:value
+            selectValue:value,
+            pageNum:1
         },()=>{
-            this.choiceType();
+            this.loadList();
         })
     }
     //点击分页
     changePage(pageNum){
-        let pageSize = this.state.pageSize;
-        let dataList = this.state.originDataList.slice((pageNum*pageSize - 1),((pageNum+1)*pageSize) - 1);
 		this.setState({
-            pageNum,
-            dataList
+            pageNum
+        },()=>{
+            this.loadList();
         })
     }
     //设置分页组件
@@ -111,31 +126,27 @@ class Banner extends Component{
         })
     }
     //点击查看图标
-    clickCheck(id){
-        this.props.history.push(`/news/newsAudit/banner/detail/${id}/?checked=0`)
-    }
-    //点击编辑图标
-    clickEdit(id){
-        console.log(id);
+    clickCheck(id,name){
+        this.props.history.push(`/news/newsAudit/banner/detail/${id}/?name=${name}&checked=4`)
     }
     //点击审核
-    clickEdit(id){
-        this.props.history.push(`/news/newsAudit/banner/detail/${id}/?checked=2`)
+    clickEdit(id,name){
+        this.props.history.push(`/news/newsAudit/banner/detail/${id}/?name=${name}&checked=2`)
     }
     render(){
         //未发布时候的icon列表
-        let handle_1 = (index) => {
+        let handle_1 = (item) => {
             return (
                 <div>
-                    <IconHandle type='0' id={index} iconClick={(id)=>{this.clickEdit(id)}}/>
+                    <IconHandle type='0' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
                 </div>
             )
         }
         //已发布时候的icon列表
-        let handle_2 = (index) =>{
+        let handle_2 = (item) =>{
             return (
                 <div>
-                    <IconHandle type='1' id={index} iconClick={(id)=>{this.clickCheck(id)}}/>
+                    <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
                     {/* <IconHandle type='3' id={index} iconClick={(id)=>{this.clickEdit(id)}}/> */}
                 </div>
             )
@@ -161,7 +172,7 @@ class Banner extends Component{
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
                                 // defaultValue = {this.state.selectValue}
-                                defaultValue = '待审核'
+                                value = {selectValue}
                                 onChange={(value)=>{this.select(value)}}
                             >
                                 <Option value="0">待审核</Option>
@@ -186,13 +197,13 @@ class Banner extends Component{
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>
-                                       <img src={config.server+item.titleImg} width='80%' height='80%'/>
+                                       <img src={config.server+item.titleImg} width='150' height='70'/>
                                    </td>
                                    <td>{item.title}</td>
-                                   <td>{item.type == '0' ? '外链':'内链'}</td>
+                                   <td>{item.baType == '0' ? '外链':'内链'}</td>
                                    <td>{item.createTime}</td>
-                                   <td>
-                                       {handleList(index)}
+                                   <td className='td-handle'>
+                                       {handleList(item)}
                                    </td>
                                </tr>
                            )

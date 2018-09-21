@@ -19,7 +19,7 @@ class AuditForm extends Component{
                         <Col span='4'>审核结果*</Col>
                         <Col offset='1' span='5'>
                             <RadioGroup onChange={(e)=>this.props.getStatus(e.target.value)} value={this.props.status}>
-                                <Radio value={0}>通过</Radio>
+                                <Radio value={2}>通过</Radio>
                                 <Radio value={1}>未通过</Radio>
                             </RadioGroup>
                         </Col>
@@ -39,7 +39,7 @@ class AuditForm extends Component{
     }
 }
 AuditForm.defaultProps = {
-    status:0,
+    status:2,
     detail:''
 }
 export default AuditForm;

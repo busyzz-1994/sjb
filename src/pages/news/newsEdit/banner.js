@@ -40,7 +40,7 @@ class Banner extends Component{
             originDataList:[],
             //原数据
             originData:[],
-            pageSize:1,
+            pageSize:3,
             total:10,
             pageNum:1
         }
@@ -52,7 +52,20 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
         if(isSearch){
-
+            newsEditApi.auditSearch({
+                currPage:pageNum,
+                checkview:selectValue,
+                pageSize,
+                type:0,
+                title:searchValue
+             }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let lists = res[0].lists;
+                this.setState({
+                    dataList:lists,
+                    total:totalCount
+                })
+             })
         }else{
             newsEditApi.getBannerList({
                 currPage:pageNum,
@@ -62,7 +75,6 @@ class Banner extends Component{
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let lists = res[0].lists;
-                console.log(lists)
                 this.setState({
                     dataList:lists,
                     total:totalCount
@@ -70,42 +82,34 @@ class Banner extends Component{
             })
         }
     }
-    //选择类型
-    choiceType(){
-        let type = this.state.selectValue;
-        let dataList = this.state.originData.filter((item,index)=>{
-            return item.baType == type ;
-        })
-        this.setState({
-            dataList,
-            originDataList:dataList
-        },()=>{
-           this.renderPagination()
-        })
-    }
     //搜索
     searchTitle(value){
         if(!value){
-            this.loadList();
-            return;
-        }
-        newsEditApi.search({title:value,type:this.state.selectValue}).then(res=>{
             this.setState({
-                dataList:res,
-                originDataList:res
+                searchValue:'',
+                pageNum:1,
+                isSearch:false
             },()=>{
-                this.renderPagination()
+                this.loadList()
             })
-        }).catch(err=>{
-            message.error(err);
-        })
+        }else{
+            this.setState({
+                searchValue:value,
+                pageNum:1,
+                isSearch:true
+            },()=>{
+                this.loadList()
+            })
+        }
+       
     }
     //选择类型
     select(value){
         this.setState({
-            selectValue:value
+            selectValue:value,
+            pageNum:1
         },()=>{
-            this.choiceType();
+            this.loadList();
         })
     }
     //点击分页
@@ -138,7 +142,6 @@ class Banner extends Component{
     }
     //点击删除图标
     clickDel(id,fkId,resourcesType){
-        console.log(fkId)
         confirm({
             title:'删除的内容无法恢复，确认删除？',
             onOk:()=>{
@@ -199,7 +202,7 @@ class Banner extends Component{
                                        <img src={config.server+item.titleImg} width='150' height='70'/>
                                    </td>
                                    <td>{item.title}</td>
-                                   <td>{item.type == '0' ? '外链':'内链'}</td>
+                                   <td>{item.baType == '0' ? '外链':'内链'}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
                                         <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>

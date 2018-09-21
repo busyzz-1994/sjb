@@ -13,7 +13,7 @@ class Sign extends Component{
         this.state={
             pageNum : 1,
             total : 0,
-            pageSize : 6,
+            pageSize : 12,
             dataList:[]
         }
         //mock数据

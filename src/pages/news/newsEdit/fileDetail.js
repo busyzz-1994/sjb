@@ -9,7 +9,8 @@ import { withRouter } from 'react-router-dom';
 import newsEditApi from 'api/news/banner';
 import commonApi from 'api/common.js';
 import config from 'base/config.json';
-import NewDetailComponent from 'components/news/newsDetail'
+import NewDetailComponent from 'components/news/newsDetail';
+import Bread from 'components/global/bread';
 // import NewsCategorySave from '../components/newsCategorySave';
 class TypeSave extends Component{
     constructor(props){
@@ -28,20 +29,28 @@ class TypeSave extends Component{
                 url:'/news/newsEdit/file'
             }
         ]
+        this.state = {
+            breadList:[
+                {
+                    name:'新闻文件',
+                    path:'/news/newsEdit/file'
+                },
+                {
+                    name:'新增文件',
+                    path:''
+                }
+            ]
+        }
     }
     render(){
+        let {breadList} = this.state;
         return (
             <div className={style.container}>
                 <NavTab navList={this.navList} />
                 <div className={style.content}>
-                    <Breadcrumb>
-                        <Breadcrumb.Item>
-                            <Link to='/news/newsEdit/file'>新闻文件</Link>
-                        </Breadcrumb.Item>
-                        <Breadcrumb.Item>
-                            <span style={{color:'#F7AB2F'}}>新增文件</span>
-                        </Breadcrumb.Item>
-                    </Breadcrumb>
+                <Bread
+                    breadList ={breadList}
+                />
                     <div className='form-container'>
                         <NewDetailComponent/>
                     </div>

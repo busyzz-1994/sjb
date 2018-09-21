@@ -27,9 +27,10 @@ const mm = {
                 },
                 data:obj.data?obj.data:'',
                 success:function(data){
+                    
                     if(data.statusCode == 7700 || data.statusCode == 200){
                         resolve(data.data,data.message)
-                    }else if(data.code ===7701){
+                    }else if(data.statusCode ===7701 || data.statusCode === 407){
                         _this.doLogin();
                     }else{
                         reject(data.message);
@@ -70,9 +71,10 @@ const mm = {
                 },
                 data:obj.data?JSON.stringify(obj.data):'',
                 success:function(data){
+                    console.log(data)
                     if(data.statusCode == 7700 || data.statusCode == 200){
                         resolve(data.data,data.message)
-                    }else if(data.code ===7701){
+                    }else if(data.statusCode ===7701 || data.statusCode == 407 ){
                         _this.doLogin();
                     }else{
                         reject(data.message);
@@ -80,6 +82,7 @@ const mm = {
                 },
                 error:function(err,hx){
                     let responseText = err.responseText;
+                    console.log(err)
                     if(responseText) {
                         responseText = JSON.parse(responseText);
                         reject(responseText.message);

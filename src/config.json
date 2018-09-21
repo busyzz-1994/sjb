@@ -1,5 +1,5 @@
 {
-	"server":"http://120.76.236.64:8080/sjb2",
+	"server":"http://120.76.236.64:8080/sjb",
 	"mock":"https://www.easy-mock.com/mock/5b7cd864231aa5427239b368/sjb",
 	"online":"http://116.62.130.5:80/sjb",
 	"picUrl":"http://120.76.236.64:8080/sjb/admin"

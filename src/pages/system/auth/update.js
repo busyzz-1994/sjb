@@ -4,7 +4,8 @@ import style from '../common/common.scss';
 import NavBar from './common/nav.js';
 import TableList from 'components/global/tableList';
 import IconHandle from 'components/global/icon';
-import {Pagination,Row,Col,Input,Select,Button} from 'antd';
+import {Pagination,Row,Col,Input,Select,Button,message} from 'antd';
+import system from 'api/system';
 const Option = Select.Option;
 class Sign extends Component{
     constructor(props){
@@ -19,9 +20,17 @@ class Sign extends Component{
         })
     }
     save(){
-
+        let {value} = this.state;
+        system.autoUpdate({
+            type:value
+        }).then(res=>{
+            message.success('修改成功！')
+        }).catch(err=>{
+            message.error(err);
+        })
     }
     render(){
+        let {value} = this.state;
         return (
             <div className={style.container}>
                 <NavBar/>
@@ -35,14 +44,14 @@ class Sign extends Component{
                                         showSearch
                                         style={{ width: 200 }}
                                         optionFilterProp="children"
-                                        defaultValue = '无修改周期'
+                                        value = {value}
                                         onChange={(value)=>{this.select(value)}}
                                     >
-                                        <Option value="0">无修改周期</Option>
-                                        <Option value="1">一个月</Option>
-                                        <Option value="2">三个月</Option>
-                                        <Option value="3">六个月</Option>
-                                        <Option value="4">一年</Option>
+                                        <Option value={0}>无修改周期</Option>
+                                        <Option value={1}>一个月</Option>
+                                        <Option value={2}>三个月</Option>
+                                        <Option value={3}>六个月</Option>
+                                        <Option value={4}>一年</Option>
                                     </Select>
                                 </Col>
                             </Row>

@@ -12,6 +12,7 @@ import config from 'base/config.json';
 import UploadImg from 'components/global/uploadImg';
 import OtherNewsModal from 'components/global/otherNewsModal';
 import Validate from 'util/validate';
+import AuditForm from 'components/global/auditForm';
 const Option = Select.Option;
 class BannerDetail extends Component{
     constructor(props){
@@ -32,7 +33,12 @@ class BannerDetail extends Component{
             //关联弹出框是否显示
             modalVisible:false,
             //关联内容id
-            fkId:1
+            fkId:'',
+            //关联素材的类型
+            resourcesType:'',
+            //审核
+            status:2,
+            detail:''
         }
     }
     componentDidMount(){
@@ -42,20 +48,25 @@ class BannerDetail extends Component{
         }
     }
     loadData(){
-        let { id } = this.state;
+        let { id,checked } = this.state;
         newsEditApi.getBannerDetai({id})
         .then(res=>{
-            console.log(res)
-            let {baType,type,reUrl,title,titleImg,fkId} = res[0];
+            let {baType,type,reUrl,title,titleImg,fkId,remark,checkview} = res[0];
+            console.log(checkview)
             this.setState({
                 type:baType,
                 bannerType:type,
                 linkUrl:reUrl,
                 bannerTitle:title,
                 imgUrl:config.server + titleImg,
-                fkId
+                fkId,
+                status:checkview === '0' ? 2 : +checkview,
+                detail:remark
             })
         })
+    }
+    loadAudit(){
+
     }
     select(value){
         this.setState({
@@ -93,7 +104,7 @@ class BannerDetail extends Component{
         let validate = new Validate();
         validate.add(bannerTitle,'notEmpty','banner标题不能为空！')
         validate.add(imgUrl,'notEmpty','轮播图不能为空！')
-        validate.add(bannerDetail,'notEmpty','banner详情不能为空！')
+        // validate.add(bannerDetail,'notEmpty','banner详情不能为空！')
         let msg = validate.start();
         return msg;
     }
@@ -106,22 +117,63 @@ class BannerDetail extends Component{
             let {checked} = this.state;
             if(checked === null){
                 this.addBanner();
+            }else if(checked == '2'){
+                this.auditBanner()
+            }else{
+                this.updateBanner()
             }
        }
     }
     addBanner(){
-        let {id,type,fkId,linkUrl,bannerTitle,imgUrl,bannerType} = this.state;
+        let {id,type,fkId,linkUrl,bannerTitle,imgUrl,bannerType,resourcesType} = this.state;
             newsEditApi.addBanner({
                 baType:type,
                 fkId,
                 reUrl:linkUrl,
                 title:bannerTitle,
-                titleImg:imgUrl,
-                type:bannerType
+                titleImg:_mm.processImgUrl(imgUrl),
+                type:bannerType,
+                resourcesType
+            }).then(res=>{
+                 message.success('添加成功！');
+                 this.props.history.goBack()
+            }).catch(err=>{
+                message.error(err);
             })
     }
+    updateBanner(){
+        let {id,type,fkId,linkUrl,bannerTitle,imgUrl,bannerType,resourcesType} = this.state;
+        newsEditApi.updateBanner({
+            baType:type,
+            fkId,
+            reUrl:linkUrl,
+            title:bannerTitle,
+            titleImg:_mm.processImgUrl(imgUrl),
+            type:bannerType,
+            resourcesType,
+            id
+        }).then(res=>{
+             message.success('修改成功！');
+             this.props.history.goBack()
+        }).catch(err=>{
+            message.error(err);
+        })
+    }
+    auditBanner(){
+        let {id,status,detail} = this.state;
+        newsEditApi.auditBanner({
+            checkview:status,
+            remark:detail,
+            id
+        }).then(res=>{
+            message.success('审核成功！')
+            this.props.history.goBack()
+        }).catch(err=>{
+            message.error(err)
+        })
+    }
     render(){
-        let {type,bannerType,isAdd} = this.state;
+        let {type,bannerType,isAdd,status,detail,checked} = this.state;
         return (
             <div className='form-container'>
                     <OtherNewsModal visible={this.state.modalVisible} 
@@ -157,28 +209,6 @@ class BannerDetail extends Component{
                     </div>
                     : null
                 }
-                {/* <div className='form-item'>
-                    <Row>
-                        <Col span='4'>banner类别*</Col>
-                        <Col offset='1' span='6'>
-                            <Select
-                                showSearch
-                                style={{ width: 200 }}
-                                onChange={(value)=>{this.selectBannerType(value)}}
-                                defaultValue = {bannerType}
-                                disabled = {true}
-                            >
-                                <Option value="0">新闻</Option>
-                                <Option value="1">商家</Option>
-                                <Option value="2">商品</Option>
-                                <Option value="3">直播</Option>
-                                <Option value="4">视频</Option>
-                                <Option value="5">音乐</Option>
-                                <Option value="6">广告</Option>
-                            </Select>
-                        </Col>
-                    </Row>
-                </div> */}
                 <div className='form-item'>
                     <Row>
                         <Col span='4'>banner标题*</Col>
@@ -196,19 +226,33 @@ class BannerDetail extends Component{
                         </Col>
                     </Row>
                 </div>
-                <div className='form-item'>
-                    <Row>
-                        <Col span='4'>banner详情*</Col>
-                        <Col offset='1' span='8'>
-                            <Input disabled={type == 0 ? false : true}  value={this.state.bannerDetail} name='bannerDetail' onChange={(e)=>{this.onInput(e)}} placeholder ='请选择banner关联的新闻' />
-                        </Col>
-                        <Col offset='1' span='4'>
-                            <Button disabled={type == 0 ? true : false} type='primary' onClick={()=>{this.newsListOther()}}  icon='plus'>关联相关新闻</Button>
-                        </Col>
-                    </Row>
-                </div>
                 {
-                    this.state.checked == 0 ? 
+                    type == 0 ? null :(
+                        <div className='form-item'>
+                            <Row>
+                                <Col span='4'>banner详情*</Col>
+                                <Col offset='1' span='8'>
+                                    <Input disabled={type == 0 ? false : true}  value={this.state.bannerDetail} name='bannerDetail' onChange={(e)=>{this.onInput(e)}} placeholder ='请选择banner关联的新闻' />
+                                </Col>
+                                <Col offset='1' span='4'>
+                                    <Button disabled={type == 0 ? true : false} type='primary' onClick={()=>{this.newsListOther()}}  icon='plus'>关联相关新闻</Button>
+                                </Col>
+                            </Row>
+                        </div>
+                    )
+                }
+                {
+                    (checked == '2' || checked =='4') ? (
+                        <AuditForm 
+                            status = {status}
+                            getStatus = {(status)=> this.setState({status})}
+                            detail = {detail}
+                            getDetail = {(detail) => this.setState({detail})}
+                        />
+                    ) : null
+                }
+                {
+                    (this.state.checked == 0 || this.state.checked ==4 )? 
                     null
                     : 
                     <div className='form-item btn-item'>

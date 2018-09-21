@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import { withRouter } from 'react-router-dom'; 
-import style from '../common/common.scss';
+import style from 'common/layout.scss';
 import NavBar from './common/nav.js';
 import TableList from 'components/global/tableList';
 import IconHandle from 'components/global/icon';

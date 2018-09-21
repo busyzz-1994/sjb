@@ -31,6 +31,8 @@ import DiscountsRouter from 'pages/discounts/router.js';
 import SearchRouter from 'pages/search/router.js';
 //广告管理 
 import AdvertisingRouter from 'pages/advertising/router.js';
+//用户管理
+import UserRouter from 'pages/user/router.js';
 class App extends Component{
 	render(){
 		let layoutRouter = (
@@ -44,6 +46,7 @@ class App extends Component{
 					<Route path='/discounts' component = {DiscountsRouter} />
 					<Route path='/search' component = {SearchRouter} />
 					<Route path='/advertising' component = {AdvertisingRouter} />
+					<Route path='/user' component = {UserRouter} />
 					{/* <Redirect exact from='/news' to='/news/newsEdit' /> */}
 				</Switch>
 			</Layout>

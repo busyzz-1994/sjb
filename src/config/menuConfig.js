@@ -155,6 +155,11 @@ const menuConfig = [
                 title:'标签管理'
             }
         ]
+    },
+    {
+        title:'用户管理',
+        key:'/user/userInfo',
+        icon:'user'
     }
 ]
 

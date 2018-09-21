@@ -33,7 +33,7 @@ const Api = {
     //获取标签列表
     getSignList(data){
         return _mm.POST({
-            url:'/tags/getTagsList',
+            url:'/admin/tags/getTagsList',
             data:{
                 ...data,
                 token:getToken()

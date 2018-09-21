@@ -2,13 +2,14 @@ import React,{Component} from 'react';
 import NavTab from 'components/global/navTab';
 import TableList from 'components/global/tableList';
 import style from '../common/banner.scss';
-import { Select , Input , Button ,message,Pagination} from 'antd';
+import { Select , Input , Button ,message,Pagination,Modal} from 'antd';
 import { withRouter } from 'react-router-dom'; 
-import newsEditApi from 'api/news/banner';
+import fileApi from 'api/news/file';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
 const Option = Select.Option;
 const Search = Input.Search;
+const confirm = Modal.confirm;
 class Banner extends Component{
     constructor(props){
         super(props)
@@ -28,14 +29,17 @@ class Banner extends Component{
         ]
         this.state={
             //当前的状态
-            selectValue:0,
+            selectValue:'0',
             //当前render的数据
             dataList:[],
+            //是否处于搜索状态
+            isSearch:false,
+            searchValue:'',
             //当前的原数据
             originDataList:[],
             //原数据
             originData:[],
-            pageSize:1,
+            pageSize:4,
             total:10,
             pageNum:1
         }
@@ -45,27 +49,31 @@ class Banner extends Component{
     }
     //加载数据
     loadList(){
-        newsEditApi.getBannerList().then(res=>{
-            this.setState({
-                dataList:res,
-                originData:res,
-                originDataList:res
-            },()=>{
-                this.choiceType();
+        let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
+        if(isSearch){
+
+        }else{
+            fileApi.getFileList({
+                currPage:pageNum,
+                checkview:selectValue,
+                pageSize
+            }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let lists = res[0].lists;
+                this.setState({
+                    dataList:lists,
+                    total:totalCount
+                })
             })
-        })
+        }
     }
-    //选择类型
-    choiceType(){
-        let type = this.state.selectValue;
-        let dataList = this.state.originData.filter((item,index)=>{
-            return item.baType == type ;
-        })
-        this.setState({
-            dataList,
-            originDataList:dataList
+    //点击分页
+    changePage(pageNum){
+        console.log(pageNum)
+		this.setState({
+            pageNum
         },()=>{
-           this.renderPagination()
+            this.loadList();
         })
     }
     //搜索
@@ -90,16 +98,7 @@ class Banner extends Component{
         this.setState({
             selectValue:value
         },()=>{
-            this.choiceType();
-        })
-    }
-    //点击分页
-    changePage(pageNum){
-        let pageSize = this.state.pageSize;
-        let dataList = this.state.originDataList.slice((pageNum*pageSize - 1),((pageNum+1)*pageSize) - 1);
-		this.setState({
-            pageNum,
-            dataList
+            this.loadList();
         })
     }
     //设置分页组件
@@ -124,9 +123,21 @@ class Banner extends Component{
     }
     //点击删除图标
     clickDel(id){
-        console.log(id);
+        confirm({
+            title:'删除的内容无法恢复，确认删除？',
+            onOk:()=>{
+                fileApi.delFile({id}).then(res=>{
+                    this.loadList();
+                }).catch(res=>{
+                    message.error(res);
+                })
+            },
+            okText:'确认',
+            cancelText:'取消'
+        })
     }
     render(){
+        let {selectValue} = this.state;
         return (
             <div className={style.container}>
                 <NavTab navList={this.navList} />
@@ -139,7 +150,7 @@ class Banner extends Component{
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
                                 // defaultValue = {this.state.selectValue}
-                                defaultValue = '待审核'
+                                value = {selectValue}
                                 onChange={(value)=>{this.select(value)}}
                             >
                                 <Option value="0">待审核</Option>
@@ -168,16 +179,13 @@ class Banner extends Component{
                            return (
                                <tr key={index}>
                                    <td>{index + 1}</td>
-                                   <td>
-                                       <img src={config.server+item.titleImg} width='80%' height='80%'/>
-                                   </td>
                                    <td>{item.title}</td>
-                                   <td>{item.type == '0' ? '外链':'内链'}</td>
+                                   <td>{item.newsCategory}</td>
                                    <td>{item.createTime}</td>
                                    <td>
-                                        <IconHandle type='1' id='1' iconClick={(id)=>{this.clickCheck(id)}}/>
-                                        <IconHandle type='3' id='2' iconClick={(id)=>{this.clickEdit(id)}}/>
-                                        <IconHandle type='2' id='3' iconClick={(id)=>{this.clickDel(id)}}/>
+                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id)}}/>
+                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id)}}/>
+                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id)}}/>
                                    </td>
                                </tr>
                            )

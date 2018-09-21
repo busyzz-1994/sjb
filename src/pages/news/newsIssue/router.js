@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import { Switch , Route } from 'react-router-dom';
 import Banner from './banner.js';
+import BannerDetail from './bannerDetail'
 import FileList from './fileList.js';
 // import BannerAdd from './bannerAdd.js';
 class newsRouter extends Component{
@@ -12,7 +13,9 @@ class newsRouter extends Component{
             <div>
                 <Switch>
                     <Route exact path='/news/newsIssue/banner' component={Banner}/>
+                    <Route path='/news/newsIssue/banner/detail/:id' component={BannerDetail}/>
                     <Route exact path='/news/newsIssue/file' component={FileList}/>
+                    
                     {/* <Route path='/news/newsEdit/banner/add' component={BannerAdd}/> */}
                 </Switch>
             </div>

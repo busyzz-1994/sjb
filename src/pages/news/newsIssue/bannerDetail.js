@@ -10,22 +10,22 @@ class BannerAdd extends Component{
         this.navList = [
             {
                 name:'banner管理',
-                url:'/news/newsEdit/banner'
+                url:'/news/newsIssue/banner'
             },
             {
                 name:'新闻类型',
-                url:'/news/newsEdit/type'
+                url:'/news/newsIssue/type'
             },
             {
                 name:'新闻文件',
-                url:'/news/newsEdit/file'
+                url:'/news/newsIssue/file'
             }
         ]
         this.state = {
             breadList:[
                 {
                     name:'banner管理',
-                    path:'/news/newsEdit/banner'
+                    path:'/news/newsIssue/banner'
                 },
                 {
                     name:'新增banner',
@@ -48,6 +48,7 @@ class BannerAdd extends Component{
                     <Bread breadList={breadList}
                         check = {name}
                         edit = {name}
+                        audit ={name}
                     />
                     <BannerDetail/>
                 </div>
