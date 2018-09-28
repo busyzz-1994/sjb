@@ -47,6 +47,7 @@ class WangEditor extends Component{
         editor.customConfig.uploadImgServer = config.server + '/admin/common/img';
         editor.customConfig.uploadImgHooks = {
             before: function (xhr, editor, files) {
+                xhr.setRequestHeader("x-auth-token", _mm.getToken());
                 // 图片上传之前触发
                 // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，files 是选择的图片文件
                 
@@ -106,7 +107,11 @@ class WangEditor extends Component{
         editor.txt.html(this.props.defaultDetail);
     }
     componentWillReceiveProps(nextProps){
-        // this.editor.txt.html(nextProps.editorHtml);
+        if(nextProps.defaultDetail === this.props.defaultDetail){
+            return false
+        }else{
+            this.editor.txt.html(nextProps.defaultDetail);
+        }
     }
     render(){
         return (

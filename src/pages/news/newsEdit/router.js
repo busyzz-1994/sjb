@@ -31,7 +31,7 @@ class newsRouter extends Component{
                     <Route path='/news/newsEdit/type/SpecialNewsList' component={SpecialNewsList}/>
                     <Route path='/news/newsEdit/type/SpecialDetail' component={SpecialDetail}/>
                     <Route exact path='/news/newsEdit/file' component={FileList} />
-                    <Route  path='/news/newsEdit/file/fileDetail' component={FileDetail} />
+                    <Route  path='/news/newsEdit/file/fileDetail/:id?' component={FileDetail} />
                 </Switch>
             </div>
         )

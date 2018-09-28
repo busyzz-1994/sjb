@@ -106,7 +106,7 @@ class Banner extends Component{
     //跳转到添加页面
     goAddBanner(){
         let { selectValue } = this.state;
-        this.props.history.push(`/discounts/discountsEdit/type/typeDetail/?type=2`);
+        this.props.history.push(`/discounts/discountsIssue/type/typeDetail/?type=2`);
     }
     //点击查看图标
     clickCheck(id){
@@ -115,7 +115,7 @@ class Banner extends Component{
     //点击编辑图标
     clickEdit(id,name,type){
         this.props.history.push({
-            pathname:`/discounts/discountsEdit/type/typeDetail/${id}/?checked=1&name=${name}&type=${type}`
+            pathname:`/discounts/discountsIssue/type/typeDetail/${id}/?checked=1&name=${name}&type=${type}`
         })
     }
     //点击删除图标
@@ -184,7 +184,7 @@ class Banner extends Component{
                                         <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id)}}/>
                                    </td>
                                    <td>
-                                        <Link className='gl-link' to={`/discounts/discountsEdit/type/typeList/${item.id}/?name=${item.name}`} >
+                                        <Link className='gl-link' to={`/discounts/discountsIssue/type/typeList/${item.id}/?name=${item.name}`} >
                                         <Icon type="link" />
                                         关联商品文件
                                         </Link>

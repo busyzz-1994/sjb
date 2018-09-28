@@ -25,6 +25,7 @@ class TypeSave extends Component{
         super(props)
         this.state = {
             checked:_mm.getParam('checked'),
+            id:this.props.match.params.id,
             category:[],
             categoryValue:'',
             title:'',
@@ -35,14 +36,13 @@ class TypeSave extends Component{
             //商品库存
             count:'',
             //服务主图
-            fwImgList:['','','','','','',''],
+            fwImgList:[''],
             //新闻内容detail
             detail:'',
             //选中的signList:
-            signList:['推荐'],
+            signList:[],
             signChecked:false,
-            defaultDetail:'',
-            authStatus:0,
+            authStatus:2,
             authString:'',
             //富文本
             editDetail:'',
@@ -56,6 +56,7 @@ class TypeSave extends Component{
     }
     componentDidMount(){
         this.loadTypeList()
+        
     }
     onInput(e){
         let name = e.target.name,
@@ -73,13 +74,42 @@ class TypeSave extends Component{
             },()=>{
                 this.setState({
                     categoryValue:list[0]?list[0].id:''
+                },()=>{
+                    let {id} = this.state;
+                    if(id){
+                        this.getDetail();
+                    }
                 })
             })
         })
     }
+    //获取商品详情
+    getDetail(){
+        let {id} = this.state;
+        console.log(id)
+        fileApi.getFileDetail({id}).then(res=>{
+            var res = res[0];
+            let {typeId,title,thumbnail,listPositive,price,inventory,listag,introduce,reveal} = res;
+            this.setState({
+                categoryValue:typeId,
+                title,
+                tpImg:thumbnail,
+                fwImgList:listPositive,
+                price,
+                count:inventory,
+                signList:listag,
+                defaultDetail:introduce,
+                editDetail:introduce,
+                signChecked:reveal == 1 
+            })
+            
+        }).catch(err=>{
+            message.error('获取商品详情失败！')
+        })
+    }
     //获取缩略图
     getUrl(data,index){
-        let url =config.server + data[0].attachFilenames;
+        let url =data[0].attachFilenames;
         this.setState({
             tpImg:url
         })
@@ -118,7 +148,6 @@ class TypeSave extends Component{
     validate(){
         let {title,tpImg,price,count,signList,fwImgList,editDetail} = this.state;
         let validate = new Validate();
-        console.log(signList)
         validate.add(title,'notEmpty','商品标题不能为空！');
         validate.add(tpImg,'notEmpty','商品缩略图不能为空！');
         validate.add(price,'notFloatMinus','商品价格只能为正数！');
@@ -130,28 +159,67 @@ class TypeSave extends Component{
     }
     //保存save
     save(){
-        // let msg = this.validate();
-        let msg = false;
+        let msg = this.validate();
+        // let msg = false;
         if(msg){
             message.error(msg)
         }else{
-            let {categoryValue,title,tpImg,price,count,signList,fwImgList,editDetail} = this.state;
-            let obj = {
-                typeId:categoryValue,
-                title,
-                thumbnail: _mm.processImgUrl(tpImg),
-                price,
-                inventory:count,
-                tagIds:signList,
-                positiveImg:_mm.processImgUrl(fwImgList),
-                introduce:editDetail
+            let {checked} = this.state;
+            if(checked === null){
+                this.addFile();
+            }else if(checked == '2'){
+                this.auditFile()
+            }else{
+                this.updateFile()
             }
-            fileApi.addFile(obj).then(res=>{
-                console.log(res)
-            }).catch(err=>{
-                console.log(err)
-            })
         }
+    }
+    getFileDetail(){
+        let {categoryValue,title,tpImg,price,count,signList,
+            fwImgList,editDetail,signChecked} = this.state;
+        let obj = {
+            typeId:categoryValue,
+            title,
+            thumbnail: _mm.processImgUrl(tpImg),
+            price,
+            inventory:count,
+            tagIds:signList,
+            positiveImg:_mm.processImgUrl(fwImgList),
+            introduce:editDetail,
+            reveal:signChecked?1:0
+        }
+        return obj;
+    }
+    addFile(){
+        let obj = this.getFileDetail();
+        fileApi.addFile(obj).then(res=>{
+            message.success('添加商品成功！');
+            this.props.history.goBack();
+        }).catch(err=>{
+            message.error(err)
+        })
+    }
+    updateFile(){
+        var obj = this.getFileDetail();
+        let {id} = this.state;
+        obj = {...obj,id};
+        fileApi.updataFile(obj).then(res=>{
+            message.success('修改商品成功！');
+            this.props.history.goBack();
+        }).catch(err=>{
+            message.error(err)
+        })
+    }
+    auditFile(){
+        let {id,authStatus,authString} = this.state;
+        fileApi.auditFile({
+            id,checkview:authStatus,remark:authString
+        }).then(res=>{
+            message.success('审核完成！');
+            this.props.history.goBack();
+        }).catch(err=>{
+            message.error(err)
+        })
     }
     render(){
         let {category,tpImg,signList,signChecked,fwImgList,defaultDetail
@@ -194,7 +262,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>商品缩略图*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload imgWidth={160} imgUrl={tpImg}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                            <ImgUpload imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
                     </Row>
                 </div>
@@ -266,15 +334,18 @@ class TypeSave extends Component{
                     />:
                     null
                 }
-                <div className='form-item btn-item'>
-                    <Row>
-                        <Col offset='5' span='10'>
-                            <Button onClick={()=>{this.save()}} type='primary' size='large'>保存</Button>
-                            <Button onClick={()=>{this.props.history.goBack()}} size='large'>取消</Button>
-                        </Col>
-                    </Row>
-                </div>
-                
+                {
+                    (this.state.checked == 0 || this.state.checked ==4 )? 
+                    null:
+                    <div className='form-item btn-item'>
+                        <Row>
+                            <Col offset='5' span='10'>
+                                <Button onClick={()=>{this.save()}} type='primary' size='large'>保存</Button>
+                                <Button onClick={()=>{this.props.history.goBack()}} size='large'>取消</Button>
+                            </Col>
+                        </Row>
+                    </div>
+                }
             </div>
         )
     }

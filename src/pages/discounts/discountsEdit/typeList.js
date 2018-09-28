@@ -51,12 +51,11 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue,categoryId} = this.state;
         if(isSearch){
-            typeApi.searchType({
+            typeApi.searchFile({
                 currPage:pageNum,
                 pageSize,
-                type:'2',
-                name:searchValue,
-                id:categoryId
+                typename:_mm.getParam('name'),
+                title:searchValue
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -129,8 +128,8 @@ class Banner extends Component{
         this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${title}`)
     }
     //点击编辑图标
-    clickEdit(id,name,type){
-        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=1&name=${title}`)
+    clickEdit(item){
+        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${item.id}/?checked=1&name=${item.title}`)
     }
     //点击置顶图标
     clickTop(id){
@@ -169,8 +168,8 @@ class Banner extends Component{
                                 style={{ width: 350 }}
                             />
                             <div style={{display:'inline-block',marginLeft:'10px'}}>
-                                <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
-                                    新增商品
+                                <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="link" >
+                                    关联商品
                                 </Button>
                             </div>
                         </div>
@@ -189,7 +188,7 @@ class Banner extends Component{
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
                                         <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id)}}/>
+                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
                                         <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item.name,item.type)}}/>
                                    </td>
                                </tr>

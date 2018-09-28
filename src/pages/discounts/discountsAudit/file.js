@@ -25,7 +25,7 @@ class Banner extends Component{
             isSearch:false,
             searchValue:'',
             originData:[],
-            pageSize:2,
+            pageSize:12,
             total:10,
             pageNum:1
         }
@@ -37,10 +37,11 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
         if(isSearch){
-            typeApi.searchType({
+            fileApi.searchFileAudit({
                 currPage:pageNum,
                 pageSize,
-                name:searchValue
+                title:searchValue,
+                checkview:selectValue
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -50,7 +51,6 @@ class Banner extends Component{
                 })
             })
         }else{
-            console.log(selectValue)
             fileApi.getFileList({
                 currPage:pageNum,
                 pageSize,
@@ -103,21 +103,12 @@ class Banner extends Component{
             this.loadList();
         })
     }
-    //跳转到添加页面
-    goAddBanner(){
-        this.props.history.push(`/discounts/discountsEdit/file/fileDetail`);
-    }
+   
     //点击查看图标
     clickCheck(id,title){
-        console.log(id)
         this.props.history.push(`/discounts/discountsAudit/file/fileDetail/${id}/?checked=0&name=${title}`);
     }
-    //点击编辑图标
-    clickEdit(id,name,type){
-        this.props.history.push({
-            pathname:`/discounts/discountsEdit/type/typeDetail/${id}/?checked=1&name=${name}&type=${type}`
-        })
-    }
+    
     //点击去审核
     clickAudit(id,title){
         this.props.history.push(`/discounts/discountsAudit/file/fileDetail/${id}/?checked=2&name=${title}`);
@@ -188,11 +179,6 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
-                            {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
-                                <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
-                                    新增文件
-                                </Button>
-                            </div> */}
                         </div>
                     </div>
                     {/* 操作栏结束 */}
@@ -205,7 +191,7 @@ class Banner extends Component{
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>{item.title}</td>
-                                   <td>{item.typeName}</td>
+                                   <td>{item.typename}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
                                        {handleList(item.id,item.title)}

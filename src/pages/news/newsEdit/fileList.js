@@ -51,7 +51,19 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
         if(isSearch){
-
+            fileApi.searchAudit({
+                currPage:pageNum,
+                checkview:selectValue,
+                pageSize,
+                title:searchValue
+            }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let lists = res[0].lists;
+                this.setState({
+                    dataList:lists,
+                    total:totalCount
+                })
+            })
         }else{
             fileApi.getFileList({
                 currPage:pageNum,
@@ -69,7 +81,6 @@ class Banner extends Component{
     }
     //点击分页
     changePage(pageNum){
-        console.log(pageNum)
 		this.setState({
             pageNum
         },()=>{
@@ -79,19 +90,22 @@ class Banner extends Component{
     //搜索
     searchTitle(value){
         if(!value){
-            this.loadList();
-            return;
-        }
-        newsEditApi.search({title:value,type:this.state.selectValue}).then(res=>{
             this.setState({
-                dataList:res,
-                originDataList:res
+                searchValue:'',
+                pageNum:1,
+                isSearch:false
             },()=>{
-                this.renderPagination()
+                this.loadList()
             })
-        }).catch(err=>{
-            message.error(err);
-        })
+        }else{
+            this.setState({
+                searchValue:value,
+                pageNum:1,
+                isSearch:true
+            },()=>{
+                this.loadList()
+            })
+        }
     }
     //选择类型
     select(value){
@@ -114,12 +128,12 @@ class Banner extends Component{
         this.props.history.push('/news/newsEdit/file/fileDetail');
     }
     //点击查看图标
-    clickCheck(id){
-        console.log(id);
+    clickCheck(item){
+        this.props.history.push(`/news/newsEdit/file/fileDetail/${item.id}/?name=${item.title}&checked=0`);
     }
     //点击编辑图标
-    clickEdit(id){
-        console.log(id);
+    clickEdit(item){
+        this.props.history.push(`/news/newsEdit/file/fileDetail/${item.id}/?name=${item.title}&checked=1`);
     }
     //点击删除图标
     clickDel(id){
@@ -182,9 +196,9 @@ class Banner extends Component{
                                    <td>{item.title}</td>
                                    <td>{item.newsCategory}</td>
                                    <td>{item.createTime}</td>
-                                   <td>
-                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id)}}/>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id)}}/>
+                                   <td className='td-handle'>
+                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
+                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
                                         <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id)}}/>
                                    </td>
                                </tr>

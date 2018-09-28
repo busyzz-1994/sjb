@@ -3,7 +3,7 @@ import {Col,Row,Input,Select,Checkbox,Radio,Button,Icon} from 'antd';
 import defaultImg from 'images/newsas.png';
 import ImgUpload from 'components/global/uploadImg';
 import config from 'base/config.json';
-import SignList from 'components/global/signList';
+import SignList from 'components/global/signList/indexNew.js';
 // import Editor from 'components/global/editor';
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -75,10 +75,16 @@ class Picture extends Component{
                         </Col>
                     </Row>
                 </div>
-                <SignList signList={tpSignList} checked={tpSignChecked} 
+                <SignList
+                    signList = {tpSignList}
+                    checked = {tpSignChecked}
+                    getList = {(list)=>this.getSignList(list)}
+                    getStatus = {(val)=>this.getSignStatus(val)}
+                />
+                {/* <SignList signList={tpSignList} checked={tpSignChecked} 
                     getList = {(arr)=>this.getSignList(arr)}
                     getStatus = {(status) => this.getSignStatus(status)}
-                />
+                /> */}
                <div className='form-item'>
                     <Row>
                         <Col span='4'>图片及描述*</Col>

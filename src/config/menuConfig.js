@@ -98,7 +98,7 @@ const menuConfig = [
                 title:'商品发布'
             },
             {
-                key:'/discounts/discountsIssue/order',
+                key:'/discounts/order',
                 title:'订单管理'
             }
         ]

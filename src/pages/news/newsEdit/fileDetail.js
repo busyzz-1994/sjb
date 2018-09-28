@@ -39,17 +39,21 @@ class TypeSave extends Component{
                     name:'新增文件',
                     path:''
                 }
-            ]
+            ],
+            name : _mm.getParam('name')
         }
     }
     render(){
-        let {breadList} = this.state;
+        let {breadList,name} = this.state;
         return (
             <div className={style.container}>
                 <NavTab navList={this.navList} />
                 <div className={style.content}>
                 <Bread
                     breadList ={breadList}
+                    check = {name}
+                    audit = {name}
+                    edit = {name}
                 />
                     <div className='form-container'>
                         <NewDetailComponent/>

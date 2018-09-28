@@ -3,7 +3,7 @@ import {Col,Row,Input,Select,Checkbox,Radio,Button} from 'antd';
 import defaultImg from 'images/newsas.png';
 import ImgUpload from 'components/global/uploadImg';
 import config from 'base/config.json';
-import SignList from 'components/global/signList';
+import SignList from 'components/global/signList/indexNew.js';
 import Editor from 'components/global/editor';
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
@@ -96,10 +96,16 @@ class General extends Component{
                         </Col>
                     </Row>
                 </div>
-                <SignList signList={signList} checked={signChecked} 
+                <SignList
+                    signList = {signList}
+                    checked = {signChecked}
+                    getList = {(list)=>this.getSignList(list)}
+                    getStatus = {(val)=>this.getSignStatus(val)}
+                />
+                {/* <SignList signList={signList} checked={signChecked} 
                     getList = {(arr)=>this.getSignList(arr)}
                     getStatus = {(status) => this.getSignStatus(status)}
-                />
+                /> */}
                 <div className='form-item'>
                     <Row>
                         <Col span='4'>热门推荐*</Col>

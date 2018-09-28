@@ -1,20 +1,24 @@
 import React,{Component} from 'react';
-import {Col,Row,Input,Select,Checkbox,Button} from 'antd';
+import {withRouter} from 'react-router-dom';
+import {Col,Row,Input,Select,Checkbox,Button,message} from 'antd';
 import General from './general.js';
 import Picture from './picture';
 import Text from './text';
 import AuditForm from 'components/global/auditForm'
 import fileApi from 'api/news/file.js';
+import _mm from 'util/mm.js';
 const Option = Select.Option;
 class NewsDetail extends Component{
     constructor(props){
         super(props)
         this.state = {
+            id:this.props.match.params.id,
+            checked:_mm.getParam('checked'),
             //新闻类别
             category:'',
             categoryList:[],
             //新闻类型
-            type:0,
+            type:'0',
             //新闻标题
             newsTitle:'',
             //新闻来源
@@ -33,25 +37,25 @@ class NewsDetail extends Component{
             //多个缩率图
             ptMoreImg:['','',''],
             //标签列表
-            ptSignList:[''],
+            ptSignList:[],
             //标签是否选中
             ptSignChecked:false,
             //热门是否可选
             ptHotChecked:false,
             //默认的detail
-            ptDefaultDetail:'<p>6666666</p>',
+            ptDefaultDetail:'',
             //获取到的detail
             ptDetail:'',
             /*图片新闻的数据*/
             tpImg:'',
-            tpSignList:[''],
+            tpSignList:[],
             tpImgList:[{imgUrl:'',desc:''},{imgUrl:'',desc:''}],
             tpSignChecked:false,
             /*文本新闻的数据*/
-            wbSignList:[''],
+            wbSignList:[],
             wbSignChecked:false,
             wbHotChecked:false,
-            wbDefaultDetail:'<p>6666666</p>',
+            wbDefaultDetail:'',
             wbDetail:''
         }
     }
@@ -60,16 +64,19 @@ class NewsDetail extends Component{
     }
     //添加类型选项
     loadTypeList(){
-        fileApi.getTypeList({currPage:1,pageSize:9999,type:0}).then(res=>{
-            console.log(res);
-            console.log('类型')
-            return ;
+        fileApi.getTypeList({currPage:1,pageSize:9999,type:'2'}).then(res=>{
             let list = res[0].lists;
             this.setState({
                 categoryList:list
             },()=>{
                 this.setState({
                     category:list[0]?list[0].id:''
+                },()=>{
+                    let {id} = this.state;
+                    console.log(id)
+                    if(id){
+                        this.getDetail();
+                    }
                 })
             })
         })
@@ -114,10 +121,131 @@ class NewsDetail extends Component{
     }
     //点击保存
     save(){
-        console.log(this.state)
+       let {checked} = this.state;
+       if(checked ===null){
+           this.addFile()
+       }else if(checked == '2'){
+           this.auditFile()
+       }else{
+           this.updateFile()
+       }
+    }
+    //添加新闻
+    addFile(){
+        let obj = this.getFormData();
+        console.log(obj);
+        fileApi.addFile(obj).then(res=>{
+            message.success('添加成功！');
+            this.props.history.goBack()
+        }).catch(err=>{
+            message.error(err);
+        })
+    }
+    //修改文件
+    updateFile(){
+        let obj = this.getFormData();
+        let {id} = this.state; 
+        obj = {...obj,id}
+        console.log(obj);
+        fileApi.updateFile(obj).then(res=>{
+            message.success('修改成功！');
+            this.props.history.goBack()
+        }).catch(err=>{
+            message.error(err);
+        })
+    }
+    //审核文件
+    auditFile(){
+
+    }
+    getDetail(){
+        let {id} = this.state;
+        fileApi.getNewsDetail({id}).then(res=>{
+            let result = res[0];
+            let {newsType,categoryId,title,sourceAdress,sourceAdressState} = result;
+            this.setState({
+                category:categoryId,
+                type:newsType,
+                newsTitle:title,
+                newsOrigin:sourceAdress,
+                originChecked:!!sourceAdressState
+            })
+            switch(newsType){
+                case '0':
+                    
+                break;
+                case '1':
+                   
+                break;
+                default:
+                break;
+            }
+        })
+    }
+    //getFormData
+    getFormData(){
+        let {type,category,newsTitle,newsOrigin,originChecked} = this.state;
+        //普通新闻
+        let {ptImg,ptSingleImg,ptMoreImg,ptSignList,ptSignChecked,ptHotChecked,ptDetail} = this.state;
+        //图片新闻
+        let {tpImg,tpSignList,tpImgList,tpSignChecked} = this.state;
+        //文本新闻
+        let {wbSignList,wbSignChecked,wbHotChecked,wbDetail} = this.state;
+        let obj = {
+            title:newsTitle,
+            newsType:type,
+            categoryId:category,
+            sourceAdress:{
+                sourceAdressName:newsOrigin,
+                sourceAdressisShow:originChecked?'1':'0'
+            }
+        }
+        switch(type){
+            case "0":
+                obj = {...obj,
+                    thumbnail:ptImg == 1 ? _mm.processImgUrl(ptSingleImg) :_mm.processImgUrl(ptMoreImg),
+                    tags:{
+                        list:ptSignList,
+                        tagsisShow:ptSignChecked?'1':'0'
+                    },
+                    isHot:ptHotChecked?'1':'0',
+                    content:ptDetail
+                }
+            break;
+            case "1":
+                let images = tpImgList.map((item)=>{
+                    let obj = {}
+                    obj.imagesUrl = _mm.processImgUrl(item.imgUrl) ;
+                    obj.imagesDesc = item.desc;
+                    return obj;
+                })
+                obj = {...obj,
+                    thumbnail:[_mm.processImgUrl(tpImg)],
+                    tags:{
+                        list:tpSignList,
+                        tagsisShow:tpSignChecked?'1':'0'
+                    },
+                    images
+                }
+            break;
+            case '2':
+                obj = {...obj,
+                    tags:{
+                        list:wbSignList,
+                        tagsisShow:wbSignChecked?'1':'0'
+                    },
+                    isHot:wbHotChecked?'1':'0',
+                    content:wbDetail
+                }
+            break;
+            default:
+            break;
+        }
+        return obj;
+
     }
     render(){
-        let {category,categoryList} = this.state;
+        let {category,categoryList,type} = this.state;
         //普通新闻的数据
         let {ptImg,ptSingleImg,ptMoreImg,ptSignList,ptSignChecked,ptHotChecked,ptDefaultDetail,ptDetail} = this.state;
         //图片新闻的数据
@@ -136,11 +264,12 @@ class NewsDetail extends Component{
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
                                 // defaultValue = {this.state.selectValue}
+                                value = {category}
                                 onChange={(value)=>{this.selectCategory(value)}}
                             >
                                 {
                                     categoryList.map((item,index)=>{
-                                        return <Option key={index} value="0">推荐</Option>
+                                        return <Option key={index} value={item.id}>{item.name}</Option>
                                     })
                                 }
                             </Select>
@@ -156,7 +285,8 @@ class NewsDetail extends Component{
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
                                 // defaultValue = {this.state.selectValue}
-                                defaultValue = '普通新闻'
+                                // defaultValue = '普通新闻'
+                                value = {type}
                                 onChange={(value)=>{this.selectType(value)}}
                             >
                                 <Option value="0">普通新闻</Option>
@@ -222,27 +352,35 @@ class NewsDetail extends Component{
                         wbHotChecked = {wbHotChecked}
                         wbDefaultDetail = {wbDefaultDetail}
                         wbSignChecked = {wbSignChecked}
-                        getWbSignList = {arr=>this.setState({tpSignList:arr})}
+                        getWbSignList = {arr=>this.setState({wbSignList:arr})}
                         getWbHotChecked = { status =>  this.setState({wbHotChecked:status})}
                         getSignStatus = {status => this.setState({wbSignChecked:status})}
                         getDetail = {html => this.setState({wbDetail:html})}
                     />
                 }
-                <AuditForm status={this.state.auditStatus} 
-                    detail={this.state.auditDetail}
-                    getStatus = {(val)=>this.getAudtiStatus(val)}
-                    getDetail = {(val)=>this.getAuditDetail(val)}
-                />
-                <div className='form-item btn-item'>
-                    <Row>
-                        <Col offset='5' span='10'>
-                            <Button onClick={()=>{this.save()}} type='primary' size='large'>保存</Button>
-                            <Button onClick={()=>{this.props.history.goBack()}} size='large'>取消</Button>
-                        </Col>
-                    </Row>
-                </div>
+                {
+                    (this.state.checked == 2 )? 
+                    <AuditForm status={this.state.auditStatus} 
+                        detail={this.state.auditDetail}
+                        getStatus = {(val)=>this.getAudtiStatus(val)}
+                        getDetail = {(val)=>this.getAuditDetail(val)}
+                    />:
+                    null
+                }
+                {
+                    (this.state.checked == 0 || this.state.checked ==4 )? 
+                    null:
+                    <div className='form-item btn-item'>
+                        <Row>
+                            <Col offset='5' span='10'>
+                                <Button onClick={()=>{this.save()}} type='primary' size='large'>保存</Button>
+                                <Button onClick={()=>{this.props.history.goBack()}} size='large'>取消</Button>
+                            </Col>
+                        </Row>
+                    </div>
+                }
             </div>
         )
     }
 }
-export default NewsDetail;
+export default withRouter(NewsDetail) ;

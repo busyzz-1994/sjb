@@ -26,8 +26,8 @@ class Banner extends Component{
             isSearch:false,
             searchValue:'',
             originData:[],
-            pageSize:2,
-            total:10,
+            pageSize:12,
+            total:0,
             pageNum:1
         }
     }
@@ -38,10 +38,11 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
         if(isSearch){
-            typeApi.searchType({
+            fileApi.searchFileAudit({
                 currPage:pageNum,
                 pageSize,
-                name:searchValue
+                title:searchValue,
+                checkview:selectValue
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -123,7 +124,7 @@ class Banner extends Component{
         confirm({
             title:'删除的内容无法恢复，确认删除？',
             onOk:()=>{
-                typeApi.delType({id}).then(res=>{
+                fileApi.removeFile({id}).then(res=>{
                     this.loadList();
                 }).catch(res=>{
                     message.error(res);
@@ -171,14 +172,14 @@ class Banner extends Component{
                     {/* 操作栏结束 */}
                     <TableList
                         tdHeight='58px'
-                        thead={[{width:'5%',name:' '},{width:'40%',name:'商品标题'},{width:'10%',name:'类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
+                        thead={[{width:'5%',name:' '},{width:'30%',name:'商品标题'},{width:'20%',name:'类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>{item.title}</td>
-                                   <td>{item.tagIds}</td>
+                                   <td>{item.typename}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
                                         <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>

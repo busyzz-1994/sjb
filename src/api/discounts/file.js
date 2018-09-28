@@ -13,6 +13,15 @@ const Api = {
             }
         })
     },
+    getFileListIssue(data){
+        return _mm.POST({
+            url:'/admin/Merchandise/queryReleaseLists',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
     getFileDetail(data){
         return _mm.POST({
             url:'/admin/Merchandise/selectMerchandise',
@@ -31,6 +40,88 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //删除商品文件(一般商品的删除)
+    removeFile(data){
+        return _mm.POST({
+            url:'/admin/Merchandise/deletMerchandise',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //删除商品文件（发布的商品）
+    removeIssueFile(data){
+        return _mm.POST({
+            url:'/admin/Merchandise/deletMerchandise',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //商品的模糊查询(审核)
+    searchFileAudit(data){
+        return _mm.POST({
+            url:'/admin/Merchandise/likeCheckMerchandise',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //商品的模糊查询（发布）
+    searchFileIssue(data){
+        return _mm.POST({
+            url:'/admin/Merchandise/likeReleaseMerchandise',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //修改商品文件
+    updataFile(data){
+        return _mm.POST({
+            url:'/admin/Merchandise/editMerchandise',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //提交审核信息
+    auditFile(data){
+        return _mm.POST({
+            url:'/admin/Merchandise/checkMerchandise',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //发布上线 和 下线
+    onlineFile(data){
+        return _mm.POST({
+            url:'/admin/Merchandise/releaseMerchandise',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //文件置顶
+    topFile(data){
+        console.log(data)
+        return _mm.POST({
+            url:'/admin/Merchandise/topRelease',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
+    
 }
 export default Api;

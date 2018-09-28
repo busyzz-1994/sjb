@@ -32,6 +32,47 @@ const Api = {
                 type:data.type
             }
         })
+    },
+    //审核状态的模糊查询
+    searchAudit(data){
+        return _mm.POST({
+            url:'/admin/news/findstatusnewslike',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //获取新闻详情
+    getNewsDetail(data){
+        console.log(getToken())
+        return _mm.POST({
+            url:'/admin/news/showsjbnews',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //添加新闻文件
+    addFile(data){
+        return _mm.POST({
+            url:'/admin/news/addsjbnews',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //修改新闻文件
+    updateFile(data){
+        return _mm.POST({
+            url:'/admin/news/updatesjbnews',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
     
 }

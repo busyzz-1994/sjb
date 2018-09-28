@@ -55,6 +55,16 @@ const Api = {
             }
         })
     },
+    //模糊查询商品类型里面的文件
+    searchFile(data){
+        return _mm.POST({
+            url:'/admin/Merchandise/queryLikeInCategory',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
     //获取具体商品类型列表
     getDetailList(data){
         return _mm.POST({

@@ -31,7 +31,7 @@ class imgList extends Component{
     //设置服务图片
     getFwUrl(data,index){
         let {fwImgList} = this.props;
-        let url =config.server + data[0].attachFilenames;
+        let url = data[0].attachFilenames;
         fwImgList[index] = url;
         this.props.getImgList(fwImgList)
     }
@@ -42,7 +42,7 @@ class imgList extends Component{
                 {fwImgList.map((item,index)=>{
                     return (
                         <div key={index} style={{display:'inline-block',marginRight:'10px',position:'relative'}}>
-                            <ImgUpload index={index} imgWidth={200} imgUrl={item}  imgHeight={80} defaultImgUrl={upload_2} getUrl = {(data,index)=>this.getFwUrl(data,index)} />
+                            <ImgUpload index={index} imgWidth={200} imgUrl={item?config.server + item:''}  imgHeight={80} defaultImgUrl={upload_2} getUrl = {(data,index)=>this.getFwUrl(data,index)} />
                             <Icon type="close-circle" onClick={()=>this.delImgList(index)} style={{position:'absolute',right:'-8px',top:'-5px',cursor:'pointer'}} />
                         </div>
                     )
