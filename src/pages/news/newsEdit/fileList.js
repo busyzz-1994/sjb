@@ -72,6 +72,7 @@ class Banner extends Component{
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let lists = res[0].lists;
+                console.log(lists)
                 this.setState({
                     dataList:lists,
                     total:totalCount
@@ -136,11 +137,15 @@ class Banner extends Component{
         this.props.history.push(`/news/newsEdit/file/fileDetail/${item.id}/?name=${item.title}&checked=1`);
     }
     //点击删除图标
-    clickDel(id){
+    clickDel(item){
         confirm({
             title:'删除的内容无法恢复，确认删除？',
             onOk:()=>{
-                fileApi.delFile({id}).then(res=>{
+                let {id} = item;
+                fileApi.delFile({
+                    newsId:id,
+                    id:''
+                }).then(res=>{
                     this.loadList();
                 }).catch(res=>{
                     message.error(res);
@@ -199,7 +204,7 @@ class Banner extends Component{
                                    <td className='td-handle'>
                                         <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
                                         <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
-                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id)}}/>
+                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
                                    </td>
                                </tr>
                            )

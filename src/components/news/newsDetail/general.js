@@ -19,14 +19,14 @@ class General extends Component{
     //获取上传图片后的url
     getSingleUrl(data){
 
-        let url =config.server + data[0].attachFilenames;
+        let url = data[0].attachFilenames;
         let {singleImg} = this.props;
         singleImg[0] = url;
         this.props.getSingleImg(singleImg)
     }
     //获取三张上传图片的url
     getMoreUrl(data,index){
-        let url =config.server + data[0].attachFilenames;
+        let url = data[0].attachFilenames;
         let {moreImg} = this.props;
         moreImg[index] = url;
         this.props.getMoreImg(moreImg)
@@ -55,14 +55,14 @@ class General extends Component{
         let more = moreImg.map((item,index)=>{
             return (
                 <div key={index} style={{display:'inline-block',marginRight:'15px'}}>
-                    <ImgUpload index={index} imgWidth={160} imgUrl={item}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getMoreUrl(data,index)} />
+                    <ImgUpload index={index} imgWidth={160} imgUrl={item?config.server+item:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getMoreUrl(data,index)} />
                 </div>
             )
         })
         let single = singleImg.map((item,index)=>{
             return (
                 <div key={index} style={{display:'inline-block',marginRight:'15px'}}>
-                    <ImgUpload  imgWidth={160} imgUrl={item}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data)=>this.getSingleUrl(data)} />
+                    <ImgUpload  imgWidth={160} imgUrl={item ?config.server+item:'' }  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data)=>this.getSingleUrl(data)} />
                 </div>
             )
         })

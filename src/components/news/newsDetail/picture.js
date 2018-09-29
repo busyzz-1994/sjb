@@ -19,7 +19,7 @@ class Picture extends Component{
     // }
     //获取上传图片后的url
     getUrl(data){
-        let url =config.server + data[0].attachFilenames;
+        let url =data[0].attachFilenames;
         this.props.getImg(url)
     }
     //获取sign列表
@@ -32,7 +32,7 @@ class Picture extends Component{
     }
     //获取图片描述的图片
     getListUrl(data,index){
-        let imgUrl = config.server + data[0].attachFilenames;
+        let imgUrl =data[0].attachFilenames;
         this.props.tpImgList[index].imgUrl = imgUrl;
         this.props.getTpImgList(this.props.tpImgList)
     }
@@ -62,7 +62,7 @@ class Picture extends Component{
                     <Row>
                         <Col span='4'>封面图*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload imgWidth={160} imgUrl={tpImg}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                            <ImgUpload imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
                     </Row>
                 </div>
@@ -97,7 +97,7 @@ class Picture extends Component{
                                     return (
                                         <div key={index} className='clearfix'>
                                             <div className='fl'>
-                                                <ImgUpload imgWidth={160} imgUrl={item.imgUrl} index={index} imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getListUrl(data,index)} />
+                                                <ImgUpload imgWidth={160} imgUrl={item.imgUrl?config.server+ item.imgUrl:''} index={index} imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getListUrl(data,index)} />
                                             </div>
                                             <div className='fl' style={{width:'400px',height:'140px',marginLeft:'20px',marginRight:'10px'}}>
                                                 <TextArea onChange={(e)=>{this.getListDesc(e,index)}} value={item.desc} style={{width:'100%',height:'100%',display:'block'}}   />

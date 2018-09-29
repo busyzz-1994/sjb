@@ -145,8 +145,7 @@ class NewsDetail extends Component{
     updateFile(){
         let obj = this.getFormData();
         let {id} = this.state; 
-        obj = {...obj,id}
-        console.log(obj);
+        obj = {...obj,newsId:id}
         fileApi.updateFile(obj).then(res=>{
             message.success('修改成功！');
             this.props.history.goBack()
@@ -162,7 +161,10 @@ class NewsDetail extends Component{
         let {id} = this.state;
         fileApi.getNewsDetail({id}).then(res=>{
             let result = res[0];
-            let {newsType,categoryId,title,sourceAdress,sourceAdressState} = result;
+            let {newsType,categoryId,title,sourceAdress,sourceAdressState,
+                tagsName,tagsState,isHot,content,thumbnails,images
+            } = result;
+            console.log(sourceAdressState)
             this.setState({
                 category:categoryId,
                 type:newsType,
@@ -172,10 +174,39 @@ class NewsDetail extends Component{
             })
             switch(newsType){
                 case '0':
-                    
+                    this.setState({
+                        ptDefaultDetail:content,
+                        ptDetail:content,
+                        ptHotChecked:isHot == '1'?true:false,
+                        ptSignList:tagsName,
+                        ptSignChecked:tagsState == '1'?true:false,
+                        ptSingleImg:thumbnails.length>1?['']:thumbnails,
+                        ptMoreImg:thumbnails.length>1?thumbnails:['','',''],
+                        ptImg:thumbnails.length>1?2:1
+                    })
                 break;
                 case '1':
-                   
+                    let tpImgList = JSON.parse(images).map(item=>{
+                        let obj = {};
+                        obj.imgUrl = item.imagesUrl;
+                        obj.desc = item.imagesDesc;
+                        return obj
+                    })
+                    this.setState({
+                        tpImg:thumbnails[0],
+                        tpSignList:tagsName,
+                        tpSignChecked:tagsState =='1'?true:false,
+                        tpImgList
+                    })
+                break;
+                case '2':
+                    this.setState({
+                        wbDefaultDetail:content,
+                        wbDetail:content,
+                        wbHotChecked:isHot == '1'?true:false,
+                        wbSignList:tagsName,
+                        wbSignChecked:tagsState == '1'?true:false
+                    })
                 break;
                 default:
                 break;

@@ -2,14 +2,14 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-// let WEBPACK_ENV = process.env.WEBPACK_ENV || 'dev';
+let WEBPACK_ENV = process.env.WEBPACK_ENV || 'dev';
 // publicPath = '../../';
 module.exports = {
 	entry: './src/app.js',
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		filename: 'js/app.js',
-		publicPath:'/dist/'
+		publicPath:WEBPACK_ENV==='dev'? '/dist/': 'http://47.107.53.57/root/www/dist/'
 	},
 	resolve:{
 		alias:{
