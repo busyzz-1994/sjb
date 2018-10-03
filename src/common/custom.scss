@@ -138,6 +138,18 @@ html,body{
         }
     }
 }
+:global(.form-item){
+	line-height:32px;
+	margin-bottom:20px;
+}
+:global(.btn-item){
+	:global(.ant-row > div:first-child){
+		text-align: left!important;
+	}
+	:global(button){
+		margin-right: 20px;
+	}
+}
 /* td 操作栏超出 显示不隐藏 */
 :global(.td-handle){
 	overflow: visible!important;

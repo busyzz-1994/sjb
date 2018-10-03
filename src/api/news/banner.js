@@ -81,6 +81,7 @@ const Api = {
     },
     //发布banner
     issueBanner(data){
+        console.log(data);
         return _mm.POST({
             url:'/admin/banner/updatereleasebanner',
             data:{

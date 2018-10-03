@@ -9,7 +9,7 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		filename: 'js/app.js',
-		publicPath:WEBPACK_ENV==='dev'? '/dist/': 'http://47.107.53.57/root/www/dist/'
+		publicPath:WEBPACK_ENV==='dev'? '/dist/': ''
 	},
 	resolve:{
 		alias:{

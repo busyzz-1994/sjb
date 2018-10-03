@@ -88,7 +88,7 @@ class NewsCategorySave extends Component{
             <div className='form-container'>
                <div className='form-item'>
                     <Row>
-                        <Col span='4'>新闻类型*</Col>
+                        <Col span='4'>词条名称*</Col>
                         <Col offset='1' span='12'>
                             <Input maxLength='6' onChange = {(e) => this.Input(e)} value={this.state.word} name='word'  placeholder ='请输入2~6个字的词条名称' />
                         </Col>

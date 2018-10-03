@@ -172,6 +172,9 @@ class BannerDetail extends Component{
             message.error(err)
         })
     }
+    relevanceCallback(selectedRowKeys){
+        
+    }
     render(){
         let {type,bannerType,isAdd,status,detail,checked} = this.state;
         return (
@@ -179,6 +182,7 @@ class BannerDetail extends Component{
                     <OtherNewsModal visible={this.state.modalVisible} 
                 ok={()=>{this.setState({modalVisible:false})}}
                 cancel={()=>{this.setState({modalVisible:false})}}
+                callback = {(selectedRowKeys)=>this.relevanceCallback(selectedRowKeys)}
                 />
                 <div className='form-item'>
                     <Row>

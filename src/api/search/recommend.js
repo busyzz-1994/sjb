@@ -32,6 +32,7 @@ const Api = {
             }
         })
     },
+    //修改词条
     updateWord(data){
         return _mm.POST({
             url:'/admin/search/updateCgryName',
@@ -40,6 +41,45 @@ const Api = {
                 token:getToken()
             }
         })
-    }
+    },
+    //查询词条
+    searchWord(data){
+        return _mm.POST({
+            url:'/admin/search/getCgryByTypeAndCheckview',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    getFileList(data){
+        return _mm.POST({
+            url:'/admin/search/getContentListByCaryId',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //审核文件
+    authList(data){
+        return _mm.POST({
+            url:'/admin/search/checkSearch',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //删除文件
+    delFile(data){
+        return _mm.POST({
+            url:'/admin/search/deleteCtgyContentById',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    }   
 }
 export default Api;

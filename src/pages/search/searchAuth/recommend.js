@@ -1,11 +1,10 @@
 import React,{Component} from 'react';
-import NavTab from 'components/global/navTab';
+import NavTab from './common/nav.js';
 import TableList from 'components/global/tableList';
-import _mm from 'util/mm.js'
 import style from 'common/layout.scss';
-import {Select,Input,Button,message,Pagination,Modal} from 'antd';
-import { withRouter } from 'react-router-dom'; 
-import newsEditApi from 'api/news/banner.js';
+import { Select , Input , Button ,message,Pagination,Modal,Icon} from 'antd';
+import { withRouter,Link } from 'react-router-dom'; 
+import recommendApi from 'api/search/recommend.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
 const Option = Select.Option;
@@ -14,94 +13,81 @@ const confirm = Modal.confirm;
 class Banner extends Component{
     constructor(props){
         super(props)
-        this.navList = [
-            {
-                name:'banner管理',
-                url:'/news/newsEdit/banner'
-            },
-            {
-                name:'新闻类型',
-                url:'/news/newsEdit/type'
-            },
-            {
-                name:'新闻文件',
-                url:'/news/newsEdit/file'
-            }
-        ]
         this.state={
             //当前的状态
             selectValue:'0',
             //当前render的数据
             dataList:[],
-            //是否处于搜索状态
-            isSearch:false,
-            searchValue:'',
             //当前的原数据
             originDataList:[],
             //原数据
+            //是否处于搜索状态
+            isSearch:false,
+            searchValue:'',
             originData:[],
-            pageSize:3,
-            total:10,
+            pageSize:12,
+            total:0,
             pageNum:1
         }
     }
     componentDidMount(){
-    //    this.loadList();
+       this.loadList();
     }
     //加载数据
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
         if(isSearch){
-            newsEditApi.auditSearch({
+            recommendApi.searchWord({
                 currPage:pageNum,
-                checkview:selectValue,
                 pageSize,
-                type:0,
-                title:searchValue
-             }).then(res=>{
-                let totalCount = res[0].totalCount;
-                let lists = res[0].lists;
-                this.setState({
-                    dataList:lists,
-                    total:totalCount
-                })
-             })
-        }else{
-            newsEditApi.getBannerList({
-                currPage:pageNum,
+                keyword:searchValue,
                 checkview:selectValue,
-                pageSize,
-                type:0
+                type:7
             }).then(res=>{
                 let totalCount = res[0].totalCount;
-                let lists = res[0].lists;
+                let list = res[0].lists ;
                 this.setState({
-                    dataList:lists,
+                    dataList:list,
+                    total:totalCount
+                })
+            })
+        }else{
+            recommendApi.getList({
+                currPage:pageNum,
+                pageSize,
+                checkview:selectValue,
+                type:7
+            }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let list = res[0].lists ;
+                console.log(list)
+                this.setState({
+                    dataList:list,
                     total:totalCount
                 })
             })
         }
+        
     }
     //搜索
     searchTitle(value){
         if(!value){
             this.setState({
-                searchValue:'',
+                isSearch:false,
                 pageNum:1,
-                isSearch:false
+                searchValue:''
             },()=>{
-                this.loadList()
+                this.loadList();
             })
         }else{
             this.setState({
-                searchValue:value,
+                isSearch:true,
                 pageNum:1,
-                isSearch:true
+                searchValue:value
             },()=>{
-                this.loadList()
+                this.loadList();
             })
         }
-       
     }
     //选择类型
     select(value){
@@ -120,32 +106,26 @@ class Banner extends Component{
             this.loadList();
         })
     }
-    //设置分页组件
-    renderPagination(){
-        this.setState({
-            total:this.state.dataList.length
-        },()=>{
-            this.changePage(1)
-        })
-    }
     //跳转到添加页面
     goAddBanner(){
-        this.props.history.push('/news/newsEdit/banner/add/?bannerType=0');
+        this.props.history.push(`/search/searchEdit/recommend/wordDetail`);
     }
     //点击查看图标
     clickCheck(id,name){
-        this.props.history.push(`/news/newsEdit/banner/add/${id}/?name=${name}&checked=0`)
+        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
     }
     //点击编辑图标
-    clickEdit(id,name){
-        this.props.history.push(`/news/newsEdit/banner/add/${id}/?name=${name}&checked=1`)
+    clickAudit(item){
+        this.props.history.push({
+            pathname:`/search/searchAuth/recommend/fileList/${item.id}/?checked=2&name=${item.name}`
+        })
     }
     //点击删除图标
-    clickDel(id,fkId,resourcesType){
+    clickDel(item){
         confirm({
             title:'删除的内容无法恢复，确认删除？',
             onOk:()=>{
-                newsEditApi.delBanner({id,fkId,resourcesType}).then(res=>{
+                recommendApi.removeWord({id:item.id}).then(res=>{
                     this.loadList();
                 }).catch(res=>{
                     message.error(res);
@@ -156,10 +136,11 @@ class Banner extends Component{
         })
     }
     render(){
-        let {selectValue} = this.state;
+        let { selectValue } = this.state;
+        console.log(selectValue)
         return (
             <div className={style.container}>
-                <NavTab navList={this.navList} />
+                <NavTab/>
                 <div className={style.content}>
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>
@@ -169,7 +150,8 @@ class Banner extends Component{
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
                                 // defaultValue = {this.state.selectValue}
-                                defaultValue = {selectValue}
+                                // defaultValue = '待审核'
+                                value = {this.state.selectValue}
                                 onChange={(value)=>{this.select(value)}}
                             >
                                 <Option value="0">待审核</Option>
@@ -183,31 +165,24 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
-                            <div style={{display:'inline-block',marginLeft:'10px'}}>
-                                <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
-                                    新增banner
-                                </Button>
-                            </div>
                         </div>
                     </div>
                     {/* 操作栏结束 */}
                     <TableList
-                        thead={[{width:'5%',name:' '},{width:'22%',name:'轮播图片'},{width:'30%',name:'标题'},{width:'8%',name:'类型'},{width:'20%',name:'创建时间'},{width:'15%',name:'操作'}]}
+                        tdHeight='58px'
+                        thead={[{width:'5%',name:' '},{width:'45%',name:'推荐词条'},{width:'30%',name:'创建时间'},{width:'20%',name:'操作'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
                                <tr key={index}>
                                    <td>{index + 1}</td>
-                                   <td>
-                                       <img src={config.server+item.titleImg} width='150' height='70'/>
-                                   </td>
-                                   <td>{item.title}</td>
-                                   <td>{item.baType == '0' ? '外链':'内链'}</td>
+                                   <td>{item.name}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
-                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item.fkId,item.resourcesType)}}/>
+                                        {    selectValue == '0'?
+                                            <IconHandle type='0' id={item.id} iconClick={(id)=>{this.clickAudit(item)}}/>
+                                            :<IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
+                                        }
                                    </td>
                                </tr>
                            )

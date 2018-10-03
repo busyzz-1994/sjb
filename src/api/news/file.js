@@ -12,6 +12,15 @@ const Api = {
             }
         })
     },
+    getAuthList(data){
+        return _mm.POST({
+            url:'/admin/news/sjbreleasenewslist',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
     delFile(data){
         return _mm.POST({
             url:'/admin/news/deletesjbnews',
@@ -43,9 +52,19 @@ const Api = {
             }
         })
     },
+    //发布状态的模糊查询
+    searchIssue(data){
+        return _mm.POST({
+            url:'/admin/news/findrelatednewslike',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
     //获取新闻详情
     getNewsDetail(data){
-        console.log(getToken())
+        console.log(data);
         return _mm.POST({
             url:'/admin/news/showsjbnews',
             data:{
@@ -68,6 +87,26 @@ const Api = {
     updateFile(data){
         return _mm.POST({
             url:'/admin/news/updatesjbnews',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //审核新闻文件
+    authFile(data){
+        return _mm.POST({
+            url:'/admin/news/updateexaminenews',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //发布上线  或者 下线
+    fileOnline(data){
+        return _mm.POST({
+            url:'/admin/news/updatereleasenews',
             data:{
                 ...data,
                 token:getToken()

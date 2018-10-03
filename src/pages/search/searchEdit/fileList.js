@@ -5,17 +5,32 @@ import style from 'common/layout.scss';
 import { Select , Input , Button ,message,Pagination,Modal,Icon} from 'antd';
 import { withRouter,Link } from 'react-router-dom'; 
 import recommendApi from 'api/search/recommend.js';
+import commonApi from 'api/common.js'
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import Bread from 'components/global/bread';
+import OtherNewsModal from 'components/global/otherNewsModal';
+import _mm from 'util/mm.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
 class Banner extends Component{
     constructor(props){
         super(props)
+        this.breadList = [
+            {
+                name:'推荐',
+                path:'/search/searchEdit/recommend'
+            },
+            {
+                name:_mm.getParam('name'),
+                path:''
+            }
+        ]
         this.state={
             //当前的状态
             selectValue:'0',
+            id:this.props.match.params.id,
             //当前render的数据
             dataList:[],
             //当前的原数据
@@ -27,7 +42,9 @@ class Banner extends Component{
             originData:[],
             pageSize:12,
             total:0,
-            pageNum:1
+            pageNum:1,
+            //弹出框
+            modalVisible:false
         }
     }
     componentDidMount(){
@@ -35,14 +52,13 @@ class Banner extends Component{
     }
     //加载数据
     loadList(){
-        let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
+        let {pageSize,pageNum,selectValue,isSearch,searchValue,id} = this.state;
         if(isSearch){
-            recommendApi.searchWord({
+            fileApi.searchFileAudit({
                 currPage:pageNum,
                 pageSize,
-                keyword:searchValue,
-                checkview:selectValue,
-                type:7
+                title:searchValue,
+                checkview:selectValue
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -52,19 +68,20 @@ class Banner extends Component{
                 })
             })
         }else{
-            recommendApi.getList({
+            recommendApi.getFileList({
+                id,
                 currPage:pageNum,
-                pageSize,
-                checkview:selectValue,
-                type:7
+                pageSize
             }).then(res=>{
+                console.log(res);
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
-                console.log(list)
                 this.setState({
                     dataList:list,
                     total:totalCount
                 })
+            }).catch(err=>{
+                message.error(err)
             })
         }
         
@@ -108,16 +125,19 @@ class Banner extends Component{
     }
     //跳转到添加页面
     goAddBanner(){
-        this.props.history.push(`/search/searchEdit/recommend/wordDetail`);
+        this.setState({
+            modalVisible:true
+        })
     }
     //点击查看图标
-    clickCheck(id,name){
-        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
+    clickCheck(item){
+        // this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
+        this.props.history.push(`/search/searchEdit/recommend/fileDetail/${item.newsId}/?checked=0&name=${item.resourcesName}`)
     }
     //点击编辑图标
-    clickEdit(item){
+    clickEdit(id,name){
         this.props.history.push({
-            pathname:`/search/searchEdit/recommend/wordDetail/${item.id}/?checked=1&name=${item.name}`
+            pathname:`/search/searchEdit/recommend/${id}/?checked=1&name=${name}`
         })
     }
     //点击删除图标
@@ -125,7 +145,7 @@ class Banner extends Component{
         confirm({
             title:'删除的内容无法恢复，确认删除？',
             onOk:()=>{
-                recommendApi.removeWord({id:item.id}).then(res=>{
+                recommendApi.delFile({id:item.id}).then(res=>{
                     this.loadList();
                 }).catch(res=>{
                     message.error(res);
@@ -135,27 +155,42 @@ class Banner extends Component{
             cancelText:'取消'
         })
     }
+    //关联后的回调
+    relevanceCallback(selectedRowKeys,fn){
+        let {id} = this.state;
+        commonApi.addFileList({
+            id,
+            categoryContentlist:selectedRowKeys
+        }).then(res=>{
+            this.setState({
+                modalVisible:false
+            },()=>{
+                fn();
+                this.loadList();
+                message.success('关联文件成功！');
+            })
+        }).catch(err=>{
+            message.error(err)
+        })
+    }
     render(){
+        let {pageNum} = this.state;
         return (
             <div className={style.container}>
                 <NavTab/>
                 <div className={style.content}>
+                    <OtherNewsModal 
+                        visible={this.state.modalVisible} 
+                        ok={()=>{this.setState({modalVisible:false})}}
+                        cancel={()=>{this.setState({modalVisible:false})}}
+                        callback = {(selectedRowKeys,fn)=>this.relevanceCallback(selectedRowKeys,fn)}
+                    />
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>
                         <div className='fl'>
-                            <Select
-                                showSearch
-                                style={{ width: 200 }}
-                                optionFilterProp="children"
-                                // defaultValue = {this.state.selectValue}
-                                // defaultValue = '待审核'
-                                value = {this.state.selectValue}
-                                onChange={(value)=>{this.select(value)}}
-                            >
-                                <Option value="0">待审核</Option>
-                                <Option value="1">审核未通过</Option>
-                                <Option value="2">审核已通过</Option>
-                            </Select>
+                            <Bread
+                                breadList = {this.breadList}
+                            />
                         </div>
                         <div className='fr'>
                             <Search
@@ -164,8 +199,8 @@ class Banner extends Component{
                                 style={{ width: 350 }}
                             />
                             <div style={{display:'inline-block',marginLeft:'10px'}}>
-                                <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
-                                    新增词条
+                                <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="link" >
+                                    关联文件
                                 </Button>
                             </div>
                         </div>
@@ -173,23 +208,21 @@ class Banner extends Component{
                     {/* 操作栏结束 */}
                     <TableList
                         tdHeight='58px'
-                        thead={[{width:'5%',name:' '},{width:'25%',name:'推荐词条'},{width:'30%',name:'创建时间'},{width:'20%',name:'操作'},{width:'20%',name:'管理'}]}
+                        thead={[{width:'5%',name:' '},{width:'30%',name:'文件名称'},{width:'20%',name:'类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
                                <tr key={index}>
                                    <td>{index + 1}</td>
-                                   <td>{item.name}</td>
+                                   <td>{item.resourcesName}</td>
+                                   <td>{item.resourcesType}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
+                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
                                         <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
-                                   </td>
-                                   <td>
-                                        <Link className='gl-link' to={`/search/searchEdit/recommend/fileList/${item.id}/?name=${item.name}`} >
-                                        <Icon type="link" />
-                                        关联文件
-                                        </Link>
+                                        {
+                                            (index==0)&&pageNum==1?null: <IconHandle type='5' id={item.id} iconClick={(id)=>{this.clickTop(item)}}/>
+                                        }
                                    </td>
                                </tr>
                            )

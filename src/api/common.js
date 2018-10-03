@@ -39,6 +39,26 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //获取modal弹出框信息
+    getModalList(data){
+        return _mm.POST({
+            url:'/admin/search/getUnrelatedContentListByCaryId',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //添加未关联的文件 （多选）
+    addFileList(data){
+        return _mm.POST({
+            url:'/admin/search/addContent',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
 }
 export default Api;

@@ -14,6 +14,7 @@ class NewsDetail extends Component{
         this.state = {
             id:this.props.match.params.id,
             checked:_mm.getParam('checked'),
+            categoryId:_mm.getParam('categoryId'),
             //新闻类别
             category:'',
             categoryList:[],
@@ -26,7 +27,7 @@ class NewsDetail extends Component{
             //是否显示新闻来源
             originChecked:false,
             //审核状态 1->通过 2->不通过
-            auditStatus:1,
+            auditStatus:2,
             //审核详情
             auditDetail:'',
             /**普通新闻的数据 */
@@ -155,7 +156,13 @@ class NewsDetail extends Component{
     }
     //审核文件
     auditFile(){
-
+        let {id,auditStatus,auditDetail,categoryId} = this.state;
+        fileApi.authFile({id,checkview:auditStatus,remark:auditDetail,categoryId}).then(res=>{
+            message.success('修改成功！');
+            this.props.history.goBack()
+        }).catch(err=>{
+            message.error(err);
+        })
     }
     getDetail(){
         let {id} = this.state;
@@ -170,7 +177,7 @@ class NewsDetail extends Component{
                 type:newsType,
                 newsTitle:title,
                 newsOrigin:sourceAdress,
-                originChecked:!!sourceAdressState
+                originChecked:sourceAdressState == '0' ?false:true
             })
             switch(newsType){
                 case '0':
@@ -415,3 +422,5 @@ class NewsDetail extends Component{
     }
 }
 export default withRouter(NewsDetail) ;
+
+

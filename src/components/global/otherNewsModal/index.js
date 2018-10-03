@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink,withRouter } from 'react-router-dom';
 import {message,Modal,Pagination,Button,Tabs,Input,Table} from 'antd';
 import style from './index.scss';
 import _mm from 'util/mm.js';
@@ -9,18 +9,20 @@ import TableList from 'components/global/tableList';
 import unSelectImg from 'images/new1.png';
 //选中图片
 import selectImg from 'images/new2.png';
+
 const TabPane  = Tabs.TabPane;
 const Search =Input.Search;
 //接收的属性
 //1.visible -》 控制modal 的显示与隐藏
 //2.ok -》 选择确定的回调
 //3.cancel -》 选择取消的回调
+//4.callback 点击后的回调函数；
 class OtherNewsModal extends Component{
     constructor(props){
         super(props)
         this.columns = [{
             title: '标题',
-            dataIndex: 'title',
+            dataIndex: 'resourcesName',
             width: 650,
             key:'标题'
           }, {
@@ -29,42 +31,17 @@ class OtherNewsModal extends Component{
             key:'创建时间'
           }];
         this.state={
+            id:this.props.match.params.id,
             pageNum:1,
             total:10,
-            pageSize:1,
+            pageSize:12,
+            isSearch:false,
+            searchValue:'',
             //选中的key只是用来实现单选效果的
             selectedRowKeys:[],
             //选中的元素
             selectedItem:[],
-            list:[{
-                    title:'哈哈哈哈',
-                    createTime:'2018-12-26'
-                },{
-                   title:'ssz',
-                   createTime:'2018-12-26' 
-                },
-                {
-                    title:'qzz',
-                    createTime:'2018-12-26'
-                },{
-                   title:'ssz',
-                   createTime:'2018-12-26' 
-                },
-                {
-                    title:'qzz',
-                    createTime:'2018-12-26'
-                },{
-                   title:'ssz',
-                   createTime:'2018-12-26' 
-                },
-                {
-                    title:'qzz',
-                    createTime:'2018-12-26'
-                },{
-                   title:'ssz',
-                   createTime:'2018-12-26' 
-                }
-            ],
+            list:[],
             //当前选中的类别
             activeType:0,
             //当前单选选中的标题
@@ -72,33 +49,83 @@ class OtherNewsModal extends Component{
         }
     }
     componentDidMount(){
-        let {list} = this.state;
-        list.forEach((item,index)=>{
-            item.key = index+'ok'
-        })
+        // let {list} = this.state;
+        // list.forEach((item,index)=>{
+        //     item.key = index+'ok'
+        // })
+        this.loadList();
     }
     loadList(){
-        let {pageNum,pageSize} = this.state;
-        commonApi.getOtherNewsList({
-            currPage:pageNum,
-            pageSize
-        }).then(res=>{
-            console.log(res)
-        }).catch(err=>{
-            message.error(err);
-        })
+        let {pageSize,pageNum,activeType,isSearch,searchValue,id} = this.state;
+        if(isSearch){
+            recommendApi.searchWord({
+                currPage:pageNum,
+                pageSize,
+                keyword:searchValue,
+                checkview:selectValue,
+                type:7
+            }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let list = res[0].lists ;
+                this.setState({
+                    dataList:list,
+                    total:totalCount
+                })
+            })
+        }else{
+            commonApi.getModalList({
+                currPage:pageNum,
+                pageSize,
+                id,
+                type:activeType
+            }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let list = res[0].lists ;
+                list.forEach(item=>{
+                    let obj = {};
+                    obj.newsId = item.id;
+                    obj.resourcesType = item.resourcesType;
+                    obj = JSON.stringify(obj);
+                    item.key = obj;
+                })
+                this.setState({
+                    list,
+                    total:totalCount
+                })
+            })
+        }
     }
     changePage(pageNum){
-
+        this.setState({
+            pageNum
+        },()=>{
+            this.loadList();
+        })
     }
     //切换关联类型
     changeType(e){
         let  index = e.target.getAttribute('index');
-        this.setState({activeType:index});
+        this.setState({activeType:index,isSearch:false,pageNum:1},()=>{this.loadList()});
     }
     //search查询
     search(value){
-        console.log(value);
+        if(!value){
+            this.setState({
+                isSearch:false,
+                pageNum:1,
+                searchValue:''
+            },()=>{
+                this.loadList();
+            })
+        }else{
+            this.setState({
+                isSearch:true,
+                pageNum:1,
+                searchValue:value
+            },()=>{
+                this.loadList();
+            })
+        }
     }
     //选择标题
     chioceTitle(e){
@@ -107,12 +134,43 @@ class OtherNewsModal extends Component{
             activeTitle:index
         })
     }
+    //保存确认
+    save(){
+        let {selectedRowKeys,id} = this.state;
+        selectedRowKeys.forEach((item,index)=>{
+            selectedRowKeys[index] = JSON.parse(item)
+        })
+        this.props.callback(selectedRowKeys,()=>{
+            this.setState({
+                selectedRowKeys:[]
+            })
+        });
+        // commonApi.addFileList({
+        //     id,
+        //     categoryContentlist:selectedRowKeys
+        // }).then(res=>{
+        //     this.setState({
+        //         selectedRowKeys:[]
+        //     },()=>{
+        //         this.props.ok();
+        //         message.success('关联文件成功！');
+                
+        //     })
+        // }).catch(err=>{
+        //     message.error(err)
+        // })
+    }
+    componentWillReceiveProps(nextProps){
+        if(nextProps.visible){
+            this.loadList()
+        }
+    }
     render(){
         let typeArr = ['新闻','商家','商品','直播','视频','音乐','广告'];
         let {list,selectedRowKeys} = this.state;
         let columns = this.columns;
         let rowSelection = {
-            type:'radio',
+            type:this.props.type,
             selectedRowKeys,
             onChange:(key,record)=>{
                 //record 为数组  
@@ -143,17 +201,17 @@ class OtherNewsModal extends Component{
         )
         let footer = (
             <div className={style.footer}>
-                 <Pagination onChange={(page,pageSize) =>{this.changePage(page,pageSize)}} hideOnSinglePage={true}
+                 <Pagination onChange={(page,pageSize) =>{this.changePage(page,pageSize)}} 
                     current={this.state.pageNum} pageSize={this.state.pageSize} defaultCurrent={1} 
                     total={this.state.total} />
                 <div className={style.footerHandle}>
-                    <Button onClick={()=>{this.props.ok()}}  type='primary'>确认</Button>
+                    <Button onClick={()=>{this.save()}}  type='primary'>确认</Button>
                     <Button onClick={()=>{this.props.cancel()}}>取消</Button>
                 </div>   
             </div>
         )
         return (
-            
+           
             <div className={style.otherNewsModal}>
                <Modal title="Title"
                     visible={this.props.visible}
@@ -169,5 +227,8 @@ class OtherNewsModal extends Component{
         )
     }
 }
+OtherNewsModal.defaultPorps = {
+    type:'checkbox',
+}
 
-export default OtherNewsModal;
+export default withRouter(OtherNewsModal) ;

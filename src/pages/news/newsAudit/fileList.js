@@ -16,20 +16,20 @@ class Banner extends Component{
         this.navList = [
             {
                 name:'banner管理',
-                url:'/news/newsIssue/banner'
+                url:'/news/newsAudit/banner'
             },
             {
                 name:'新闻类型',
-                url:'/news/newsIssue/type'
+                url:'/news/newsAudit/type'
             },
             {
                 name:'新闻文件',
-                url:'/news/newsIssue/file'
+                url:'/news/newsAudit/file'
             }
         ]
         this.state={
             //当前的状态
-            selectValue:'3',
+            selectValue:'0',
             //当前render的数据
             dataList:[],
             //是否处于搜索状态
@@ -51,9 +51,9 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
         if(isSearch){
-            fileApi.searchIssue({
+            fileApi.searchAudit({
                 currPage:pageNum,
-                theissue:selectValue,
+                checkview:selectValue,
                 pageSize,
                 title:searchValue
             }).then(res=>{
@@ -65,9 +65,9 @@ class Banner extends Component{
                 })
             })
         }else{
-            fileApi.getAuthList({
+            fileApi.getFileList({
                 currPage:pageNum,
-                theissue:selectValue,
+                checkview:selectValue,
                 pageSize
             }).then(res=>{
                 let totalCount = res[0].totalCount;
@@ -116,35 +116,25 @@ class Banner extends Component{
             this.loadList();
         })
     }
+    //设置分页组件
+    renderPagination(){
+        this.setState({
+            total:this.state.dataList.length
+        },()=>{
+            this.changePage(1)
+        })
+    }
     //跳转到添加页面
     goAddBanner(){
         this.props.history.push('/news/newsEdit/file/fileDetail');
     }
     //点击查看图标
     clickCheck(item){
-        this.props.history.push(`/news/newsIssue/file/fileDetail/${item.id}/?name=${item.title}&checked=0`);
+        this.props.history.push(`/news/newsAudit/file/fileDetail/${item.id}/?name=${item.title}&checked=0`);
     }
-    //点击编辑图标
-    clickEdit(item){
-        this.props.history.push(`/news/newsIssue/file/fileDetail/${item.id}/?name=${item.title}&checked=1`);
-    }
-    //点击上线
-    clickOnline(item){
-        fileApi.fileOnline({contentId:item.contentId,theissue:'4'}).then(res=>{
-            message.success('上线成功！');
-            this.loadList();
-        }).catch(err=>{
-            message.error(err);
-        })
-    }
-    //点击下线
-    clickUnline(item){
-        fileApi.fileOnline({contentId:item.contentId,theissue:'5'}).then(res=>{
-            message.success('下线成功！');
-            this.loadList();
-        }).catch(err=>{
-            message.error(err);
-        })
+    //点击审核图标
+    clickAudit(item){
+        this.props.history.push(`/news/newsAudit/file/fileDetail/${item.id}/?name=${item.title}&checked=2&categoryId=${item.categoryId}`);
     }
     //点击删除图标
     clickDel(item){
@@ -166,48 +156,7 @@ class Banner extends Component{
         })
     }
     render(){
-         //待发布icon
-         let handle_1 = (item) =>{
-            return (
-                <div>
-                    <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
-                    <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
-                    <IconHandle type='4' id={item.id} iconClick={(id)=>{this.clickOnline(item)}}/>
-                    <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
-                </div>
-            )
-        }
-        //已发布时候的icon列表
-        let handle_2 = (item,index) =>{
-            let hide = (index == 0) && (pageNum == 1) ;
-            return (
-                <div>
-                    <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
-                    <IconHandle type='6' id={item.id} iconClick={(id)=>{this.clickUnline(item)}}/>
-                </div>
-            )
-        }
-        //已下线时候的icon列表
-        let handle_3 = (item) =>{
-            return (
-                <div>
-                    <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
-                    <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
-                    <IconHandle type='4' id={item.id} iconClick={(id)=>{this.clickOnline(item)}}/>
-                    <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
-                </div>
-            )
-        }
-        let { selectValue ,pageNum} = this.state;
-        let handleList;
-        // console.log(selectValue)
-        if(selectValue == 3){
-            handleList = handle_1;
-        }else if(selectValue == 4){
-            handleList = handle_2;
-        }else{
-            handleList = handle_3;
-        }
+        let {selectValue} = this.state;
         return (
             <div className={style.container}>
                 <NavTab navList={this.navList} />
@@ -223,9 +172,9 @@ class Banner extends Component{
                                 value = {selectValue}
                                 onChange={(value)=>{this.select(value)}}
                             >
-                                <Option value="3">待发布</Option>
-                                <Option value="4">已发布</Option>
-                                <Option value="5">已下线</Option>
+                                <Option value="0">待审核</Option>
+                                <Option value="1">审核未通过</Option>
+                                <Option value="2">审核已通过</Option>
                             </Select>
                         </div>
                         <div className='fr'>
@@ -248,7 +197,11 @@ class Banner extends Component{
                                    <td>{item.newsCategory}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle'>
-                                       {handleList(item,index)}
+                                   {
+                                       selectValue =='0'?<IconHandle type='0' id={item.id} iconClick={(id)=>{this.clickAudit(item)}}/>:
+                                       <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
+                                   }
+                                        
                                    </td>
                                </tr>
                            )
