@@ -12,10 +12,10 @@ class AuthRouter extends Component{
         return (
             <div>
                 <Switch>
-                    <Route exact path='/advertising/advertisingEdit/start' component={Start}/>
-                    <Route path='/advertising/advertisingEdit/start/detail/:id?' component={StartDetail}/>
-                    <Route exact path='/advertising/advertisingEdit/banner' component={Banner}/>
-                    <Route path='/advertising/advertisingEdit/banner/detail/:id?' component={BannerDetail}/>
+                    <Route exact path='/advertising/advertisingIssue/start' component={Start}/>
+                    <Route path='/advertising/advertisingIssue/start/detail/:id?' component={StartDetail}/>
+                    <Route exact path='/advertising/advertisingIssue/banner' component={Banner}/>
+                    <Route path='/advertising/advertisingIssue/banner/detail/:id?' component={BannerDetail}/>
                 </Switch>
             </div>
         )

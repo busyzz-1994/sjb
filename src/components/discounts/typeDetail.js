@@ -50,11 +50,10 @@ class TypeSave extends Component{
 
     }
     update(){
-        let {id,name,type} = this.state;
+        let {id,name} = this.state;
         typeApi.editType({
             id,
-            name,
-            type
+            name
         }).then(res=>{
             message.success('修改成功！')
             this.props.history.goBack();

@@ -14,7 +14,7 @@ class Banner extends Component{
             breadList:[
                 {
                     name:'启动页',
-                    path:'/advertising/advertisingEdit/start'
+                    path:'/advertising/advertisingIssue/start'
                 },
                 {
                     name:'新增',

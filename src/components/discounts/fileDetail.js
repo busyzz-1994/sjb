@@ -192,6 +192,7 @@ class TypeSave extends Component{
     }
     addFile(){
         let obj = this.getFileDetail();
+        console.log(obj)
         fileApi.addFile(obj).then(res=>{
             message.success('添加商品成功！');
             this.props.history.goBack();

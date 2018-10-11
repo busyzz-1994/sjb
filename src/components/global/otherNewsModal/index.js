@@ -43,7 +43,7 @@ class OtherNewsModal extends Component{
             selectedItem:[],
             list:[],
             //当前选中的类别
-            activeType:0,
+            activeType:this.props.activeType,
             //当前单选选中的标题
             activeTitle:0
         }
@@ -76,7 +76,7 @@ class OtherNewsModal extends Component{
             commonApi.getModalList({
                 currPage:pageNum,
                 pageSize,
-                id,
+                id:id?id:'999999',
                 type:activeType
             }).then(res=>{
                 let totalCount = res[0].totalCount;
@@ -85,6 +85,7 @@ class OtherNewsModal extends Component{
                     let obj = {};
                     obj.newsId = item.id;
                     obj.resourcesType = item.resourcesType;
+                    obj.resourcesName = item.resourcesName;
                     obj = JSON.stringify(obj);
                     item.key = obj;
                 })
@@ -145,20 +146,6 @@ class OtherNewsModal extends Component{
                 selectedRowKeys:[]
             })
         });
-        // commonApi.addFileList({
-        //     id,
-        //     categoryContentlist:selectedRowKeys
-        // }).then(res=>{
-        //     this.setState({
-        //         selectedRowKeys:[]
-        //     },()=>{
-        //         this.props.ok();
-        //         message.success('关联文件成功！');
-                
-        //     })
-        // }).catch(err=>{
-        //     message.error(err)
-        // })
     }
     componentWillReceiveProps(nextProps){
         if(nextProps.visible){
@@ -227,8 +214,9 @@ class OtherNewsModal extends Component{
         )
     }
 }
-OtherNewsModal.defaultPorps = {
+OtherNewsModal.defaultProps = {
     type:'checkbox',
+    activeType:0
 }
 
 export default withRouter(OtherNewsModal) ;

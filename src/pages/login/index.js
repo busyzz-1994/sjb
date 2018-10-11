@@ -9,13 +9,18 @@ import Logo from 'images/login/logo.png';
 import Login4 from 'images/login/login4.png';
 import Login5 from 'images/login/login5.png';
 class Login extends Component{
+    static getRedirect(){
+        let res = window.location.hash.split('#')[2];
+        return res;
+    }
     constructor(props){
         super(props);
+        
         this.state = {
             username: '',
             password: '',
             verifyCode:'',
-            redirect: _mm.getParam('redirect') || '/',
+            redirect: Login.getRedirect() || '/',
             errorMsg:'',
             //获取验证码按钮是否可点击
             buttonIs:true,
@@ -109,8 +114,6 @@ class Login extends Component{
                     userInfo = res[0].userList;
                 _mm.setStorage('token',token);
                 _mm.setStorage('userInfo',userInfo);
-                console.log(window.localStorage)
-                // this.props.addUserInfo(res.admin);
                 this.props.history.push(this.state.redirect)
             }).catch(res =>{
                 this.setState({

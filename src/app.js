@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import ReactDOM from 'react-dom';
 
-import {BrowserRouter as Router,Route,Link,Switch,NavLink,Redirect} from 'react-router-dom';
+import {HashRouter as Router,Route,Link,Switch,NavLink,Redirect} from 'react-router-dom';
 import 'font-awesome/css/font-awesome.min.css';
 import 'antd/dist/antd.css';
 import 'common/reset.css';

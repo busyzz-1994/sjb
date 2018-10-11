@@ -156,6 +156,12 @@ class OuterDetail extends Component{
             }
         }
     }
+    resetAuthList(){
+        let {options} = this.state;
+        options.forEach(item=>{
+            item.selectOptions = []
+        })
+    }
     addUser(){
         let {username,name,email,password,sjbPermissions,areaDefault} = this.state;
         systemApi.addOuterUser({
@@ -168,6 +174,7 @@ class OuterDetail extends Component{
             isInternal:0
         }).then(res=>{
             message.success('添加账号成功！');
+            this.resetAuthList()
             this.props.history.goBack();
         }).catch(res=>{
             message.error(res);
@@ -175,6 +182,7 @@ class OuterDetail extends Component{
     }
     updateUser(){
         let {username,name,email,password,sjbPermissions,areaDefault,status,id} = this.state;
+        console.log('zhli')
         systemApi.updateUser({
             name:username,
             nickname:name,
@@ -187,6 +195,7 @@ class OuterDetail extends Component{
             id
         }).then(res=>{
             message.success('修改账号成功！');
+            this.resetAuthList()
             this.props.history.goBack();
         }).catch(res=>{
             message.error(res);

@@ -5,7 +5,7 @@ import { Select , Input , Button ,message,Pagination,Modal,Icon} from 'antd';
 import { withRouter,Link } from 'react-router-dom'; 
 import typeApi from 'api/discounts/type.js';
 import Bread from 'components/global/bread';
-import StartDetail from 'components/advertising/startDetail.js';
+import BannerDetail from 'components/advertising/bannerDetail.js';
 import _mm from 'util/mm.js';
 class Banner extends Component{
     constructor(props){
@@ -13,8 +13,8 @@ class Banner extends Component{
         this.state={
             breadList:[
                 {
-                    name:'启动页',
-                    path:'/advertising/advertisingEdit/start'
+                    name:'弹出广告',
+                    path:'/advertising/advertisingIssue/banner'
                 },
                 {
                     name:'新增',
@@ -38,7 +38,7 @@ class Banner extends Component{
                         edit = {typeName}
                         check = {typeName}
                     />
-                    <StartDetail/>
+                    <BannerDetail/>
                 </div>
             </div>
         )

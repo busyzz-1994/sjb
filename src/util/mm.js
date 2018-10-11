@@ -71,7 +71,10 @@ const mm = {
                 },
                 data:obj.data?JSON.stringify(obj.data):'',
                 success:function(data){
-                    console.log(data)
+                    console.log(data);
+                    if(typeof data =='string'){
+                        data = JSON.parse(data);
+                    }
                     if(data.statusCode == 7700 || data.statusCode == 200){
                         resolve(data.data,data.message)
                     }else if(data.statusCode ===7701 || data.statusCode == 407 ){
@@ -82,7 +85,6 @@ const mm = {
                 },
                 error:function(err,hx){
                     let responseText = err.responseText;
-                    console.log(err)
                     if(responseText) {
                         responseText = JSON.parse(responseText);
                         reject(responseText.message);
@@ -100,12 +102,12 @@ const mm = {
     },
      // 跳转登录
     doLogin(){
-        window.location.href = '/login?redirect=' + window.location.pathname;
+        window.location.href = '#/login?redirect=' + window.location.hash;
     },
     //获取url参数
 	getParam:function(name){
-		let reg     = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
-        let result  = window.location.search.substr(1).match(reg);
+        let reg     = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
+        let result  = window.location.href.split('?').length > 1 ? window.location.href.split('?')[1].match(reg) : null;
         return result ? decodeURIComponent(result[2]) : null;
     },
     setStorage(name, data){

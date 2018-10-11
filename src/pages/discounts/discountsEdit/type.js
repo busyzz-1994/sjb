@@ -37,11 +37,12 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
         if(isSearch){
-            typeApi.searchType({
+            typeApi.getTypeList({
                 currPage:pageNum,
                 pageSize,
                 type:'2',
-                name:searchValue
+                keyword:searchValue,
+                theissue:'3'
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -54,7 +55,8 @@ class Banner extends Component{
             typeApi.getTypeList({
                 currPage:pageNum,
                 pageSize,
-                type:'2'
+                type:'2',
+                theissue:'3'
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
