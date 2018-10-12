@@ -4,6 +4,7 @@ import { Input , Button ,message,Breadcrumb,Row, Col} from 'antd';
 import {withRouter} from 'react-router-dom';
 import recommendApi from 'api/search/recommend.js';
 import Validate from 'util/validate';
+//参数 type 必须传入 为词条的类型
 class NewsCategorySave extends Component{
     constructor(props){
         super(props)
@@ -50,7 +51,7 @@ class NewsCategorySave extends Component{
         }else{
             let {word} = this.state;
             recommendApi.addWord({
-                type:7,
+                type:this.props.type,
                 name:word
             }).then(res=>{
                 message.success('添加成功')
@@ -109,5 +110,8 @@ class NewsCategorySave extends Component{
             </div>
         )
     }
+}
+NewsCategorySave.defaultProps = {
+    type:7
 }
 export default withRouter(NewsCategorySave);

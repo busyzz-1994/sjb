@@ -68,12 +68,12 @@ class Banner extends Component{
                 })
             })
         }else{
+            console.log(id)
             recommendApi.getFileList({
                 id,
                 currPage:pageNum,
                 pageSize
             }).then(res=>{
-                console.log(res);
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
                 this.setState({

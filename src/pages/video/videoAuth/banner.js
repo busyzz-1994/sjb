@@ -120,11 +120,15 @@ class Banner extends Component{
     }
     //点击查看图标
     clickCheck(id,name){
-        this.props.history.push(`/video/videoEdit/banner/detail/${id}/?name=${name}&checked=0&bannerType=4`)
+        this.props.history.push(`/video/videoAudit/banner/detail/${id}/?name=${name}&checked=0&bannerType=4`)
     }
     //点击编辑图标
-    clickEdit(id,name){
-        this.props.history.push(`/video/videoEdit/banner/detail/${id}/?name=${name}&checked=1&bannerType=4`)
+    // clickEdit(id,name){
+    //     this.props.history.push(`/video/videoEdit/banner/detail/${id}/?name=${name}&checked=1&bannerType=4`)
+    // }
+    //点击审核
+    clickAuth(id,name){
+        this.props.history.push(`/video/videoAudit/banner/detail/${id}/?name=${name}&checked=2&bannerType=4`)
     }
     //点击删除图标
     clickDel(id,fkId,resourcesType){
@@ -169,11 +173,11 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
-                            <div style={{display:'inline-block',marginLeft:'10px'}}>
+                            {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
                                     新增banner
                                 </Button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     {/* 操作栏结束 */}
@@ -191,9 +195,10 @@ class Banner extends Component{
                                    <td>{item.baType == '0' ? '外链':'内链'}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
-                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item.fkId,item.resourcesType)}}/>
+                                        {
+                                            selectValue == '0' ? <IconHandle type='0' id={item.id} iconClick={(id)=>{this.clickAuth(id,item.title)}}/>:
+                                            <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
+                                        }
                                    </td>
                                </tr>
                            )

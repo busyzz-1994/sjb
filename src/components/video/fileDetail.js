@@ -5,6 +5,9 @@ import defaultImg from 'images/newsas.png';
 import ImgUpload from 'components/global/uploadImg';
 import SignList from 'components/global/signList/indexNew.js';
 import AuditForm from 'components/global/auditForm';
+import commonApi from 'api/common.js';
+import videoApi from 'api/video/index.js';
+import Validate from 'util/validate/index.js';
 // import self from './bannerAdd.scss';
 import {Link} from 'react-router-dom';
 import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,Checkbox } from 'antd';
@@ -18,11 +21,14 @@ class TypeSave extends Component{
         super(props)
         this.state = {
             checked:_mm.getParam('checked'),
-            category:[{name:'推荐',value:0},{name:'热门',value:1},{name:'体育',value:2}],
+            id:this.props.match.params.id,
+            category:[],
+            categoryValue:'',
             title:'',
             // 服务缩略图
             tpImg:'',
             //是否显示新闻来源
+            newsSource:'',
             newsOrigin:false,
             //是否热门推荐
             hot:false,
@@ -34,11 +40,32 @@ class TypeSave extends Component{
             //视频概要
             videoDetail:'',
             //选中的signList:
-            signList:[2],
+            signList:[],
             signChecked:false,
             authStatus:0,
             authString:''
         }
+    }
+    componentDidMount(){
+        this.loadTypeList();
+    }
+    //添加类型选项
+    loadTypeList(){
+        commonApi.getCategoryList({currPage:1,pageSize:9999,type:'4'}).then(res=>{
+            let list = res[0].lists;
+            this.setState({
+                category:list
+            },()=>{
+                this.setState({
+                    categoryValue:list[0]?list[0].id:''
+                },()=>{
+                    let {id} = this.state;
+                    if(id){
+                        // this.getDetail();
+                    }
+                })
+            })
+        })
     }
     selectCategory(value){
         this.setState({
@@ -54,7 +81,7 @@ class TypeSave extends Component{
     }
     //获取缩略图
     getUrl(data,index){
-        let url =config.server + data[0].attachFilenames;
+        let url =data[0].attachFilenames;
         this.setState({
             tpImg:url
         })
@@ -97,11 +124,52 @@ class TypeSave extends Component{
             hot:status
         })
     }
+    //点击保存
+    save(){
+        let msg = this.validate();
+        if(msg){
+            message.error(msg);
+        }else{
+            this.addFile();
+        }
+    }
+    //验证表单信息
+    validate(){
+        let validate = new Validate();
+        let {title,newsSource,tpImg,signList,videoUrl} = this.state;
+        validate.add(title,'notEmpty','视频标题不能为空！');
+        validate.add(newsSource,'notEmpty','新闻来源不能为空！');
+        validate.add(tpImg,'notEmpty','视频封面图不能为空！');
+        validate.add(videoUrl,'notEmpty','上传视频文件地址不能为空！');
+        return validate.start();
+    }
+    //添加或编辑文件
+    addFile(){
+        let {title,categoryValue,newsSource,newsOrigin,tpImg,signList,
+            signChecked,hot,videoDetail,videoUrl,id} = this.state;
+        videoApi.addFile({
+            id,
+            videoTitle:title,
+            videoSourceAdress:newsSource,
+            sourceIsShow:newsOrigin?'1':'0',
+            videoImage:tpImg,
+            tagsIsShow:signChecked?'1':'0',
+            tags:signList,
+            isHot:hot?'1':'0',
+            videoUrl,
+            videoDesc:videoDetail,
+            categoryId:categoryValue
+        }).then(res=>{
+            message.success('保存文件成功！');
+            this.props.history.goBack()
+        }).catch(err=>{
+            message.error(err);
+        })
+    }
     render(){
         let {category,tpImg,signList,signChecked,authStatus,authString,checked,
-            newsOrigin,hot,videoUrl,videoMin,videoSec,videoDetail
+            newsOrigin,hot,videoUrl,videoMin,videoSec,videoDetail,categoryValue
         } = this.state;
-        console.log(checked)
         return (
             <div className='form-container'>
                 <div className='form-item'>
@@ -112,13 +180,13 @@ class TypeSave extends Component{
                                 showSearch
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
-                                value = {category[0].value}
+                                value = {categoryValue}
                                 onChange={(value)=>{this.selectCategory(value)}}
                             >
                                 {
                                     category.map((item,index)=>{
                                         return (
-                                            <Option key={index} value={item.value}>{item.name}</Option>
+                                            <Option key={index} value={item.id}>{item.name}</Option>
                                         )
                                     })
                                 }
@@ -138,7 +206,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>新闻来源*</Col>
                         <Col offset='1' span='12'>
-                            <Input maxLength='10' value={this.state.title} onChange={(e)=>this.onInput(e)} name='title' placeholder='请输入不超过10个字的视频来源' />
+                            <Input maxLength='10' value={this.state.newsSource} onChange={(e)=>this.onInput(e)} name='newsSource' placeholder='请输入不超过10个字的视频来源' />
                         </Col>
                         <Col offset='1' span='4'>
                             <Checkbox
@@ -154,7 +222,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>视频封面图*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload imgWidth={160} imgUrl={tpImg}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                            <ImgUpload imgWidth={160} imgUrl={tpImg?config.server + tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
                     </Row>
                 </div>
@@ -166,7 +234,7 @@ class TypeSave extends Component{
                         </Col>
                     </Row>
                 </div>
-                <div className='form-item'>
+                {/* <div className='form-item'>
                     <Row>
                         <Col span='4'>视频时长*</Col>
                         <Col offset='1' span='6'>
@@ -176,7 +244,7 @@ class TypeSave extends Component{
                             <Input addonAfter="秒" maxLength='3' value={videoSec} onChange={(e)=>this.onInput(e)} name='videoSec' placeholder='请输入视频时长（秒）' />
                         </Col>
                     </Row>
-                </div>
+                </div> */}
                 <SignList
                     signList = {signList}
                     checked = {signChecked}

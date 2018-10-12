@@ -65,7 +65,7 @@ class NewsDetail extends Component{
     }
     //添加类型选项
     loadTypeList(){
-        fileApi.getTypeList({currPage:1,pageSize:9999,type:'2'}).then(res=>{
+        fileApi.getTypeList({currPage:1,pageSize:9999,type:'0'}).then(res=>{
             let list = res[0].lists;
             this.setState({
                 categoryList:list

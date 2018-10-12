@@ -1,48 +1,45 @@
 import React,{Component} from 'react';
-import _mm from 'util/mm.js';
 import NavTab from './common/nav.js';
 import style from 'common/layout.scss';
-
-// import self from './bannerAdd.scss';
-import {Link} from 'react-router-dom';
-import { Pagination,Breadcrumb,Icon} from 'antd';
-import { withRouter } from 'react-router-dom';
-import VideoDetail from 'components/video/fileDetail.js';
+import _mm from 'util/mm.js';
 import Bread from 'components/global/bread';
-// import NewsCategorySave from '../components/newsCategorySave';
-class TypeSave extends Component{
+import BannerDetail from 'components/global/bannerDetail';
+class BannerAdd extends Component{
     constructor(props){
         super(props)
+        
         this.state = {
-            checked:_mm.getParam('checked'),
             breadList:[
                 {
-                    name:'视频文件',
-                    path:'/video/videoEdit/file'
+                    name:'banner管理',
+                    path:'/video/videoIssue/banner'
                 },
                 {
-                    name:'新增视频',
+                    name:'新增banner',
                     path:''
                 }
             ],
+            checked:_mm.getParam('checked'),
             name:_mm.getParam('name')
         }
     }
-   
+    componentDidMount(){
+       
+    }
     render(){
         let {breadList,name} = this.state;
         return (
             <div className={style.container}>
-                <NavTab/>
+                <NavTab />
                 <div className={style.content}>
                     <Bread breadList={breadList}
-                        edit={name}
                         check = {name}
+                        edit = {name}
                     />
-                    <VideoDetail/>
+                    <BannerDetail/>
                 </div>
             </div>
         )
     }
 }
-export default withRouter(TypeSave);
+export default BannerAdd;

@@ -40,6 +40,18 @@ const Api = {
             }
         })
     },
+    //获取文件类型接口
+    getCategoryList(data){
+        return _mm.POST({
+            url:'/admin/category/categorylist',
+            data:{
+                token:getToken(),
+                currPage:data.currPage,
+                pageSize:data.pageSize,
+                type:data.type
+            }
+        })
+    },
     //获取modal弹出框信息
     getModalList(data){
         return _mm.POST({
