@@ -3,6 +3,7 @@ import { Menu, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import style from  './index.scss';
 import menuConfig from 'config/menuConfig.js';
+import mapPathToNav from './mapPathToNav.js';
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 class Nav extends Component {
@@ -10,30 +11,32 @@ class Nav extends Component {
         super(props)
         this.state = {
             menuTreeNode:[],
-            defaultSelectedKeys:['/news/newsEdit/banner'],
-            defaultOpenKeys:['/news']
+            openKeys:['/news'],
+            selectedKeys:['/news/newsEdit']
         }
     }
     componentDidMount(){
         let menuTreeNode = this.renderMenu(menuConfig);
         this.setState({menuTreeNode});
-        setTimeout(()=>{
-            this.setState({
-                defaultSelectedKeys:['/video/videoEdit/banner'],
-                defaultOpenKeys:['/video']
-            })
-        },2000)
+        this.getHash();
+    }
+    processKey(key){
+        let keyList = key.split('/');
+        keyList.pop();
+        let openKey = keyList.join('/');
+        openKey = openKey ? openKey :'/'
+        return openKey;
     }
     //菜单渲染
     renderMenu(menuConfig){
         return menuConfig.map((item)=>{
             if(item.children){
-                return (<SubMenu  key={item.key} title={<span><Icon type={item.icon} /><span>{item.title}</span></span>} >
+                return (<SubMenu onTitleClick = {(e)=>{this.subClick(e)}}  key={item.key} title={<span><Icon type={item.icon} /><span>{item.title}</span></span>} >
                     {this.renderMenu(item.children)}
                 </SubMenu>)
             }else{
                 return (
-                    <Menu.Item key={item.key}>
+                    <Menu.Item key={this.processKey(item.key)}>
                         <Link to={item.key}>
                         {
                             item.icon ? <span><Icon type={item.icon} />{item.title}</span> : item.title
@@ -44,15 +47,46 @@ class Nav extends Component {
             }
         })
     }
+    subClick(e){
+        let openKeys = e.key;
+        this.setState({
+            openKeys:[openKeys]
+        })
+    }
+    changeBar(e){
+        let openKeys = e.keyPath[1],
+        selectedKeys = e.keyPath[0];
+        this.setState({
+            openKeys:[openKeys],
+            selectedKeys:[selectedKeys]
+        })
+    }
+    getHash(){
+        let setS = (keys)=>{
+            this.setState({
+                openKeys:keys[0],
+                selectedKeys:keys[1]
+            })
+        }
+        window.onhashchange = function(e){
+            let hash = window.location.hash.substring(1);
+            let key = mapPathToNav(hash);
+            setS(key)
+        }
+        let hash = window.location.hash.substring(1);
+        mapPathToNav(hash);
+        let key = mapPathToNav(hash);
+        setS(key)
+    }
     render() {
-        let {defaultSelectedKeys,defaultOpenKeys} = this.state;
+        let {selectedKeys,openKeys} = this.state;
         return (
             <div className={style.navContainer}>
                 <Menu
-                    // onClick={this.handleClick.bind(this)}
+                    onClick={(e)=>{this.changeBar(e)}}
+                    openKeys = {openKeys}
+                    selectedKeys = {selectedKeys}
                     style={{ width: 256 }}
-                    defaultSelectedKeys={defaultSelectedKeys}
-                    defaultOpenKeys={defaultOpenKeys}
                     mode="inline"
                     theme="dark"
                 >
