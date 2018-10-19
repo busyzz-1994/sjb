@@ -130,7 +130,8 @@ class Banner extends Component{
     }
     //点击上线
     clickOnline(item){
-        fileApi.fileOnline({contentId:item.contentId,theissue:'4'}).then(res=>{
+        console.log(item)
+        fileApi.fileOnline({contentId:item.id,theissue:'4'}).then(res=>{
             message.success('上线成功！');
             this.loadList();
         }).catch(err=>{
@@ -139,7 +140,7 @@ class Banner extends Component{
     }
     //点击下线
     clickUnline(item){
-        fileApi.fileOnline({contentId:item.contentId,theissue:'5'}).then(res=>{
+        fileApi.fileOnline({contentId:item.id,theissue:'5'}).then(res=>{
             message.success('下线成功！');
             this.loadList();
         }).catch(err=>{

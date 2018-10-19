@@ -15,6 +15,7 @@ const Api = {
     },
     //添加商品类型
     addType(data){
+        console.log(data);
         return _mm.POST({
             url:'/admin/Merchandise/addCategory',
             data:{

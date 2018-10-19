@@ -223,6 +223,19 @@ const mm = {
         }else{
             return data.match(reg)[0];
         }
+    },
+    //将type 0 ， 1， 2, 转换成 新闻，商家，，
+    mapTypeToString(type){
+        let map = {
+            '0':'新闻',
+            '1':'商家',
+            '2':'商品',
+            '3':'直播',
+            '4':'视频',
+            '5':'音乐',
+            '6':'广告'
+        }
+        return map[type];
     }
 }
 export default mm;

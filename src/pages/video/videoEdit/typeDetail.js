@@ -4,7 +4,7 @@ import style from 'common/layout.scss';
 import { Select , Input , Button ,message,Pagination,Modal,Icon} from 'antd';
 import { withRouter,Link } from 'react-router-dom'; 
 import Bread from 'components/global/bread';
-import WordDetail from 'components/search/wordDetail.js';
+import WordDetail from 'components/video/typeDetail.js';
 import _mm from 'util/mm.js';
 class Banner extends Component{
     constructor(props){
@@ -37,7 +37,7 @@ class Banner extends Component{
                         edit = {typeName}
                         check = {typeName}
                     />
-                    <WordDetail type={4} />
+                    <WordDetail type={4} title='视频类型' />
                 </div>
             </div>
         )

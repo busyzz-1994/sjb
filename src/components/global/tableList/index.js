@@ -1,25 +1,9 @@
 import React,{Component} from 'react';
 // import { NavLink } from 'react-router-dom';
 import style from './index.scss';
+import NullImg from 'images/null.png';
 //实例
-{/* <TableList
-    thead={[{width:'5%',name:' '},{width:'15%',name:'轮播图片'},{width:'35%',name:'标题'},{width:'15%',name:'类型'},{width:'15%',name:'创建时间'},{width:'15%',name:'操作'}]}
->
-    {this.state.dataList.map((item,index)=>{
-        return (
-            <tr key={index}>
-                <td>{index + 1}</td>
-                <td>
-                    <img src={config.server+item.titleImg} width='80%' height='80%'/>
-                </td>
-                <td>{item.title}</td>
-                <td>{item.type == '0' ? '外链':'内链'}</td>
-                <td>{item.createTime}</td>
-                <td>操作</td>
-            </tr>
-        )
-    })}
-</TableList> */}
+
 class tableList extends Component{
     constructor(props){
         super(props)
@@ -58,10 +42,10 @@ class tableList extends Component{
          let listInfo = (
              <tr>
                  <td colSpan={this.props.thead.length} style={{textAlign:'center'}}>
-                     {this.state.isFirstLoading ? '正在加载数据...' : '没有找到相应的结果~'}</td>
+                     {this.state.isFirstLoading ? '正在加载数据...' : <img style={{display:'inline-block',margin:'10px 0'}} src={NullImg} />}</td>
              </tr>
          );
-         let tableBody = listBody ? listBody : listInfo;
+         let tableBody = listBody.length ? listBody : listInfo;
         return (
             <table className={style.tableList}>
                 <thead>

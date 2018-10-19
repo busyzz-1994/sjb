@@ -16,6 +16,10 @@ import topFont from 'images/icons/top-font.png';
 import topIcon from 'images/icons/top-icon.png';
 import unlineFont from 'images/icons/unline-font.png';
 import unlineIcon from 'images/icons/unline-icon.png';
+import showFont from 'images/icons/show-font.png';
+import showIcon from 'images/icons/show-icon.png';
+import hideFont from 'images/icons/hide-font.png';
+import hideIcon from 'images/icons/hide-icon.png';
 // 0：审核；
 // 1：查看;
 // 2:删除；
@@ -23,7 +27,8 @@ import unlineIcon from 'images/icons/unline-icon.png';
 // 4：上线：
 // 5：置顶；
 // 6：下线；
-
+// 7: 显示评论
+// 8：隐藏评论
 
 // 参数传入
 // 1.type 图标的类型
@@ -63,6 +68,14 @@ class Icon extends Component{
                 {
                     font:unlineFont,
                     icon:unlineIcon
+                },
+                {
+                    font:showFont,
+                    icon:showIcon
+                },
+                {
+                    font:hideFont,
+                    icon:hideIcon
                 }
 
             ]

@@ -19,10 +19,6 @@ class Banner extends Component{
                 url:'/news/newsAudit/banner'
             },
             {
-                name:'新闻类型',
-                url:'/news/newsAudit/type'
-            },
-            {
                 name:'新闻文件',
                 url:'/news/newsAudit/file'
             }

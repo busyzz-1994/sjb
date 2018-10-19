@@ -31,7 +31,6 @@ class NewsCategorySave extends Component{
     Input(e){
         let name = e.target.name,
             value = e.target.value
-        console.log(name)
         this.setState({
             [name]:value
         })

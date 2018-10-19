@@ -6,6 +6,9 @@ import TableList from 'components/global/tableList';
 import IconHandle from 'components/global/icon';
 import {Pagination,Button,Input,message} from 'antd';
 import systemApi from 'api/system';
+import userApi from 'api/user/index.js';
+import config from 'base/config.json';
+import Icon from './icon';
 const Search = Input.Search
 class Sign extends Component{
     constructor(props){
@@ -28,11 +31,10 @@ class Sign extends Component{
      loadList(){
         let {pageSize,pageNum,isSearch,searchValue} = this.state;
         if(isSearch){
-            systemApi.searchUser({
+            userApi.getUserInfoList({
                 currPage:pageNum,
                 pageSize,
-                keyword:searchValue,
-                type:0
+                keyword:searchValue
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -42,10 +44,9 @@ class Sign extends Component{
                 })
             })
         }else{
-            systemApi.getUserList({
+            userApi.getUserInfoList({
                 currPage:pageNum,
-                pageSize,
-                isInternal:0
+                pageSize
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -109,37 +110,43 @@ class Sign extends Component{
                 <div className={style.content}>
                     {/* 操作开始 */}
                     <div className={style.handle + ' clearfix'}>
-                        <div className='fl'>
+                        {/* <div className='fl'>
                             <button onClick={()=>this.resetPassword()} className="btn btn-danger btn-sm">恢复所有内部用户初始密码</button>
-                        </div>
+                        </div> */}
                         <div className='fr'>
                             <Search
                                 placeholder="输入用户名关键字进行搜索"
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
-                            <div style={{display:'inline-block',marginLeft:'10px'}}>
+                            {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAdd()}} type="primary" icon="plus" >
                                     新增用户
                                 </Button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                      {/* 操作结束 */}
                      <TableList
-                        thead={[{width:'5%',name:' '},{width:'20%',name:'用户名'},{width:'20%',name:'绑定邮箱'},{width:'15%',name:'姓名'},{width:'25%',name:'创建时间'},{width:'15%',name:'操作'}]}
+                        thead={[{width:'5%',name:' '},{width:'10%',name:'用户头像'},{width:'15%',name:'用户昵称'},{width:'15%',name:'用户账号'},{width:'10%',name:'性别'},{width:'15%',name:'地区'},{width:'15%',name:'绑定社交账号'},{width:'15%',name:'注册时间'}]}
                         tdHeight = '58px'
                     >
                         {dataList.map((item,index)=>{
                             return (
                                 <tr key={index}>
                                     <td>{index+1}</td>
-                                    <td>{item.name}</td>
-                                    <td>{item.email}</td>
-                                    <td>{item.nickname}</td>
-                                    <td>{item.creatTime}</td>
-                                    <td className='td-handle'>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>this.clickEidt(id,item.name)} />
+                                    <td>
+                                        <img src={config.server+item.userImg} alt="" style={{width:'50px',height:'50px'}}/>
+                                    </td>
+                                    <td>{item.username}</td>
+                                    <td>{item.phone}</td>
+                                    <td>{item.sex}</td>
+                                    <td>{item.area}</td>
+                                    <td>
+                                        <Icon iconList={item.type.split(',')}/>
+                                    </td>
+                                    <td>
+                                        {item.createTime}
                                     </td>
                                 </tr>
                             )

@@ -27,7 +27,9 @@ class Banner extends Component{
             originData:[],
             pageSize:12,
             total:0,
-            pageNum:1
+            pageNum:1,
+            //type 区分是推荐 还是 热搜
+            type:this.props.match.params.type
         }
     }
     componentDidMount(){
@@ -35,14 +37,15 @@ class Banner extends Component{
     }
     //加载数据
     loadList(){
-        let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
+        let {pageSize,pageNum,selectValue,isSearch,searchValue,type} = this.state;
+
         if(isSearch){
             recommendApi.searchWord({
                 currPage:pageNum,
                 pageSize,
                 keyword:searchValue,
                 checkview:selectValue,
-                type:7
+                type
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -52,11 +55,12 @@ class Banner extends Component{
                 })
             })
         }else{
+            console.log(type)
             recommendApi.getList({
                 currPage:pageNum,
                 pageSize,
                 checkview:selectValue,
-                type:7
+                type
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -108,7 +112,8 @@ class Banner extends Component{
     }
     //跳转到添加页面
     goAddBanner(){
-        this.props.history.push(`/search/searchEdit/recommend/wordDetail`);
+        let {type} = this.state;
+        this.props.history.push(`/search/searchEdit/recommend/${type}/wordDetail`);
     }
     //点击查看图标
     clickCheck(id,name){
@@ -116,8 +121,9 @@ class Banner extends Component{
     }
     //点击编辑图标
     clickEdit(item){
+        let {type} = this.state;
         this.props.history.push({
-            pathname:`/search/searchEdit/recommend/wordDetail/${item.id}/?checked=1&name=${item.name}`
+            pathname:`/search/searchEdit/recommend/${type}/wordDetail/${item.id}/?checked=1&name=${item.name}`
         })
     }
     //点击删除图标
@@ -136,6 +142,7 @@ class Banner extends Component{
         })
     }
     render(){
+        let {type} = this.state;
         return (
             <div className={style.container}>
                 <NavTab/>
@@ -186,7 +193,7 @@ class Banner extends Component{
                                         <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
                                    </td>
                                    <td>
-                                        <Link className='gl-link' to={`/search/searchEdit/recommend/fileList/${item.id}/?name=${item.name}`} >
+                                        <Link className='gl-link' to={`/search/searchEdit/recommend/${type}/fileList/${item.id}/?name=${item.name}`} >
                                         <Icon type="link" />
                                         关联文件
                                         </Link>

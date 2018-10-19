@@ -21,7 +21,7 @@ class Banner extends Component{
             //是否处于搜索状态
             isSearch:false,
             searchValue:'',
-            pageSize:3,
+            pageSize:12,
             total:1,
             pageNum:1
         }

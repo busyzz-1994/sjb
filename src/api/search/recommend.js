@@ -14,6 +14,7 @@ const Api = {
     },
     // 添加词条
     addWord(data){
+        console.log(data);
         return _mm.POST({
             url:'/admin/search/addCategory',
             data:{
@@ -80,6 +81,36 @@ const Api = {
                 token:getToken()
             }
         })
-    }   
+    },
+    //查询发布状态下的词条
+    getListByIssue(data){
+        return _mm.POST({
+            url:'/admin/search/getCaryByTheissue',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //词条的上线
+    getOnline(data){
+        return _mm.POST({
+            url:'/admin/search/changeTheissue',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //词条置顶
+    top(data){
+        return _mm.POST({
+            url:'/admin/search/setTop',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    }
 }
 export default Api;

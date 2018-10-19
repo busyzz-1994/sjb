@@ -6,6 +6,7 @@ const getToken = () =>{
 const Api = {
     //视频类型开始
     getTypeList(data){
+        console.log(data);
         return _mm.POST({
             url:'/admin/video/videoTypeList',
             data:{
@@ -14,7 +15,7 @@ const Api = {
             }
         })
     },
-    //添加关联文件
+    //添加视频类型
     addRelFile(data){
         return _mm.POST({
             url:'/admin/video/editVideoType',
@@ -24,7 +25,27 @@ const Api = {
             }
         })
     },
-    //视频文件开始
+    //发布类型上线
+    OnlineType(data){
+        return _mm.POST({
+            url:'/admin/video/theissueType',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //类型置顶
+    topType(data){
+        return _mm.POST({
+            url:'/admin/video/placedstickType',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //视频文件开始**********
     addFile(data){
         return _mm.POST({
             url:'/admin/video/editVideo',
@@ -44,8 +65,45 @@ const Api = {
         })
     },
     delFile(data){
+        console.log(data);
         return _mm.POST({
             url:'/admin/video/deleteVideo',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    getVideoDetail(data){
+        return _mm.POST({
+            url:'/admin/video/videoInfo',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    authVideoFile(data){
+        return _mm.POST({
+            url:'/admin/video/checkVideo',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    issueVideoFile(data){
+        return _mm.POST({
+            url:'/admin/video/theissueVideo',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    topVideoFile(data){
+        return _mm.POST({
+            url:'/admin/video/placedstickVideo',
             data:{
                 ...data,
                 token:getToken()

@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import './index.scss';
 import _mm  from 'util/mm.js';
+import WillOpenImg from 'images/willOpen.png';
 class Home extends Component{
 	constructor(props){
 		super(props);
@@ -9,8 +10,8 @@ class Home extends Component{
 	}
 	render(){
 		return(
-			<div>
-				Home
+			<div style={{backgroundColor:'#fff',textAlign:'center',padding:'20px 0'}}>
+				<img src={WillOpenImg} />
 			</div>
 		)
 	}

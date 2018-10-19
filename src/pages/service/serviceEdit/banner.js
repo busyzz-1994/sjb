@@ -1,8 +1,9 @@
 import React,{Component} from 'react';
 import NavTab from './common/nav.js';
 import TableList from 'components/global/tableList';
+import _mm from 'util/mm.js'
 import style from 'common/layout.scss';
-import { Select , Input , Button ,message,Pagination,Modal} from 'antd';
+import {Select,Input,Button,message,Pagination,Modal} from 'antd';
 import { withRouter } from 'react-router-dom'; 
 import newsEditApi from 'api/news/banner.js';
 import config from 'base/config.json';
@@ -15,14 +16,17 @@ class Banner extends Component{
         super(props)
         this.state={
             //当前的状态
-            selectValue:0,
+            selectValue:'0',
             //当前render的数据
             dataList:[],
+            //是否处于搜索状态
+            isSearch:false,
+            searchValue:'',
             //当前的原数据
             originDataList:[],
             //原数据
             originData:[],
-            pageSize:1,
+            pageSize:3,
             total:10,
             pageNum:1
         }
@@ -32,61 +36,75 @@ class Banner extends Component{
     }
     //加载数据
     loadList(){
-        newsEditApi.getBannerList().then(res=>{
-            this.setState({
-                dataList:res,
-                originData:res,
-                originDataList:res
-            },()=>{
-                this.choiceType();
+        let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
+        if(isSearch){
+            newsEditApi.auditSearch({
+                currPage:pageNum,
+                checkview:selectValue,
+                pageSize,
+                type:1,
+                title:searchValue
+             }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let lists = res[0].lists;
+                this.setState({
+                    dataList:lists,
+                    total:totalCount
+                })
+             })
+        }else{
+            newsEditApi.getBannerList({
+                currPage:pageNum,
+                checkview:selectValue,
+                pageSize,
+                type:1
+            }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let lists = res[0].lists;
+                console.log(lists)
+                this.setState({
+                    dataList:lists,
+                    total:totalCount
+                })
             })
-        })
-    }
-    //选择类型
-    choiceType(){
-        let type = this.state.selectValue;
-        let dataList = this.state.originData.filter((item,index)=>{
-            return item.baType == type ;
-        })
-        this.setState({
-            dataList,
-            originDataList:dataList
-        },()=>{
-           this.renderPagination()
-        })
+        }
     }
     //搜索
     searchTitle(value){
         if(!value){
-            this.loadList();
-            return;
-        }
-        newsEditApi.search({title:value,type:this.state.selectValue}).then(res=>{
             this.setState({
-                dataList:res,
-                originDataList:res
+                searchValue:'',
+                pageNum:1,
+                isSearch:false
             },()=>{
-                this.renderPagination()
+                this.loadList()
             })
-        }).catch(err=>{
-            message.error(err);
-        })
+        }else{
+            this.setState({
+                searchValue:value,
+                pageNum:1,
+                isSearch:true
+            },()=>{
+                this.loadList()
+            })
+        }
+       
     }
     //选择类型
     select(value){
         this.setState({
-            selectValue:value
+            selectValue:value,
+            pageNum:1
         },()=>{
-            this.choiceType();
+            this.loadList();
         })
     }
     //点击分页
     changePage(pageNum){
-        let pageSize = this.state.pageSize;
-        let dataList = this.state.originDataList.slice((pageNum*pageSize - 1),((pageNum+1)*pageSize) - 1);
 		this.setState({
-            pageNum,
-            dataList
+            pageNum
+        },()=>{
+            this.loadList();
         })
     }
     //设置分页组件
@@ -99,31 +117,36 @@ class Banner extends Component{
     }
     //跳转到添加页面
     goAddBanner(){
-        this.props.history.push('/news/newsEdit/banner/add');
+        this.props.history.push('/service/serviceEdit/banner/detail/?bannerType=1');
     }
     //点击查看图标
-    clickCheck(id){
-        this.props.history.push(`/news/newsEdit/banner/add/${id}/?checked=0`)
+    clickCheck(id,name){
+        this.props.history.push(`/service/serviceEdit/banner/detail/${id}/?name=${name}&checked=0&bannerType=1`)
     }
     //点击编辑图标
-    clickEdit(id){
-        this.props.history.push(`/news/newsEdit/banner/add/${id}/?checked=1`)
+    clickEdit(id,name){
+        this.props.history.push(`/service/serviceEdit/banner/detail/${id}/?name=${name}&checked=1&bannerType=1`)
     }
     //点击删除图标
-    clickDel(id){
+    clickDel(id,fkId,resourcesType){
         confirm({
             title:'删除的内容无法恢复，确认删除？',
-            onOk(){
-                
+            onOk:()=>{
+                newsEditApi.delBanner({id,fkId,resourcesType}).then(res=>{
+                    this.loadList();
+                }).catch(res=>{
+                    message.error(res);
+                })
             },
             okText:'确认',
             cancelText:'取消'
         })
     }
     render(){
+        let {selectValue} = this.state;
         return (
             <div className={style.container}>
-                <NavTab/>
+                <NavTab />
                 <div className={style.content}>
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>
@@ -133,7 +156,7 @@ class Banner extends Component{
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
                                 // defaultValue = {this.state.selectValue}
-                                defaultValue = '待审核'
+                                value = {selectValue}
                                 onChange={(value)=>{this.select(value)}}
                             >
                                 <Option value="0">待审核</Option>
@@ -156,7 +179,7 @@ class Banner extends Component{
                     </div>
                     {/* 操作栏结束 */}
                     <TableList
-                        thead={[{width:'5%',name:' '},{width:'22%',name:'轮播图片'},{width:'35%',name:'标题'},{width:'8%',name:'类型'},{width:'15%',name:'创建时间'},{width:'15%',name:'操作'}]}
+                        thead={[{width:'5%',name:' '},{width:'22%',name:'轮播图片'},{width:'30%',name:'标题'},{width:'8%',name:'类型'},{width:'20%',name:'创建时间'},{width:'15%',name:'操作'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
@@ -166,12 +189,12 @@ class Banner extends Component{
                                        <img src={config.server+item.titleImg} width='150' height='70'/>
                                    </td>
                                    <td>{item.title}</td>
-                                   <td>{item.type == '0' ? '外链':'内链'}</td>
+                                   <td>{item.baType == '0' ? '外链':'内链'}</td>
                                    <td>{item.createTime}</td>
-                                   <td>
-                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id)}}/>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id)}}/>
-                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id)}}/>
+                                   <td className='td-handle' >
+                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
+                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
+                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item.fkId,item.resourcesType)}}/>
                                    </td>
                                </tr>
                            )

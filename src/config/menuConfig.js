@@ -109,15 +109,15 @@ const menuConfig = [
         icon:'search',
         children:[
             {
-                key:'/search/searchEdit/recommend',
+                key:'/search/searchEdit/recommend/7',
                 title:'搜索编辑'
             },
             {
-                key:'/search/searchAuth/recommend',
+                key:'/search/searchAuth/recommend/7',
                 title:'搜索审核'
             },
             {
-                key:'/search/searchIssue/recommend',
+                key:'/search/searchIssue/recommend/7',
                 title:'搜素发布'
             }
         ]

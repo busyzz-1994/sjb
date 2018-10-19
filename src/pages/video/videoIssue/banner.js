@@ -189,7 +189,6 @@ class Banner extends Component{
         }
         //已发布时候的icon列表
         let handle_2 = (item,index) =>{
-            console.log(index,pageNum)
             let hide = (index == 0) && (pageNum == 1) ;
             return (
                 <div>
@@ -208,6 +207,7 @@ class Banner extends Component{
                     <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
                     <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
                     <IconHandle type='4' id={item.id} iconClick={(id)=>{this.clickOnline(id,item.title)}}/>
+                    <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item.fkId,item.resourcesType)}}/>
                 </div>
             )
         }

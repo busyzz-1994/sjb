@@ -66,8 +66,33 @@ class TypeSave extends Component{
         })  
     }
     //添加类型选项
+    // loadTypeList(){
+    //     typeApi.getTypeList(
+    //         {
+    //             currPage:1,
+    //             pageSize:9999,
+    //             type:'2',
+    //             theissue:'3'
+    //         }
+    //     ).then(res=>{
+    //         let list = res[0].lists;
+    //         this.setState({
+    //             category:list
+    //         },()=>{
+    //             this.setState({
+    //                 categoryValue:list[0]?list[0].id:''
+    //             },()=>{
+    //                 let {id} = this.state;
+    //                 if(id){
+    //                     this.getDetail();
+    //                 }
+    //             })
+    //         })
+    //     })
+    // }
+    //添加类型选项
     loadTypeList(){
-        typeApi.getTypeList({currPage:1,pageSize:9999,type:'2'}).then(res=>{
+        commonApi.getIssueType({currPage:1,pageSize:9999,type:'2',theissue:'4'}).then(res=>{
             let list = res[0].lists;
             this.setState({
                 category:list

@@ -9,12 +9,14 @@ import SignList from 'components/global/signList/indexNew.js';
 import ImgList from 'components/global/imgList'
 import Editor from 'components/global/editor';
 import AuditForm from 'components/global/auditForm';
+import Validate from 'util/validate';
 // import self from './bannerAdd.scss';
 import {Link} from 'react-router-dom';
 import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon} from 'antd';
 import { withRouter } from 'react-router-dom';
 import newsEditApi from 'api/news/banner';
 import commonApi from 'api/common.js';
+import serviceApi from 'api/service/index.js';
 import config from 'base/config.json';
 const Option = Select.Option;
 // import NewsCategorySave from '../components/newsCategorySave';
@@ -23,7 +25,8 @@ class TypeSave extends Component{
         super(props)
         this.state = {
             checked:_mm.getParam('checked'),
-            category:[{name:'推荐',value:0},{name:'热门',value:1},{name:'体育',value:2}],
+            id:this.props.match.params.id,
+            category:[],
             categoryValue:'',
             title:'',
             // 服务缩略图
@@ -31,24 +34,24 @@ class TypeSave extends Component{
             //地址
             address:'',
             //评分
-            score:1,
+            score:'',
             //消费次数
-            count:5,
+            count:'',
             //起始价格
-            startPrice:100,
+            startPrice:'',
             //精确地理位置
             exactAddress:'',
             //服务主图
             fwImg:'',
-            fwImgList:['','','','','','',''],
+            fwImgList:[''],
             //新闻内容detail
             detail:'',
             //选中的signList:
-            signList:[2],
+            signList:[],
             signChecked:false,
             defaultDetail:'',
             detail:'',
-            authStatus:0,
+            authStatus:2,
             authString:''
         }
     }
@@ -58,8 +61,51 @@ class TypeSave extends Component{
         })
     }
     componentDidMount(){
-        this.setState({
-            categoryValue:this.state.category[0].value
+        this.loadTypeList();
+    }
+     //添加类型选项
+     loadTypeList(){
+        commonApi.getIssueType({currPage:1,pageSize:9999,type:'1',theissue:'4'}).then(res=>{
+            let list = res[0].lists;
+            this.setState({
+                category:list
+            },()=>{
+                this.setState({
+                    categoryValue:list[0]?list[0].id:''
+                },()=>{
+                    let {id} = this.state;
+                    if(id){
+                        this.getDetail();
+                    }
+                })
+            })
+        })
+    }
+    getDetail(){
+        let {id} = this.state;
+        serviceApi.getFileDetail({
+            id
+        }).then(res=>{
+            console.log(res);
+            let {categoryId,title,thumbnail,score,degree,address,detailed,price,
+                content,listag,coverimg,spectacular} = res[0];
+            this.setState({
+                categoryValue:categoryId,
+                title:title,
+                tpImg:thumbnail,
+                score,
+                count:degree,
+                address,
+                exactAddress:degree,
+                startPrice:price,
+                defaultDetail:content,
+                detail:content,
+                signList:listag,
+                signChecked:spectacular=='1'?true:false,
+                fwImgList:coverimg.split(',')
+            })    
+        }).catch(err=>{
+            message.error(err);
         })
     }
     onInput(e){
@@ -71,7 +117,7 @@ class TypeSave extends Component{
     }
     //获取缩略图
     getUrl(data,index){
-        let url =config.server + data[0].attachFilenames;
+        let url =  data[0].attachFilenames;
         this.setState({
             tpImg:url
         })
@@ -106,6 +152,85 @@ class TypeSave extends Component{
             authString:string
         })
     }
+     //点击保存
+    save(){
+        let {checked} = this.state;
+        if(checked == '2' || checked == '4'){
+            this.authFile();
+        }else{
+            let msg = this.validate();
+            if(msg){
+                message.error(msg);
+            }else{
+                this.addFile();
+            }
+        }
+    }
+    //验证表单信息
+    validate(){
+        let validate = new Validate();
+        let {title,tpImg,score,count,address,startPrice} = this.state;
+        validate.add(title,'notEmpty','服务标题不能为空！');
+        validate.add(tpImg,'notEmpty','服务缩略图不能为空！');
+        validate.add(score,'numberRange:0:5','评分只能为0-5的数字！');
+        validate.add(count,'notMinus','消费次数为整数！');
+        validate.add(address,'notEmpty','地址不能为空！');
+        validate.add(startPrice,'notFloatMinus','起始价格必须为数字！');
+        return validate.start();
+    }
+    //审核文件
+    authFile(){
+        let {id,authStatus,authString} = this.state;
+        serviceApi.authFile({
+            id:id,
+            checkview:authStatus,
+            remark:authString
+        }).then(res=>{
+            message.success('审核成功！');
+            this.props.history.goBack();
+        }).catch(err=>{
+            message.error(err)
+        })
+    }
+    //添加或编辑文件
+    addFile(){
+        let {title,categoryValue,score,count,tpImg,signList,address,startPrice,
+            signChecked,id,exactAddress,fwImgList,detail} = this.state;
+            console.log({
+                title,
+                thumbnail:tpImg,
+                degree:count,
+                score,
+                address,
+                price:startPrice,
+                listag:signList,
+                detailed:exactAddress,
+                spectacular:signChecked?'1':'0',
+                coverimg:fwImgList.join(','),
+                categoryId:categoryValue,
+                content:detail
+            })
+        serviceApi.addFile({
+            id,
+            title,
+            thumbnail:tpImg,
+            degree:count,
+            score,
+            address,
+            price:startPrice,
+            listag:signList,
+            detailed:exactAddress,
+            spectacular:signChecked?'1':'0',
+            coverimg:fwImgList.join(','),
+            categoryId:categoryValue,
+            content:detail
+        }).then(res=>{
+            message.success('保存文件成功！');
+            this.props.history.goBack()
+        }).catch(err=>{
+            message.error(err);
+        })
+    }
     render(){
         let {category,categoryValue,tpImg,signList,signChecked,fwImgList,
             defaultDetail,authStatus,authString,checked} = this.state;
@@ -120,13 +245,13 @@ class TypeSave extends Component{
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
                                 // defaultValue = {this.state.selectValue}
-                                defaultValue = {category[0].name}
+                                value = {categoryValue}
                                 onChange={(value)=>{this.selectCategory(value)}}
                             >
                                 {
                                     category.map((item,index)=>{
                                         return (
-                                            <Option key={index} value={item.value}>{item.name}</Option>
+                                            <Option key={index} value={item.id}>{item.name}</Option>
                                         )
                                     })
                                 }
@@ -146,7 +271,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>服务缩略图*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload imgWidth={160} imgUrl={tpImg}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                            <ImgUpload imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
                     </Row>
                 </div>

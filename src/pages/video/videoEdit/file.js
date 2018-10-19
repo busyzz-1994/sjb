@@ -109,13 +109,13 @@ class Banner extends Component{
         this.props.history.push(`/video/videoEdit/file/detail`);
     }
     //点击查看图标
-    clickCheck(id,name){
-        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
+    clickCheck(item){
+        this.props.history.push(`/video/videoEdit/file/detail/${item.videoId}/?checked=0&name=${item.videoTitle}`)
     }
     //点击编辑图标
-    clickEdit(id,name){
+    clickEdit(item){
         this.props.history.push({
-            pathname:`/discounts/discountsEdit/file/fileDetail/${id}/?checked=1&name=${name}`
+            pathname:`/video/videoEdit/file/detail/${item.videoId}/?checked=1&name=${item.videoTitle}`
         })
     }
     //点击删除图标
@@ -181,8 +181,8 @@ class Banner extends Component{
                                    <td>{item.videoCategory}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
+                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
+                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
                                         <IconHandle type='2' id={item.videoId} iconClick={(id)=>{this.clickDel(id)}}/>
                                    </td>
                                </tr>

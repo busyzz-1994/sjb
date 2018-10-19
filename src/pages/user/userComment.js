@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { withRouter } from 'react-router-dom'; 
+import { withRouter ,Link} from 'react-router-dom'; 
 import style from 'common/layout.scss';
 import NavBar from './common/nav.js';
 import TableList from 'components/global/tableList';
@@ -130,6 +130,14 @@ class Sign extends Component{
             cancelText:'取消'
         })
     }
+    //显示评论
+    clickShow(item){
+        console.log(item)
+    }
+    //影藏评论
+    clickHide(item){
+        console.log(item)
+    }
     changePage(pageNum){
         this.setState({
             pageNum
@@ -152,7 +160,8 @@ class Sign extends Component{
         let handle_2 = (item) =>{
             return (
                 <div>
-                    <IconHandle type='0' id={item.id} iconClick={(id)=>{this.clickShow(id,item)}}/>
+                    {/* <IconHandle type='7' id={item.id} iconClick={(id)=>{this.clickShow(item)}}/>
+                    <IconHandle type='8' id={item.id} iconClick={(id)=>{this.clickHide(item)}}/> */}
                     <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item)}}/>
                 </div>
             )

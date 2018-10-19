@@ -5,6 +5,7 @@ import style from 'common/layout.scss';
 import { Select , Input , Button ,message,Pagination,Modal,Icon} from 'antd';
 import { withRouter,Link } from 'react-router-dom'; 
 import typeApi from 'api/discounts/type.js';
+import videoApi from 'api/video/index.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
 const Option = Select.Option;
@@ -37,28 +38,29 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
         if(isSearch){
-            typeApi.searchType({
+            videoApi.getTypeList({
                 currPage:pageNum,
                 pageSize,
-                type:'2',
-                name:searchValue
+                type:2,
+                name:searchValue,
+                theissue:selectValue
             }).then(res=>{
-                let totalCount = res[0].totalCount;
-                let list = res[0].lists ;
+                let totalCount = res[0].total;
+                let list = res[0].list ;
                 this.setState({
                     dataList:list,
                     total:totalCount
                 })
             })
         }else{
-            typeApi.getTypeList({
+            videoApi.getTypeList({
                 currPage:pageNum,
                 pageSize,
-                type:selectValue
+                type:2,
+                theissue:selectValue
             }).then(res=>{
-                console.log(res)
-                let totalCount = res[0].totalCount;
-                let list = res[0].lists ;
+                let totalCount = res[0].total;
+                let list = res[0].list ;
                 this.setState({
                     dataList:list,
                     total:totalCount
@@ -134,7 +136,47 @@ class Banner extends Component{
             cancelText:'取消'
         })
     }
+    //上线
+    clickOnline(item){
+        videoApi.OnlineType({
+            id:item.id,
+            theissue:'4'
+        }).then(res=>{
+            message.success('发布成功！');
+            this.loadList()
+        })
+    }
+    //下线
+    clickUnline(item){
+        videoApi.OnlineType({
+            id:item.id,
+            theissue:'5'
+        }).then(res=>{
+            message.success('下线成功！');
+            this.loadList()
+        })
+    }
+    //置顶
+    clickTop(item){
+        videoApi.topType({
+            id:item.id
+        }).then(res=>{
+            message.success('置顶成功！');
+            this.loadList()
+        })
+    }
     render(){
+        let {selectValue,pageNum} = this.state;
+        let handle_2 = (item,index)=>{
+            return (
+                <div>
+                    <IconHandle type='6' iconClick={()=>{this.clickUnline(item)}}/>
+                    {
+                        (index == 0 && pageNum ==1) ? null : <IconHandle type='5' iconClick={()=>{this.clickTop(item)}}/>
+                    }
+                </div>
+            )
+        }
         return (
             <div className={style.container}>
                 <NavTab/>
@@ -181,8 +223,10 @@ class Banner extends Component{
                                    <td>{item.name}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.name,item.type)}}/>
-                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id)}}/>
+                                    {
+                                        selectValue == '4' ? handle_2(item,index) :
+                                        <IconHandle type='4' iconClick={()=>{this.clickOnline(item)}}/>
+                                    }
                                    </td>
                                    <td>
                                         <Link className='gl-link' to={`/discounts/discountsIssue/type/typeList/${item.id}/?name=${item.name}`} >

@@ -20,7 +20,7 @@ class Banner extends Component{
         this.breadList = [
             {
                 name:'推荐',
-                path:'/search/searchEdit/recommend'
+                path:`/search/searchEdit/recommend/${this.props.match.params.type}`
             },
             {
                 name:_mm.getParam('name'),
@@ -54,11 +54,11 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue,id} = this.state;
         if(isSearch){
-            fileApi.searchFileAudit({
+            recommendApi.getFileList({
                 currPage:pageNum,
                 pageSize,
-                title:searchValue,
-                checkview:selectValue
+                id,
+                keyword:searchValue,
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -68,7 +68,6 @@ class Banner extends Component{
                 })
             })
         }else{
-            console.log(id)
             recommendApi.getFileList({
                 id,
                 currPage:pageNum,
@@ -215,14 +214,14 @@ class Banner extends Component{
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>{item.resourcesName}</td>
-                                   <td>{item.resourcesType}</td>
+                                   <td>{_mm.mapTypeToString(item.resourcesType)}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
                                         <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
                                         <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
-                                        {
+                                        {/* {
                                             (index==0)&&pageNum==1?null: <IconHandle type='5' id={item.id} iconClick={(id)=>{this.clickTop(item)}}/>
-                                        }
+                                        } */}
                                    </td>
                                </tr>
                            )

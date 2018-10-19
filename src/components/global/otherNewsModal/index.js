@@ -73,11 +73,19 @@ class OtherNewsModal extends Component{
                 })
             })
         }else{
+            console.log({
+                currPage:pageNum,
+                pageSize,
+                id:id?id:'999999',
+                type:activeType,
+                flag:this.props.flag
+            })
             commonApi.getModalList({
                 currPage:pageNum,
                 pageSize,
                 id:id?id:'999999',
-                type:activeType
+                type:activeType,
+                flag:this.props.flag
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -105,8 +113,11 @@ class OtherNewsModal extends Component{
     }
     //切换关联类型
     changeType(e){
-        let  index = e.target.getAttribute('index');
-        this.setState({activeType:index,isSearch:false,pageNum:1},()=>{this.loadList()});
+        let canChange = this.props.canChange;
+        if(canChange){
+            let  index = e.target.getAttribute('index');
+            this.setState({activeType:index,isSearch:false,pageNum:1},()=>{this.loadList()});
+        }
     }
     //search查询
     search(value){
@@ -130,6 +141,7 @@ class OtherNewsModal extends Component{
     }
     //选择标题
     chioceTitle(e){
+        
         let index = e.target.getAttribute('index');
         this.setState({
             activeTitle:index
@@ -216,7 +228,9 @@ class OtherNewsModal extends Component{
 }
 OtherNewsModal.defaultProps = {
     type:'checkbox',
-    activeType:0
+    activeType:0,
+    canChange:true,
+    flag:0
 }
 
 export default withRouter(OtherNewsModal) ;

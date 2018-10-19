@@ -21,7 +21,7 @@ class Banner extends Component{
         this.breadList = [
             {
                 name:'推荐',
-                path:'/search/searchAuth/recommend'
+                path:`/search/searchAuth/recommend/${this.props.match.params.type}`
             },
             {
                 name:_mm.getParam('name'),

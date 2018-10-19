@@ -2,27 +2,32 @@ import React,{Component} from 'react';
 import NavTab from './common/nav.js';
 import TableList from 'components/global/tableList';
 import style from 'common/layout.scss';
-import { Select , Input , Button ,message,Pagination} from 'antd';
-import { withRouter } from 'react-router-dom'; 
-import newsTypeApi from 'api/news/category.js';
+import { Select , Input , Button ,message,Pagination,Modal,Icon} from 'antd';
+import { withRouter,Link } from 'react-router-dom'; 
+import recommendApi from 'api/search/recommend.js';
+import videoApi from 'api/video/index.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
 const Option = Select.Option;
 const Search = Input.Search;
-class Type extends Component{
+const confirm = Modal.confirm;
+class Banner extends Component{
     constructor(props){
         super(props)
         this.state={
             //当前的状态
-            selectValue:0,
+            selectValue:'0',
             //当前render的数据
             dataList:[],
             //当前的原数据
             originDataList:[],
             //原数据
+            //是否处于搜索状态
+            isSearch:false,
+            searchValue:'',
             originData:[],
-            pageSize:1,
-            total:10,
+            pageSize:12,
+            total:0,
             pageNum:1
         }
     }
@@ -31,93 +36,104 @@ class Type extends Component{
     }
     //加载数据
     loadList(){
-        let {pageNum,pageSize} = this.state;
-
-
-        newsTypeApi.getList({
-            currPage:pageNum,
-            pageSize
-        }).then(res=>{
-            this.setState({
-                dataList:res,
-                originData:res,
-                originDataList:res
-            },()=>{
-                // this.choiceType();
-                console.log(this.state.originData)
+        let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
+        if(isSearch){
+            videoApi.getTypeList({
+                currPage:pageNum,
+                pageSize,
+                type:1,
+                name:searchValue,
+                theissue:'3'
+            }).then(res=>{
+                let totalCount = res[0].total;
+                let list = res[0].list ;
+                this.setState({
+                    dataList:list,
+                    total:totalCount
+                })
             })
-        })
-    }
-    //选择类型
-    choiceType(){
-        let type = this.state.selectValue;
-        let dataList = this.state.originData.filter((item,index)=>{
-            return item.type == type ;
-        })
-        this.setState({
-            dataList,
-            originDataList:dataList
-        },()=>{
-           this.renderPagination()
-        })
+        }else{
+            videoApi.getTypeList({
+                currPage:pageNum,
+                pageSize,
+                type:1,
+                theissue:'3'
+            }).then(res=>{
+                let totalCount = res[0].total;
+                let list = res[0].list ;
+                this.setState({
+                    dataList:list,
+                    total:totalCount
+                })
+            })
+        }
+        
     }
     //搜索
     searchTitle(value){
         if(!value){
-            this.loadList();
-            return;
-        }
-        newsEditApi.search({title:value,type:this.state.selectValue}).then(res=>{
             this.setState({
-                dataList:res,
-                originDataList:res
+                isSearch:false,
+                pageNum:1,
+                searchValue:''
             },()=>{
-                this.renderPagination()
+                this.loadList();
             })
-        }).catch(err=>{
-            message.error(err);
-        })
+        }else{
+            this.setState({
+                isSearch:true,
+                pageNum:1,
+                searchValue:value
+            },()=>{
+                this.loadList();
+            })
+        }
     }
     //选择类型
     select(value){
         this.setState({
-            selectValue:value
+            selectValue:value,
+            pageNum:1
         },()=>{
-            this.choiceType();
+            this.loadList();
         })
     }
     //点击分页
     changePage(pageNum){
-        let pageSize = this.state.pageSize;
-        let dataList = this.state.originDataList.slice((pageNum*pageSize - 1),((pageNum+1)*pageSize) - 1);
 		this.setState({
-            pageNum,
-            dataList
-        })
-    }
-    //设置分页组件
-    renderPagination(){
-        this.setState({
-            total:this.state.dataList.length
+            pageNum
         },()=>{
-            this.changePage(1)
+            this.loadList();
         })
     }
     //跳转到添加页面
     goAddBanner(){
-        this.props.history.push('/news/newsEdit/type/save');
+        this.props.history.push(`/service/serviceEdit/type/detail`);
     }
     //点击查看图标
-    clickCheck(id){
-        console.log(id);
+    clickCheck(id,name){
+        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
     }
     //点击编辑图标
-    clickEdit(id){
-        console.log(id);
+    clickEdit(item){
+        this.props.history.push({
+            pathname:`/service/serviceEdit/type/detail/${item.id}/?checked=1&name=${item.name}`
+        })
     }
     //点击删除图标
-    clickDel(id){
-        console.log(id);
+    clickDel(item){
+        confirm({
+            title:'删除的内容无法恢复，确认删除？',
+            onOk:()=>{
+                recommendApi.removeWord({id:item.id}).then(res=>{
+                    this.loadList();
+                }).catch(res=>{
+                    message.error(res);
+                })
+            },
+            okText:'确认',
+            cancelText:'取消'
+        })
     }
     render(){
         return (
@@ -126,20 +142,21 @@ class Type extends Component{
                 <div className={style.content}>
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>
-                        <div className='fl'>
+                        {/* <div className='fl'>
                             <Select
                                 showSearch
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
                                 // defaultValue = {this.state.selectValue}
-                                defaultValue = '待审核'
+                                // defaultValue = '待审核'
+                                value = {this.state.selectValue}
                                 onChange={(value)=>{this.select(value)}}
                             >
                                 <Option value="0">待审核</Option>
                                 <Option value="1">审核未通过</Option>
                                 <Option value="2">审核已通过</Option>
                             </Select>
-                        </div>
+                        </div> */}
                         <div className='fr'>
                             <Search
                                 placeholder="输入关键字进行搜索"
@@ -155,22 +172,24 @@ class Type extends Component{
                     </div>
                     {/* 操作栏结束 */}
                     <TableList
-                        thead={[{width:'5%',name:' '},{width:'30%',name:'类型名称'},{width:'25%',name:'创建时间'},{width:'25%',name:'操作'},{width:'15%',name:'管理'}]}
+                        tdHeight='58px'
+                        thead={[{width:'5%',name:' '},{width:'25%',name:'类型名称'},{width:'30%',name:'创建时间'},{width:'20%',name:'操作'},{width:'20%',name:'管理'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
                                <tr key={index}>
                                    <td>{index + 1}</td>
-                                   <td>
-                                       <img src={config.server+item.titleImg} width='80%' height='80%'/>
-                                   </td>
-                                   <td>{item.title}</td>
-                                   <td>{item.type == '0' ? '外链':'内链'}</td>
+                                   <td>{item.name}</td>
                                    <td>{item.createTime}</td>
+                                   <td className='td-handle' >
+                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
+                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
+                                   </td>
                                    <td>
-                                        <IconHandle type='1' id='1' iconClick={(id)=>{this.clickCheck(id)}}/>
-                                        <IconHandle type='3' id='2' iconClick={(id)=>{this.clickEdit(id)}}/>
-                                        <IconHandle type='2' id='3' iconClick={(id)=>{this.clickDel(id)}}/>
+                                        <Link className='gl-link' to={`/service/serviceEdit/type/list/${item.id}/?name=${item.name}`} >
+                                        <Icon type="link" />
+                                        关联文件
+                                        </Link>
                                    </td>
                                </tr>
                            )
@@ -188,4 +207,4 @@ class Type extends Component{
         )
     }
 }
-export default withRouter(Type);
+export default withRouter(Banner);

@@ -26,7 +26,7 @@ class newsRouter extends Component{
                     <Route path='/news/newsEdit/banner/add/:id?' component={BannerAdd}/>
                     <Route exact path='/news/newsEdit/type' component={Type}/>
                     <Route path='/news/newsEdit/type/save/:id?' component={TypeSave}/>
-                    <Route path='/news/newsEdit/type/list' component={TypeList}/>
+                    <Route path='/news/newsEdit/type/list/:id?' component={TypeList}/>
                     <Route path='/news/newsEdit/type/SpecialList' component={SpecialList}/>
                     <Route path='/news/newsEdit/type/SpecialNewsList' component={SpecialNewsList}/>
                     <Route path='/news/newsEdit/type/SpecialDetail' component={SpecialDetail}/>

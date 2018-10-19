@@ -11,9 +11,9 @@ class EditRouter extends Component{
         return (
             <div>
                 <Switch>
-                    <Route exact path='/search/searchAuth/recommend' component={Recommend}/>
-                    <Route path='/search/searchAuth/recommend/wordDetail/:id?' component={WordDetail}/>
-                    <Route path='/search/searchAuth/recommend/fileList/:id?' component={FileList}/>
+                    <Route exact path='/search/searchAuth/recommend/:type?' render={(props)=><Recommend key={props.match.params.type}/>}  />
+                    <Route path='/search/searchAuth/recommend/:type?/wordDetail/:id?' render={(props)=><WordDetail key={props.match.params.type}/>} />
+                    <Route path='/search/searchAuth/recommend/:type?/fileList/:id?' render={(props)=><FileList key={props.match.params.type}/>} />
                 </Switch>
             </div>
         )

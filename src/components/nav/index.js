@@ -9,12 +9,20 @@ class Nav extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            menuTreeNode:[]
+            menuTreeNode:[],
+            defaultSelectedKeys:['/news/newsEdit/banner'],
+            defaultOpenKeys:['/news']
         }
     }
     componentDidMount(){
         let menuTreeNode = this.renderMenu(menuConfig);
         this.setState({menuTreeNode});
+        setTimeout(()=>{
+            this.setState({
+                defaultSelectedKeys:['/video/videoEdit/banner'],
+                defaultOpenKeys:['/video']
+            })
+        },2000)
     }
     //菜单渲染
     renderMenu(menuConfig){
@@ -37,13 +45,14 @@ class Nav extends Component {
         })
     }
     render() {
+        let {defaultSelectedKeys,defaultOpenKeys} = this.state;
         return (
             <div className={style.navContainer}>
                 <Menu
                     // onClick={this.handleClick.bind(this)}
                     style={{ width: 256 }}
-                    defaultSelectedKeys={['/']}
-                    defaultOpenKeys={['sub4']}
+                    defaultSelectedKeys={defaultSelectedKeys}
+                    defaultOpenKeys={defaultOpenKeys}
                     mode="inline"
                     theme="dark"
                 >

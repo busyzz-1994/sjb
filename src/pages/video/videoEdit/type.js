@@ -41,10 +41,9 @@ class Banner extends Component{
             videoApi.getTypeList({
                 currPage:pageNum,
                 pageSize,
-                keyword:searchValue,
-                checkview:selectValue,
                 type:4,
-                name:searchValue
+                name:searchValue,
+                theissue:'3'
             }).then(res=>{
                 let totalCount = res[0].total;
                 let list = res[0].list ;
@@ -57,12 +56,11 @@ class Banner extends Component{
             videoApi.getTypeList({
                 currPage:pageNum,
                 pageSize,
-                type:4
+                type:4,
+                theissue:'3'
             }).then(res=>{
-                console.log(res);
                 let totalCount = res[0].total;
                 let list = res[0].list ;
-                console.log(list)
                 this.setState({
                     dataList:list,
                     total:totalCount

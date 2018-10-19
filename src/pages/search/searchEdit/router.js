@@ -12,10 +12,10 @@ class EditRouter extends Component{
         return (
             <div>
                 <Switch>
-                    <Route exact path='/search/searchEdit/recommend' component={Recommend}/>
-                    <Route path='/search/searchEdit/recommend/wordDetail/:id?' component={WordDetail}/>
-                    <Route path='/search/searchEdit/recommend/fileList/:id?' component={FileList}/>
-                    <Route path='/search/searchEdit/recommend/fileDetail/:id?' component={FileDetail}/>
+                    <Route exact path='/search/searchEdit/recommend/:type?' render={(props)=><Recommend key={props.match.params.type}/>}/>
+                    <Route path='/search/searchEdit/recommend/:type?/wordDetail/:id?' render={(props)=><WordDetail key={props.match.params.type}/>}/>
+                    <Route path='/search/searchEdit/recommend/:type?/fileList/:id?'  render={(props)=><FileList key={props.match.params.type}/>}/>
+                    <Route path='/search/searchEdit/recommend/:type?/fileDetail/:id?' render={(props)=><FileDetail key={props.match.params.type}/>}/>
                 </Switch>
             </div>
         )

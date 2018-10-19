@@ -71,6 +71,16 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //获取已发布的类型
+    getIssueType(data){
+        return _mm.POST({
+            url:'/admin/search/getCaryByTheissue',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
 }
 export default Api;

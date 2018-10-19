@@ -42,7 +42,7 @@ class TypeSave extends Component{
             //选中的signList:
             signList:[],
             signChecked:false,
-            authStatus:0,
+            authStatus:2,
             authString:''
         }
     }
@@ -51,7 +51,7 @@ class TypeSave extends Component{
     }
     //添加类型选项
     loadTypeList(){
-        commonApi.getCategoryList({currPage:1,pageSize:9999,type:'4'}).then(res=>{
+        commonApi.getIssueType({currPage:1,pageSize:9999,type:'4',theissue:'4'}).then(res=>{
             let list = res[0].lists;
             this.setState({
                 category:list
@@ -61,10 +61,34 @@ class TypeSave extends Component{
                 },()=>{
                     let {id} = this.state;
                     if(id){
-                        // this.getDetail();
+                        this.getDetail();
                     }
                 })
             })
+        })
+    }
+    getDetail(){
+        let {id} = this.state;
+        videoApi.getVideoDetail({
+            videoId:id
+        }).then(res=>{
+            console.log(res)
+            let {categoryId,videoTitle,videoSourceAdress,sourceIsShow,videoImage,tags,
+                tagsIsShow,isHot,videoUrl,videoDesc} = res[0];
+            this.setState({
+                categoryValue:categoryId,
+                title:videoTitle,
+                newsSource:videoSourceAdress,
+                newsOrigin:+sourceIsShow?true:false,
+                tpImg:videoImage,
+                signList:tags,
+                signChecked:+tagsIsShow?true:false,
+                hot:+isHot?true:false,
+                videoUrl,
+                videoDetail:videoDesc
+            })    
+        }).catch(err=>{
+            message.error(err);
         })
     }
     selectCategory(value){
@@ -126,11 +150,16 @@ class TypeSave extends Component{
     }
     //点击保存
     save(){
-        let msg = this.validate();
-        if(msg){
-            message.error(msg);
+        let {checked} = this.state;
+        if(checked == '2' || checked == '4'){
+            this.authFile();
         }else{
-            this.addFile();
+            let msg = this.validate();
+            if(msg){
+                message.error(msg);
+            }else{
+                this.addFile();
+            }
         }
     }
     //验证表单信息
@@ -143,12 +172,26 @@ class TypeSave extends Component{
         validate.add(videoUrl,'notEmpty','上传视频文件地址不能为空！');
         return validate.start();
     }
+    //审核文件
+    authFile(){
+        let {id,authStatus,authString} = this.state;
+        videoApi.authVideoFile({
+            videoId:id,
+            checkview:authStatus,
+            remark:authString
+        }).then(res=>{
+            message.success('审核成功！');
+            this.props.history.goBack();
+        }).catch(err=>{
+            message.error(err)
+        })
+    }
     //添加或编辑文件
     addFile(){
         let {title,categoryValue,newsSource,newsOrigin,tpImg,signList,
             signChecked,hot,videoDetail,videoUrl,id} = this.state;
         videoApi.addFile({
-            id,
+            videoId:id,
             videoTitle:title,
             videoSourceAdress:newsSource,
             sourceIsShow:newsOrigin?'1':'0',
@@ -289,14 +332,20 @@ class TypeSave extends Component{
                     />:
                     null
                 }
-                <div className='form-item btn-item'>
-                    <Row>
-                        <Col offset='5' span='10'>
-                            <Button onClick={()=>{this.save()}} type='primary' size='large'>保存</Button>
-                            <Button onClick={()=>{this.props.history.goBack()}} size='large'>取消</Button>
-                        </Col>
-                    </Row>
-                </div>
+                {
+                    (this.state.checked == 0 || this.state.checked ==4 )? 
+                    null
+                    : (
+                        <div className='form-item btn-item'>
+                            <Row>
+                                <Col offset='5' span='10'>
+                                    <Button onClick={()=>{this.save()}} type='primary' size='large'>保存</Button>
+                                    <Button onClick={()=>{this.props.history.goBack()}} size='large'>取消</Button>
+                                </Col>
+                            </Row>
+                        </div>
+                    )
+                }
             </div>
         )
     }

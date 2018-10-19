@@ -52,6 +52,17 @@ var rule = {
 			}
 		}
 	},
+	//数字范围
+	numberRange:function(value,min,max,msg){
+		let val = +value;
+		if(!val && val!=0){
+			return msg;
+		}else{
+			if(val<min || val>max){
+				return msg;
+			}
+		}
+	},
 	//长度范围
 	lengthRange:function(value,min,max,msg){
 		var valLength = value.length;

@@ -27,7 +27,9 @@ class Banner extends Component{
             originData:[],
             pageSize:12,
             total:0,
-            pageNum:1
+            pageNum:1,
+            //type
+            type:this.props.match.params.type
         }
     }
     componentDidMount(){
@@ -35,14 +37,14 @@ class Banner extends Component{
     }
     //加载数据
     loadList(){
-        let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
+        let {pageSize,pageNum,selectValue,isSearch,searchValue,type} = this.state;
         if(isSearch){
             recommendApi.searchWord({
                 currPage:pageNum,
                 pageSize,
                 keyword:searchValue,
                 checkview:selectValue,
-                type:7
+                type
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -56,7 +58,7 @@ class Banner extends Component{
                 currPage:pageNum,
                 pageSize,
                 checkview:selectValue,
-                type:7
+                type
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -108,7 +110,8 @@ class Banner extends Component{
     }
     //跳转到添加页面
     goAddBanner(){
-        this.props.history.push(`/search/searchEdit/recommend/wordDetail`);
+        let { type } = this.state;
+        this.props.history.push(`/search/searchEdit/recommend/${type}/wordDetail`);
     }
     //点击查看图标
     clickCheck(id,name){
@@ -116,8 +119,9 @@ class Banner extends Component{
     }
     //点击编辑图标
     clickAudit(item){
+        let { type } = this.state;
         this.props.history.push({
-            pathname:`/search/searchAuth/recommend/fileList/${item.id}/?checked=2&name=${item.name}`
+            pathname:`/search/searchAuth/recommend/${type}/fileList/${item.id}/?checked=2&name=${item.name}`
         })
     }
     //点击删除图标
@@ -136,8 +140,7 @@ class Banner extends Component{
         })
     }
     render(){
-        let { selectValue } = this.state;
-        console.log(selectValue)
+        let { selectValue ,type} = this.state;
         return (
             <div className={style.container}>
                 <NavTab/>

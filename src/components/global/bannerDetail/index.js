@@ -51,17 +51,19 @@ class BannerDetail extends Component{
         let { id,checked } = this.state;
         newsEditApi.getBannerDetai({id})
         .then(res=>{
-            let {baType,type,reUrl,title,titleImg,fkId,remark,checkview} = res[0];
-            console.log(checkview)
+            console.log(res)
+            let {baType,type,reUrl,title,titleImg,fkId,remark,checkview,resourcesType,exclusive} = res[0];
             this.setState({
                 type:baType,
                 bannerType:type,
                 linkUrl:reUrl,
                 bannerTitle:title,
-                imgUrl:config.server + titleImg,
+                imgUrl:titleImg,
                 fkId,
                 status:checkview === '0' ? 2 : +checkview,
-                detail:remark
+                detail:remark,
+                resourcesType,
+                bannerDetail:exclusive
             })
         })
     }
@@ -87,7 +89,7 @@ class BannerDetail extends Component{
     }
     //上传文件
     getImgData(data){
-       let url = config.server +  data[0].attachFilenames;
+       let url =  data[0].attachFilenames;
        this.setState({
          imgUrl:url
        })
@@ -125,15 +127,16 @@ class BannerDetail extends Component{
        }
     }
     addBanner(){
-        let {id,type,fkId,linkUrl,bannerTitle,imgUrl,bannerType,resourcesType} = this.state;
+        let {id,type,fkId,linkUrl,bannerTitle,imgUrl,bannerType,resourcesType,bannerDetail} = this.state;
             newsEditApi.addBanner({
                 baType:type,
                 fkId,
                 reUrl:linkUrl,
                 title:bannerTitle,
-                titleImg:_mm.processImgUrl(imgUrl),
+                titleImg:imgUrl,
                 type:bannerType,
-                resourcesType
+                resourcesType,
+                exclusive:bannerDetail
             }).then(res=>{
                  message.success('添加成功！');
                  this.props.history.goBack()
@@ -142,16 +145,28 @@ class BannerDetail extends Component{
             })
     }
     updateBanner(){
-        let {id,type,fkId,linkUrl,bannerTitle,imgUrl,bannerType,resourcesType} = this.state;
+        let {id,type,fkId,linkUrl,bannerTitle,imgUrl,bannerType,resourcesType,bannerDetail} = this.state;
+        console.log({
+            baType:type,
+            fkId,
+            reUrl:linkUrl,
+            title:bannerTitle,
+            titleImg:imgUrl,
+            type:bannerType,
+            resourcesType,
+            id,
+            exclusive: bannerDetail
+        })
         newsEditApi.updateBanner({
             baType:type,
             fkId,
             reUrl:linkUrl,
             title:bannerTitle,
-            titleImg:_mm.processImgUrl(imgUrl),
+            titleImg:imgUrl,
             type:bannerType,
             resourcesType,
-            id
+            id,
+            exclusive: bannerDetail
         }).then(res=>{
              message.success('修改成功！');
              this.props.history.goBack()
@@ -161,6 +176,11 @@ class BannerDetail extends Component{
     }
     auditBanner(){
         let {id,status,detail} = this.state;
+        console.log({
+            checkview:status,
+            remark:detail,
+            id
+        })
         newsEditApi.auditBanner({
             checkview:status,
             remark:detail,
@@ -172,17 +192,30 @@ class BannerDetail extends Component{
             message.error(err)
         })
     }
-    relevanceCallback(selectedRowKeys){
-        
+    relevanceCallback(selectedRowKeys,fn){
+        let {newsId,resourcesName,resourcesType} = selectedRowKeys[0];
+        console.log(newsId)
+        this.setState({
+            bannerDetail:resourcesName,
+            fkId:newsId,
+            resourcesType,
+            modalVisible:false
+        },()=>{
+            fn()
+        })
     }
     render(){
         let {type,bannerType,isAdd,status,detail,checked} = this.state;
         return (
             <div className='form-container'>
-                    <OtherNewsModal visible={this.state.modalVisible} 
-                ok={()=>{this.setState({modalVisible:false})}}
-                cancel={()=>{this.setState({modalVisible:false})}}
-                callback = {(selectedRowKeys)=>this.relevanceCallback(selectedRowKeys)}
+                    <OtherNewsModal 
+                        visible={this.state.modalVisible} 
+                        ok={()=>{this.setState({modalVisible:false})}}
+                        cancel={()=>{this.setState({modalVisible:false})}}
+                        type = 'radio'
+                        callback = {(selectedRowKeys,fn)=>this.relevanceCallback(selectedRowKeys,fn)}
+                        canChange = {this.props.canChange}
+                        activeType = {this.props.activeType}
                 />
                 <div className='form-item'>
                     <Row>
@@ -225,7 +258,7 @@ class BannerDetail extends Component{
                     <Row>
                         <Col span='4'>轮播图*</Col>
                         <Col offset='1' span='16'>
-                            <UploadImg  imgUrl={this.state.imgUrl} getUrl={(data)=>{this.getImgData(data)}}/>
+                            <UploadImg  imgUrl={this.state.imgUrl ? config.server +this.state.imgUrl:'' } getUrl={(data)=>{this.getImgData(data)}}/>
                             <div>建议尺寸（320 * 140 px）</div>
                         </Col>
                     </Row>
@@ -271,5 +304,9 @@ class BannerDetail extends Component{
             </div>
         )
     }
+}
+BannerDetail.defaultProps = {
+    activeType:4,
+    canChange:false
 }
 export default withRouter(BannerDetail);

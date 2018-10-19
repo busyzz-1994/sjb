@@ -41,7 +41,7 @@ class TypeSave extends Component{
     }
     add(){
         let {name,type} = this.state;
-        typeApi.addType({name,type}).then(res=>{
+        typeApi.addType({name,type,checkview:'2'}).then(res=>{
             message.success('添加成功！')
             this.props.history.goBack();
         }).catch(res=>{

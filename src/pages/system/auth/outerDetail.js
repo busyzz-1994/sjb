@@ -165,6 +165,7 @@ class OuterDetail extends Component{
             return obj;
         })
         sjbPermissions.unshift({id:2});
+        console.log(sjbPermissions)
         systemApi.addOuterUser({
             name:username,
             nickname:name,

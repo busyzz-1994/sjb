@@ -6,11 +6,11 @@ class Nav extends Component{
         this.navList = [
             {
                 name:'推荐',
-                url:'/search/searchIssue/recommend'
+                url:'/search/searchIssue/recommend/7'
             },
             {
                 name:'热搜',
-                url:'/search/searchIssue/hot'
+                url:'/search/searchIssue/recommend/8'
             }
         ]
     }

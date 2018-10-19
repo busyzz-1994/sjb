@@ -8,10 +8,10 @@ class Nav extends Component{
                 name:'banner管理',
                 url:'/video/videoAudit/banner'
             },
-            {
-                name:'视频类型',
-                url:'/video/videoAudit/type'
-            },
+            // {
+            //     name:'视频类型',
+            //     url:'/video/videoAudit/type'
+            // },
             {
                 name:'视频文件',
                 url:'/video/videoAudit/file'

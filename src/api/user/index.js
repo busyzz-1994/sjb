@@ -41,6 +41,16 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //获取用户信息列表
+    getUserInfoList(data){
+        return _mm.POST({
+            url:'/admin/manage/oauthList',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
 }
 export default Api;

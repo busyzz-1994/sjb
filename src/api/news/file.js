@@ -64,7 +64,6 @@ const Api = {
     },
     //获取新闻详情
     getNewsDetail(data){
-        console.log(data);
         return _mm.POST({
             url:'/admin/news/showsjbnews',
             data:{
