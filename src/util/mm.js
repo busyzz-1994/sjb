@@ -236,6 +236,11 @@ const mm = {
             '6':'广告'
         }
         return map[type];
+    },
+    //过滤用户输入的链接
+    filterLink(url){
+        var reg = /^(http:\/\/)|(https:\/\/)/;
+        return url.replace(reg,'');
     }
 }
 export default mm;

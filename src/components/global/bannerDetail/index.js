@@ -131,7 +131,7 @@ class BannerDetail extends Component{
             newsEditApi.addBanner({
                 baType:type,
                 fkId,
-                reUrl:linkUrl,
+                reUrl:_mm.filterLink(linkUrl),
                 title:bannerTitle,
                 titleImg:imgUrl,
                 type:bannerType,
@@ -160,7 +160,7 @@ class BannerDetail extends Component{
         newsEditApi.updateBanner({
             baType:type,
             fkId,
-            reUrl:linkUrl,
+            reUrl:_mm.filterLink(linkUrl),
             title:bannerTitle,
             titleImg:imgUrl,
             type:bannerType,

@@ -7,6 +7,7 @@ import FileDetail from './fileDetail.js';
 class EditRouter extends Component{
     constructor(props){
         super(props)
+        
     }
     render(){
         return (

@@ -37,7 +37,7 @@ class Banner extends Component{
                         edit = {typeName}
                         check = {typeName}
                     />
-                    <WordDetail type={1} />
+                    <WordDetail type={1} title='类型名称'/>
                 </div>
             </div>
         )

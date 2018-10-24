@@ -72,7 +72,6 @@ class TypeSave extends Component{
         videoApi.getVideoDetail({
             videoId:id
         }).then(res=>{
-            console.log(res)
             let {categoryId,videoTitle,videoSourceAdress,sourceIsShow,videoImage,tags,
                 tagsIsShow,isHot,videoUrl,videoDesc} = res[0];
             this.setState({

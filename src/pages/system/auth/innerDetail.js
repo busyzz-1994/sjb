@@ -182,7 +182,6 @@ class OuterDetail extends Component{
     }
     updateUser(){
         let {username,name,email,password,sjbPermissions,areaDefault,status,id} = this.state;
-        console.log('zhli')
         systemApi.updateUser({
             name:username,
             nickname:name,

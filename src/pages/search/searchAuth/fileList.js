@@ -60,11 +60,11 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue,id} = this.state;
         if(isSearch){
-            fileApi.searchFileAudit({
+            recommendApi.getFileList({
+                id,
                 currPage:pageNum,
                 pageSize,
-                title:searchValue,
-                checkview:selectValue
+                keyword:searchValue
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
@@ -72,6 +72,8 @@ class Banner extends Component{
                     dataList:list,
                     total:totalCount
                 })
+            }).catch(err=>{
+                message.error(err)
             })
         }else{
             recommendApi.getFileList({
@@ -135,8 +137,9 @@ class Banner extends Component{
         })
     }
     //点击查看图标
-    clickCheck(id,name){
-        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
+    clickCheck(item){
+        this.props.history.push(`/fileDetail/${item.newsId}/?checked=0&name=${item.resourcesName}&type=${item.resourcesType}`)
+        // this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
     }
     //点击编辑图标
     clickEdit(id,name){
@@ -210,7 +213,7 @@ class Banner extends Component{
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>{item.resourcesName}</td>
-                                   <td>{item.resourcesType}</td>
+                                   <td>{_mm.mapTypeToString(item.resourcesType)}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
                                         <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>

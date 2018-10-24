@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Link} from 'react-router-dom';
+import {Link,withRouter} from 'react-router-dom';
 import {Breadcrumb} from 'antd';
 import _mm from 'util/mm.js';
 //必须属性
@@ -56,7 +56,7 @@ class Bread extends Component{
                         breadList.map((item,index)=>{
                             let result_1 = (
                                 <Breadcrumb.Item key={index}>
-                                    <Link to={item.path}>{item.name}</Link>
+                                    <Link to={item.path} onClick={()=>{this.props.history.goBack()}}>{item.name}</Link>
                                 </Breadcrumb.Item>
                             )
                             let result_2 = (
@@ -88,4 +88,4 @@ Bread.defaultProps = {
     audit:'审核banner',
     edit:'修改banner'
 }
-export default Bread;
+export default withRouter(Bread) ;

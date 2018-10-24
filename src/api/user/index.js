@@ -51,6 +51,16 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //用户修改密码
+    updatePassword(data){
+        return _mm.POST({
+            url:'/admin/managers/changePassword',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
 }
 export default Api;

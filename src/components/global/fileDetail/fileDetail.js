@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import _mm from 'util/mm.js';
-import NavTab from './common/nav.js';
+// import NavTab from './common/nav.js';
 import style from 'common/layout.scss';
 // import self from './bannerAdd.scss';
 import {Link,withRouter} from 'react-router-dom';

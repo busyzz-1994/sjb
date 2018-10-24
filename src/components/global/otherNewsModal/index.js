@@ -58,28 +58,30 @@ class OtherNewsModal extends Component{
     loadList(){
         let {pageSize,pageNum,activeType,isSearch,searchValue,id} = this.state;
         if(isSearch){
-            recommendApi.searchWord({
-                currPage:pageNum,
-                pageSize,
-                keyword:searchValue,
-                checkview:selectValue,
-                type:7
-            }).then(res=>{
-                let totalCount = res[0].totalCount;
-                let list = res[0].lists ;
-                this.setState({
-                    dataList:list,
-                    total:totalCount
-                })
-            })
-        }else{
-            console.log({
+            commonApi.getModalList({
                 currPage:pageNum,
                 pageSize,
                 id:id?id:'999999',
                 type:activeType,
-                flag:this.props.flag
+                flag:this.props.flag,
+                keyword:searchValue
+            }).then(res=>{
+                let totalCount = res[0].totalCount;
+                let list = res[0].lists ;
+                list.forEach(item=>{
+                    let obj = {};
+                    obj.newsId = item.id;
+                    obj.resourcesType = item.resourcesType;
+                    obj.resourcesName = item.resourcesName;
+                    obj = JSON.stringify(obj);
+                    item.key = obj;
+                })
+                this.setState({
+                    list,
+                    total:totalCount
+                })
             })
+        }else{
             commonApi.getModalList({
                 currPage:pageNum,
                 pageSize,

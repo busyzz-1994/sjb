@@ -133,7 +133,8 @@ class Banner extends Component{
     //点击查看图标
     clickCheck(item){
         // this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
-        this.props.history.push(`/video/videoEdit/file/detail/${item.newsId}/?checked=0&name=${item.resourcesName}`)
+        // this.props.history.push(`/video/videoEdit/file/detail/${item.newsId}/?checked=0&name=${item.resourcesName}`)
+        this.props.history.push(`/fileDetail/${item.newsId}/?checked=0&name=${item.resourcesName}&type=${item.resourcesType}`)
     }
     //点击编辑图标
     clickEdit(id,name){

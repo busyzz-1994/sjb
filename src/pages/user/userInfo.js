@@ -138,7 +138,7 @@ class Sign extends Component{
                                     <td>
                                         <img src={config.server+item.userImg} alt="" style={{width:'50px',height:'50px'}}/>
                                     </td>
-                                    <td>{item.username}</td>
+                                    <td>{item.userName}</td>
                                     <td>{item.phone}</td>
                                     <td>{item.sex}</td>
                                     <td>{item.area}</td>

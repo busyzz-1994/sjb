@@ -7,6 +7,7 @@ import Text from './text';
 import AuditForm from 'components/global/auditForm'
 import fileApi from 'api/news/file.js';
 import _mm from 'util/mm.js';
+import commonApi from 'api/common.js';
 const Option = Select.Option;
 class NewsDetail extends Component{
     constructor(props){
@@ -65,7 +66,7 @@ class NewsDetail extends Component{
     }
     //添加类型选项
     loadTypeList(){
-        fileApi.getTypeList({currPage:1,pageSize:9999,type:'0'}).then(res=>{
+        commonApi.getIssueType({currPage:1,pageSize:9999,type:'0',theissue:'4'}).then(res=>{
             let list = res[0].lists;
             this.setState({
                 categoryList:list

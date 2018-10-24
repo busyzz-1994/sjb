@@ -16,7 +16,7 @@ import store from 'store/store.js';
 import Login from 'pages/login';
 import Layout from 'components/layout';
 import Home  from 'pages/home';
-
+import FileDetail from 'components/global/fileDetail/fileDetail.js';
 //新闻管理
 import NewsRouter from 'pages/news/router.js';
 //系统管理
@@ -47,6 +47,7 @@ class App extends Component{
 					<Route path='/search' component = {SearchRouter} />
 					<Route path='/advertising' component = {AdvertisingRouter} />
 					<Route path='/user' component = {UserRouter} />
+					<Route path='/FileDetail/:id?' component = {FileDetail} />
 					{/* <Redirect exact from='/news' to='/news/newsEdit' /> */}
 				</Switch>
 			</Layout>

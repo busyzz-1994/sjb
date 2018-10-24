@@ -5,7 +5,6 @@ import style from 'common/layout.scss';
 import { Select , Input , Button ,message,Pagination,Modal,Icon} from 'antd';
 import { withRouter,Link } from 'react-router-dom'; 
 import fileApi from 'api/discounts/file.js';
-
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
 const Option = Select.Option;

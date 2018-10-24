@@ -15,7 +15,7 @@ class Sign extends Component{
         this.state = {
             selectValue:'1',
             pageNum : 1,
-            total : 5,
+            total : 1,
             pageSize : 12,
             dataList:[],
             //是否处于搜索状态
@@ -220,7 +220,7 @@ class Sign extends Component{
                             return (
                                 <tr key={index}>
                                     <td>{index+1}</td>
-                                    <td>{item.name}</td>
+                                    <td>{item.userName}</td>
                                     <td>
                                         <Tooltip placement="bottomLeft" title={item.content}>
                                             {item.content}

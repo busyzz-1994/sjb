@@ -12,7 +12,7 @@ import AuditForm from 'components/global/auditForm';
 import Validate from 'util/validate';
 // import self from './bannerAdd.scss';
 import {Link} from 'react-router-dom';
-import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon} from 'antd';
+import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,Checkbox} from 'antd';
 import { withRouter } from 'react-router-dom';
 import newsEditApi from 'api/news/banner';
 import commonApi from 'api/common.js';
@@ -52,7 +52,8 @@ class TypeSave extends Component{
             defaultDetail:'',
             detail:'',
             authStatus:2,
-            authString:''
+            authString:'',
+            isHot:false
         }
     }
     selectCategory(value){
@@ -88,7 +89,7 @@ class TypeSave extends Component{
         }).then(res=>{
             console.log(res);
             let {categoryId,title,thumbnail,score,degree,address,detailed,price,
-                content,listag,coverimg,spectacular} = res[0];
+                content,listag,coverimg,spectacular,isHot} = res[0];
             this.setState({
                 categoryValue:categoryId,
                 title:title,
@@ -102,7 +103,8 @@ class TypeSave extends Component{
                 detail:content,
                 signList:listag,
                 signChecked:spectacular=='1'?true:false,
-                fwImgList:coverimg.split(',')
+                fwImgList:coverimg.split(','),
+                isHot:isHot == '1' ? true : false
             })    
         }).catch(err=>{
             message.error(err);
@@ -195,7 +197,7 @@ class TypeSave extends Component{
     //添加或编辑文件
     addFile(){
         let {title,categoryValue,score,count,tpImg,signList,address,startPrice,
-            signChecked,id,exactAddress,fwImgList,detail} = this.state;
+            signChecked,id,exactAddress,fwImgList,detail,isHot} = this.state;
             console.log({
                 title,
                 thumbnail:tpImg,
@@ -208,7 +210,8 @@ class TypeSave extends Component{
                 spectacular:signChecked?'1':'0',
                 coverimg:fwImgList.join(','),
                 categoryId:categoryValue,
-                content:detail
+                content:detail,
+                isHot:isHot?'1':'0'
             })
         serviceApi.addFile({
             id,
@@ -223,7 +226,8 @@ class TypeSave extends Component{
             spectacular:signChecked?'1':'0',
             coverimg:fwImgList.join(','),
             categoryId:categoryValue,
-            content:detail
+            content:detail,
+            isHot:isHot?'1':'0'
         }).then(res=>{
             message.success('保存文件成功！');
             this.props.history.goBack()
@@ -231,9 +235,14 @@ class TypeSave extends Component{
             message.error(err);
         })
     }
+    setHotChecked(e){
+        this.setState({
+            isHot:e.target.checked
+        })
+    }
     render(){
         let {category,categoryValue,tpImg,signList,signChecked,fwImgList,
-            defaultDetail,authStatus,authString,checked} = this.state;
+            defaultDetail,authStatus,authString,checked,isHot} = this.state;
         return (
             <div className='form-container'>
                 <div className='form-item'>
@@ -345,6 +354,16 @@ class TypeSave extends Component{
                         <Col span='4'></Col>
                         <Col offset='1' span='16'>
                             建议上传尺寸750*320,10-65KB,20张以内
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>热门推荐*</Col>
+                        <Col offset='1' span='16'>
+                           <Checkbox onChange={(e)=>this.setHotChecked(e)} checked = {isHot} >
+                                显示热门推荐
+                           </Checkbox>
                         </Col>
                     </Row>
                 </div>

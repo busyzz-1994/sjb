@@ -44,7 +44,8 @@ class Banner extends Component{
             total:0,
             pageNum:1,
             //弹出框
-            modalVisible:false
+            modalVisible:false,
+            type:this.props.match.params.type
         }
     }
     componentDidMount(){
@@ -131,8 +132,9 @@ class Banner extends Component{
     }
     //点击查看图标
     clickCheck(item){
+        let {type} = this.state;
         // this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
-        this.props.history.push(`/search/searchEdit/recommend/fileDetail/${item.newsId}/?checked=0&name=${item.resourcesName}`)
+        this.props.history.push(`/fileDetail/${item.newsId}/?checked=0&name=${item.resourcesName}&type=${item.resourcesType}`)
     }
     //点击编辑图标
     clickEdit(id,name){

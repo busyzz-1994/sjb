@@ -11,14 +11,19 @@ import Editor from 'components/global/editor';
 import AuditForm from 'components/global/auditForm';
 // import self from './bannerAdd.scss';
 import {Link} from 'react-router-dom';
-import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon} from 'antd';
+import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,DatePicker,Checkbox} from 'antd';
+import locale from 'antd/lib/date-picker/locale/zh_CN';
 import { withRouter } from 'react-router-dom';
 import commonApi from 'api/common.js';
 import config from 'base/config.json';
 import typeApi from 'api/discounts/type.js';
 import fileApi from 'api/discounts/file.js';
 import Validate from 'util/validate';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 const Option = Select.Option;
+const {RangePicker} = DatePicker;
 // import NewsCategorySave from '../components/newsCategorySave';
 class TypeSave extends Component{
     constructor(props){
@@ -46,7 +51,10 @@ class TypeSave extends Component{
             authString:'',
             //富文本
             editDetail:'',
-            defaultDetail:''
+            defaultDetail:'',
+            startTime:'2018-06-01 12:00:00',
+            endTime:'2018-06-12 12:00:00',
+            isHot:false
         }
     }
     selectCategory(value){
@@ -56,7 +64,6 @@ class TypeSave extends Component{
     }
     componentDidMount(){
         this.loadTypeList()
-        
     }
     onInput(e){
         let name = e.target.name,
@@ -65,31 +72,6 @@ class TypeSave extends Component{
             [name]:value
         })  
     }
-    //添加类型选项
-    // loadTypeList(){
-    //     typeApi.getTypeList(
-    //         {
-    //             currPage:1,
-    //             pageSize:9999,
-    //             type:'2',
-    //             theissue:'3'
-    //         }
-    //     ).then(res=>{
-    //         let list = res[0].lists;
-    //         this.setState({
-    //             category:list
-    //         },()=>{
-    //             this.setState({
-    //                 categoryValue:list[0]?list[0].id:''
-    //             },()=>{
-    //                 let {id} = this.state;
-    //                 if(id){
-    //                     this.getDetail();
-    //                 }
-    //             })
-    //         })
-    //     })
-    // }
     //添加类型选项
     loadTypeList(){
         commonApi.getIssueType({currPage:1,pageSize:9999,type:'2',theissue:'4'}).then(res=>{
@@ -111,10 +93,10 @@ class TypeSave extends Component{
     //获取商品详情
     getDetail(){
         let {id} = this.state;
-        console.log(id)
         fileApi.getFileDetail({id}).then(res=>{
             var res = res[0];
-            let {typeId,title,thumbnail,listPositive,price,inventory,listag,introduce,reveal} = res;
+            let {typeId,title,thumbnail,listPositive,price,inventory,
+                listag,introduce,reveal,isHot,startTime,endTime} = res;
             this.setState({
                 categoryValue:typeId,
                 title,
@@ -125,7 +107,10 @@ class TypeSave extends Component{
                 signList:listag,
                 defaultDetail:introduce,
                 editDetail:introduce,
-                signChecked:reveal == 1 
+                signChecked:reveal == 1 ,
+                isHot:isHot =='1' ? true : false,
+                startTime,
+                endTime
             })
             
         }).catch(err=>{
@@ -177,7 +162,7 @@ class TypeSave extends Component{
         validate.add(tpImg,'notEmpty','商品缩略图不能为空！');
         validate.add(price,'notFloatMinus','商品价格只能为正数！');
         validate.add(count,'notMinus','库存只能为整数！');
-        validate.add(signList,'notEmptyArray','标签绑定不能为空！');
+        // validate.add(signList,'notEmptyArray','标签绑定不能为空！');
         validate.add(fwImgList,'notEmptyArrayWithItem','服务主图不能为空！');
         validate.add(editDetail,'notEmpty','内容编辑不能为空！');
         return validate.start();
@@ -201,7 +186,7 @@ class TypeSave extends Component{
     }
     getFileDetail(){
         let {categoryValue,title,tpImg,price,count,signList,
-            fwImgList,editDetail,signChecked} = this.state;
+            fwImgList,editDetail,signChecked,endTime,startTime,isHot} = this.state;
         let obj = {
             typeId:categoryValue,
             title,
@@ -211,13 +196,15 @@ class TypeSave extends Component{
             tagIds:signList,
             positiveImg:_mm.processImgUrl(fwImgList),
             introduce:editDetail,
-            reveal:signChecked?1:0
+            reveal:signChecked?1:0,
+            endTime,
+            startTime,
+            isHot:isHot?'1':'0'
         }
         return obj;
     }
     addFile(){
         let obj = this.getFileDetail();
-        console.log(obj)
         fileApi.addFile(obj).then(res=>{
             message.success('添加商品成功！');
             this.props.history.goBack();
@@ -229,6 +216,7 @@ class TypeSave extends Component{
         var obj = this.getFileDetail();
         let {id} = this.state;
         obj = {...obj,id};
+        console.log(obj)
         fileApi.updataFile(obj).then(res=>{
             message.success('修改商品成功！');
             this.props.history.goBack();
@@ -247,9 +235,21 @@ class TypeSave extends Component{
             message.error(err)
         })
     }
+    selectTime(date,dateString){
+        let startTime = dateString[0],
+            endTime = dateString[1];
+        this.setState({
+            startTime,endTime
+        })
+    }
+    setHotChecked(e){
+        this.setState({
+            isHot:e.target.checked 
+        })
+    }
     render(){
         let {category,tpImg,signList,signChecked,fwImgList,defaultDetail
-            ,authStatus,authString,checked,categoryValue
+            ,authStatus,authString,checked,categoryValue,endTime,startTime,isHot
         } = this.state;
         return (
             <div className='form-container'>
@@ -302,6 +302,19 @@ class TypeSave extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
+                        <Col span='4'>起始时间*</Col>
+                        <Col offset='1' span='12'>
+                            <RangePicker locale={locale} showTime={true}
+                            onChange = {(date,dateString)=>{this.selectTime(date,dateString)}} 
+                            format="YYYY-MM-DD HH:mm:ss"
+                            value = {[moment(`${startTime}`, 'YYYY-MM-DD HH:mm:ss'),moment(`${endTime}`, 'YYYY-MM-DD HH:mm:ss')]}
+                            />
+                            {/* <DatePicker defaultValue={moment('2015-01-01 12:12:12', 'YYYY-MM-DD HH:mm:ss')} format = 'YYYY-MM-DD HH:mm:ss'  /> */}
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
                         <Col span='4'>商品价格（元）*</Col>
                         <Col offset='1' span='12'>
                             <Input value={this.state.price} onChange={(e)=>this.onInput(e)} name='price' placeholder='请输入价格' />
@@ -338,6 +351,16 @@ class TypeSave extends Component{
                         <Col span='4'></Col>
                         <Col offset='1' span='16'>
                             建议上传尺寸750*320,10-65KB,20张以内
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>热门推荐*</Col>
+                        <Col offset='1' span='16'>
+                           <Checkbox onChange={(e)=>this.setHotChecked(e)} checked = {isHot} >
+                                显示热门推荐
+                           </Checkbox>
                         </Col>
                     </Row>
                 </div>

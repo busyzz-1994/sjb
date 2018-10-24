@@ -133,8 +133,8 @@ class Banner extends Component{
         })
     }
     //点击查看图标
-    clickCheck(id,title){
-        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${title}`)
+    clickCheck(item){
+        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${item.newsId}/?checked=0&name=${item.resourcesName}`)
     }
     //点击编辑图标
     clickEdit(item){
@@ -224,7 +224,7 @@ class Banner extends Component{
                                    <td>{_mm.mapTypeToString(item.resourcesType)}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
+                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
                                         {/* <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/> */}
                                         <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
                                    </td>

@@ -224,7 +224,10 @@ class Banner extends Component{
                                    <td className='td-handle' >
                                     {
                                         selectValue == '4' ? handle_2(item,index) :
-                                        <IconHandle type='4' iconClick={()=>{this.clickOnline(item)}}/>
+                                        <div>
+                                            <IconHandle type='4' iconClick={()=>{this.clickOnline(item)}}/>
+                                            <IconHandle type='2' iconClick={()=>{this.clickDel(item)}}/>
+                                        </div>
                                     }
                                    </td>
                                    <td>

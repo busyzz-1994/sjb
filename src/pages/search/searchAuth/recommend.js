@@ -62,7 +62,6 @@ class Banner extends Component{
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
-                console.log(list)
                 this.setState({
                     dataList:list,
                     total:totalCount
@@ -114,8 +113,9 @@ class Banner extends Component{
         this.props.history.push(`/search/searchEdit/recommend/${type}/wordDetail`);
     }
     //点击查看图标
-    clickCheck(id,name){
-        this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
+    clickCheck(item){
+        let {type} = this.state;
+        this.props.history.push(`/search/searchAuth/recommend/${type}/wordDetail/${item.id}/?checked=1&name=${item.name}`)
     }
     //点击编辑图标
     clickAudit(item){

@@ -14,7 +14,7 @@ class Banner extends Component{
             breadList:[
                 {
                     name:'推荐',
-                    path:'/search/searchAuth/recommend'
+                    path:`/search/searchAuth/recommend/${this.props.match.params.type}`
                 },
                 {
                     name:'新增词条',
