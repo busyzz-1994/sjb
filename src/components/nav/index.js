@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Menu, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import style from  './index.scss';
-import menuConfig from 'config/menuConfig.js';
+import menuCon from 'config/menuConfig.js';
 import mapPathToNav from './mapPathToNav.js';
+import _mm from 'util/mm.js';
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 class Nav extends Component {
@@ -12,24 +13,26 @@ class Nav extends Component {
         this.state = {
             menuTreeNode:[],
             openKeys:['/news'],
-            selectedKeys:['/news/newsEdit']
+            selectedKeys:['/news/newsEdit'],
+            firstRender:true
         }
     }
     componentDidMount(){
-        let menuTreeNode = this.renderMenu(menuConfig);
+        let menuTreeNode = this.renderMenu(this.getMenuConfig());
         this.setState({menuTreeNode});
         this.getHash();
     }
     processKey(key){
         let keyList = key.split('/');
+        // console.log(keyList)
         keyList.pop();
         let openKey = keyList.join('/');
         openKey = openKey ? openKey :'/'
         return openKey;
     }
     //菜单渲染
-    renderMenu(menuConfig){
-        return menuConfig.map((item)=>{
+    renderMenu(menuCon){
+        return menuCon.map((item)=>{
             if(item.children){
                 return (<SubMenu onTitleClick = {(e)=>{this.subClick(e)}}  key={item.key} title={<span><Icon type={item.icon} /><span>{item.title}</span></span>} >
                     {this.renderMenu(item.children)}
@@ -46,6 +49,18 @@ class Nav extends Component {
                 )
             }
         })
+    }
+    getMenuConfig(){
+        let userInfo = _mm.getStorage('userInfo');
+        if(!userInfo){
+            return menuCon;
+        }else{
+            let userInfo = JSON.parse(_mm.getStorage('userInfo'));
+            let isAdmin = userInfo.isAdmin;
+            let sjbPermissions = userInfo.sjbPermissions;
+            let menuConfig  = isAdmin == 0 ? menuCon : sjbPermissions ;
+            return menuConfig;
+        }
     }
     subClick(e){
         let openKeys = e.key;

@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Radio } from 'antd';
 import { withRouter } from 'react-router-dom';
 import advertisingApi from 'api/advertising/index.js';
+
 import commonApi from 'api/common.js';
 import config from 'base/config.json';
 import UploadImg from 'components/global/uploadImg';
@@ -45,7 +46,7 @@ class startDetail extends Component{
             //展示区域
             advStatus:0,
             //展示频率
-            displayFrequency:0
+            displayFrequency:1
         }
     }
     componentDidMount(){
@@ -261,7 +262,7 @@ class startDetail extends Component{
                     <Row>
                         <Col span='4'>广告图片*</Col>
                         <Col offset='1' span='16'>
-                            <UploadImg  imgUrl={this.state.imgUrl? config.server + this.state.imgUrl:''} getUrl={(data)=>{this.getImgData(data)}}/>
+                            <UploadImg   aspectRatio={320/140} imgUrl={this.state.imgUrl? config.server + this.state.imgUrl:''} getUrl={(data)=>{this.getImgData(data)}}/>
                             <div>建议尺寸（320 * 140 px）</div>
                         </Col>
                     </Row>
@@ -299,8 +300,8 @@ class startDetail extends Component{
                         <Col span='4'>展示频率*</Col>
                         <Col offset='1' span='16'>
                             <RadioGroup onChange={(v)=>this.displayFrequencyChange(v)} value={displayFrequency}>
-                                <Radio value={0}>每次展示（每次启动APP时点击相应区域展示）</Radio>
                                 <Radio value={1}>只展示一次（有更新才展示，下一次打开APP点击相应区域就不展示）</Radio>
+                                <Radio value={0}>每次展示（每次启动APP时点击相应区域展示）</Radio>
                             </RadioGroup>
                         </Col>
                     </Row>

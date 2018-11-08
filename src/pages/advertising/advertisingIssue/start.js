@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import advertisingApi from 'api/advertising/index.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import IssueButton from 'components/global/issueButton/index.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
@@ -237,6 +238,7 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
+                            <IssueButton callback={()=>{this.loadList()}} type={6} dataList ={this.state.dataList} />
                             {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
                                     新增广告

@@ -45,7 +45,7 @@ class Text extends Component{
                         <Col span='4'>热门推荐*</Col>
                         <Col offset='1' span='16'>
                            <Checkbox onChange={(e)=>this.setHotChecked(e)} checked = {wbHotChecked} >
-                                显示热门推荐
+                                加入热门推荐
                            </Checkbox>
                         </Col>
                     </Row>

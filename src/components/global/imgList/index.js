@@ -42,7 +42,7 @@ class imgList extends Component{
                 {fwImgList.map((item,index)=>{
                     return (
                         <div key={index} style={{display:'inline-block',marginRight:'10px',position:'relative'}}>
-                            <ImgUpload index={index} imgWidth={200} imgUrl={item?config.server + item:''}  imgHeight={80} defaultImgUrl={upload_2} getUrl = {(data,index)=>this.getFwUrl(data,index)} />
+                            <ImgUpload aspectRatio={750/320}  index={index} imgWidth={200} imgUrl={item?config.server + item:''}  imgHeight={80} defaultImgUrl={upload_2} getUrl = {(data,index)=>this.getFwUrl(data,index)} />
                             <Icon type="close-circle" onClick={()=>this.delImgList(index)} style={{position:'absolute',right:'-8px',top:'-5px',cursor:'pointer'}} />
                         </div>
                     )

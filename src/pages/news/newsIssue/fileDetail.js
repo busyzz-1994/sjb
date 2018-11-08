@@ -25,7 +25,7 @@ class TypeSave extends Component{
                 url:'/news/newsIssue/type'
             },
             {
-                name:'新闻文件',
+                name:'新闻列表',
                 url:'/news/newsIssue/file'
             }
         ]
@@ -36,7 +36,7 @@ class TypeSave extends Component{
                     path:'/news/newsIssue/file'
                 },
                 {
-                    name:'新增文件',
+                    name:'新增新闻',
                     path:''
                 }
             ],

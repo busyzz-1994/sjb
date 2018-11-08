@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import { withRouter } from 'react-router-dom'; 
 import style from 'common/layout.scss';
-import NavBar from './common/nav.js';
+import NavTab from 'components/global/navTab';
 import TableList from 'components/global/tableList';
 import IconHandle from 'components/global/icon';
 import {Pagination,Button,Input,message} from 'antd';
@@ -13,6 +13,12 @@ const Search = Input.Search
 class Sign extends Component{
     constructor(props){
         super(props)
+        this.navList = [
+            {
+                name:'用户信息',
+                url:'/user/info/1'
+            }
+        ]
         this.state = {
             searchValue : '',
             pageNum : 1,
@@ -106,7 +112,7 @@ class Sign extends Component{
         let {dataList}  = this.state; 
         return (
             <div className={style.container}>
-                <NavBar/>
+                <NavTab navList = {this.navList} />
                 <div className={style.content}>
                     {/* 操作开始 */}
                     <div className={style.handle + ' clearfix'}>
@@ -115,7 +121,7 @@ class Sign extends Component{
                         </div> */}
                         <div className='fr'>
                             <Search
-                                placeholder="输入用户名关键字进行搜索"
+                                placeholder="输入用户昵称关键字进行搜索"
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />

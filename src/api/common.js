@@ -81,6 +81,26 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //統一發佈 當前頁
+    issueThisPage(data){
+        return _mm.POST({
+            url:'/admin/common/UnifiedRele',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //获取所有的词条
+    getAllWords(data){
+        return _mm.POST({
+            url:'/admin/search/getAllWord',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
 }
 export default Api;

@@ -7,6 +7,8 @@ import { withRouter } from 'react-router-dom';
 import advertisingApi from 'api/advertising/index.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import IssueButton from 'components/global/issueButton/index.js';
+import _mm from 'util/mm.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
@@ -236,6 +238,7 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
+                            <IssueButton callback={()=>{this.loadList()}} type={6} dataList ={this.state.dataList} />
                             {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
                                     新增广告
@@ -245,13 +248,14 @@ class Banner extends Component{
                     </div>
                     {/* 操作栏结束 */}
                     <TableList
-                        thead={[{width:'5%',name:' '},{width:'35%',name:'标题'},{width:'15%',name:'广告类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
+                        thead={[{width:'5%',name:' '},{width:'25%',name:'标题'},{width:'10%',name:'所属区域'},{width:'15%',name:'广告类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>{item.advTitle}</td>
+                                   <td>{_mm.mapStatusToString(item.advStatus)}</td>
                                    <td>{item.advType == '1' ? '外链':'内链'}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle'>

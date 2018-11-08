@@ -115,7 +115,7 @@ class OuterDetail extends Component{
     validate(){
         let {username,name,password,email,sjbPermissions} = this.state;
         let validate = new Validate();
-        validate.add(username,'isUserName','请输入正确的用户名格式！');
+        validate.add(username,'notEmpty','用户名不能为空！');
         validate.add(email,'isEmail','请输入正确的邮箱格式！');
         validate.add(name,'notEmpty','姓名不能为空！');
         validate.add(password,'isUserPassword','请输入正确的初始密码格式！');
@@ -137,7 +137,6 @@ class OuterDetail extends Component{
                         objChildren.id = item;
                         sjbPermissions.push(objChildren);
                     })
-                    
                 }
             })
         this.setState({sjbPermissions}) 
@@ -237,7 +236,7 @@ class OuterDetail extends Component{
                             <Row>
                                 <Col span='4'>用户名*</Col>
                                 <Col offset='1' span='8'>
-                                    <Input disabled={checked ==null ? false : true} maxLength='15' value={username} name='username' onChange = {(e) => this.onInput(e)}  placeholder='请使用大写字母加数字组合'/>
+                                    <Input disabled={checked ==null ? false : true} maxLength='15' value={username} name='username' onChange = {(e) => this.onInput(e)}  placeholder='请输入用户名'/>
                                 </Col>
                             </Row>
                         </div>

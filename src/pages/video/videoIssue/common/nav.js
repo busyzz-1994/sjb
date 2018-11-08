@@ -13,7 +13,7 @@ class Nav extends Component{
                 url:'/video/videoIssue/type'
             },
             {
-                name:'视频文件',
+                name:'视频列表',
                 url:'/video/videoIssue/file'
             }
         ]

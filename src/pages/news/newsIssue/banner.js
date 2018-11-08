@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import newsEditApi from 'api/news/banner';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import IssueButton from 'components/global/issueButton/index.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
@@ -23,7 +24,7 @@ class Banner extends Component{
                 url:'/news/newsIssue/type'
             },
             {
-                name:'新闻文件',
+                name:'新闻列表',
                 url:'/news/newsIssue/file'
             }
         ]
@@ -39,7 +40,7 @@ class Banner extends Component{
             originDataList:[],
             //原数据
             originData:[],
-            pageSize:3,
+            pageSize:6,
             total:10,
             pageNum:1
         }
@@ -222,6 +223,7 @@ class Banner extends Component{
                     <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
                     <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
                     <IconHandle type='4' id={item.id} iconClick={(id)=>{this.clickOnline(id,item.title)}}/>
+                    <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item.fkId,item.resourcesType)}}/>
                 </div>
             )
         }
@@ -262,6 +264,7 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
+                            <IssueButton callback={()=>{this.loadList()}} type={9} dataList ={this.state.dataList} />
                         </div>
                     </div>
                     {/* 操作栏结束 */}

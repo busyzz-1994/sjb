@@ -6,6 +6,8 @@ import { Select , Input , Button ,message,Pagination,Modal,Icon} from 'antd';
 import { withRouter,Link } from 'react-router-dom'; 
 import typeApi from 'api/discounts/type.js';
 import config from 'base/config.json';
+import recommendApi from 'api/search/recommend.js';
+import videoApi from 'api/video/index.js';
 import IconHandle from 'components/global/icon';
 const Option = Select.Option;
 const Search = Input.Search;
@@ -37,34 +39,61 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
         if(isSearch){
-            typeApi.getTypeList({
+            videoApi.getTypeList({
                 currPage:pageNum,
                 pageSize,
-                type:'2',
-                keyword:searchValue,
+                type:2,
+                name:searchValue,
                 theissue:'3'
             }).then(res=>{
-                let totalCount = res[0].totalCount;
-                let list = res[0].lists ;
+                let totalCount = res[0].total;
+                let list = res[0].list ;
                 this.setState({
                     dataList:list,
                     total:totalCount
                 })
             })
+            // typeApi.getTypeList({
+            //     currPage:pageNum,
+            //     pageSize,
+            //     type:'2',
+            //     keyword:searchValue,
+            //     theissue:'3'
+            // }).then(res=>{
+            //     let totalCount = res[0].totalCount;
+            //     let list = res[0].lists ;
+            //     this.setState({
+            //         dataList:list,
+            //         total:totalCount
+            //     })
+            // })
         }else{
-            typeApi.getTypeList({
+            videoApi.getTypeList({
                 currPage:pageNum,
                 pageSize,
-                type:'2',
+                type:2,
                 theissue:'3'
             }).then(res=>{
-                let totalCount = res[0].totalCount;
-                let list = res[0].lists ;
+                let totalCount = res[0].total;
+                let list = res[0].list ;
                 this.setState({
                     dataList:list,
                     total:totalCount
                 })
             })
+            // typeApi.getTypeList({
+            //     currPage:pageNum,
+            //     pageSize,
+            //     type:'2',
+            //     theissue:'3'
+            // }).then(res=>{
+            //     let totalCount = res[0].totalCount;
+            //     let list = res[0].lists ;
+            //     this.setState({
+            //         dataList:list,
+            //         total:totalCount
+            //     })
+            // })
         }
         
     }
@@ -125,7 +154,7 @@ class Banner extends Component{
         confirm({
             title:'删除的内容无法恢复，确认删除？',
             onOk:()=>{
-                typeApi.delType({id}).then(res=>{
+                recommendApi.removeWord({id}).then(res=>{
                     this.loadList();
                 }).catch(res=>{
                     message.error(res);

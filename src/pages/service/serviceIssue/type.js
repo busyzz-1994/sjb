@@ -8,6 +8,7 @@ import recommendApi from 'api/search/recommend.js';
 import videoApi from 'api/video/index.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import IssueButton from 'components/global/issueButton/index.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
@@ -203,11 +204,12 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
-                            <div style={{display:'inline-block',marginLeft:'10px'}}>
+                            <IssueButton callback={()=>{this.loadList()}} type={10} dataList ={this.state.dataList} />
+                            {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
                                     新增类型
                                 </Button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     {/* 操作栏结束 */}

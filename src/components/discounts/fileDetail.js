@@ -45,7 +45,7 @@ class TypeSave extends Component{
             //新闻内容detail
             detail:'',
             //选中的signList:
-            signList:[],
+            signList:[''],
             signChecked:false,
             authStatus:2,
             authString:'',
@@ -104,7 +104,7 @@ class TypeSave extends Component{
                 fwImgList:listPositive,
                 price,
                 count:inventory,
-                signList:listag,
+                signList:listag.length!=0?listag:[''],
                 defaultDetail:introduce,
                 editDetail:introduce,
                 signChecked:reveal == 1 ,
@@ -194,6 +194,7 @@ class TypeSave extends Component{
             price,
             inventory:count,
             tagIds:signList,
+            tags:signList,
             positiveImg:_mm.processImgUrl(fwImgList),
             introduce:editDetail,
             reveal:signChecked?1:0,
@@ -216,7 +217,6 @@ class TypeSave extends Component{
         var obj = this.getFileDetail();
         let {id} = this.state;
         obj = {...obj,id};
-        console.log(obj)
         fileApi.updataFile(obj).then(res=>{
             message.success('修改商品成功！');
             this.props.history.goBack();
@@ -288,7 +288,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>商品缩略图*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                            <ImgUpload aspectRatio={160/140} imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
                     </Row>
                 </div>
@@ -359,7 +359,7 @@ class TypeSave extends Component{
                         <Col span='4'>热门推荐*</Col>
                         <Col offset='1' span='16'>
                            <Checkbox onChange={(e)=>this.setHotChecked(e)} checked = {isHot} >
-                                显示热门推荐
+                                加入热门推荐
                            </Checkbox>
                         </Col>
                     </Row>

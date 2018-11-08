@@ -17,11 +17,11 @@ class TypeSave extends Component{
             checked:_mm.getParam('checked'),
             breadList:[
                 {
-                    name:'服务文件',
+                    name:'商家列表',
                     path:'/service/serviceEdit/file'
                 },
                 {
-                    name:'新增文件',
+                    name:'新增商家',
                     path:''
                 }
             ],

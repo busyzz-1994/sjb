@@ -38,7 +38,7 @@ class Banner extends Component{
                 url:'/news/newsIssue/type'
             },
             {
-                name:'新闻文件',
+                name:'新闻列表',
                 url:'/news/newsIssue/file'
             }
         ]
@@ -146,8 +146,9 @@ class Banner extends Component{
     }
     //点击查看图标
     clickCheck(item){
-        // this.props.history.push(`/discounts/discountsEdit/file/fileDetail/${id}/?checked=0&name=${name}`)
-        this.props.history.push(`/video/videoIssue/file/detail/${item.newsId}/?checked=0&name=${item.resourcesName}`)
+        
+        this.props.history.push(`/fileDetail/${item.newsId}/?checked=0&name=${item.resourcesName}&type=${item.resourcesType}`)
+        // this.props.history.push(`/video/videoIssue/file/detail/${item.newsId}/?checked=0&name=${item.resourcesName}`)
     }
     //点击编辑图标
     clickEdit(id,name){

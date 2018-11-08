@@ -40,7 +40,7 @@ class TypeSave extends Component{
             //视频概要
             videoDetail:'',
             //选中的signList:
-            signList:[],
+            signList:[''],
             signChecked:false,
             authStatus:2,
             authString:''
@@ -80,7 +80,7 @@ class TypeSave extends Component{
                 newsSource:videoSourceAdress,
                 newsOrigin:+sourceIsShow?true:false,
                 tpImg:videoImage,
-                signList:tags,
+                signList:tags.length!=0?tags:[''],
                 signChecked:+tagsIsShow?true:false,
                 hot:+isHot?true:false,
                 videoUrl,
@@ -264,7 +264,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>视频封面图*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload imgWidth={160} imgUrl={tpImg?config.server + tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                            <ImgUpload aspectRatio={160/140} imgWidth={160} imgUrl={tpImg?config.server + tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
                     </Row>
                 </div>
@@ -301,7 +301,7 @@ class TypeSave extends Component{
                                 checked={hot}
                                 onChange={(e)=>this.changeHot(e)}
                             >
-                            显示热门推荐
+                            加入热门推荐
                             </Checkbox>
                         </Col>
                     </Row>

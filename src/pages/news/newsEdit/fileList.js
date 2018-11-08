@@ -23,7 +23,7 @@ class Banner extends Component{
                 url:'/news/newsEdit/type'
             },
             {
-                name:'新闻文件',
+                name:'新闻列表',
                 url:'/news/newsEdit/file'
             }
         ]
@@ -65,6 +65,7 @@ class Banner extends Component{
                 })
             })
         }else{
+            console.log('pok')
             fileApi.getFileList({
                 currPage:pageNum,
                 checkview:selectValue,

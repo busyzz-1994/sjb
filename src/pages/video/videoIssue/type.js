@@ -8,6 +8,7 @@ import recommendApi from 'api/search/recommend.js';
 import videoApi from 'api/video/index.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import IssueButton from 'components/global/issueButton/index.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
@@ -203,6 +204,7 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
+                            <IssueButton callback={()=>{this.loadList()}} type={10} dataList ={this.state.dataList} />
                             {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
                                     新增类型
@@ -224,7 +226,10 @@ class Banner extends Component{
                                    <td className='td-handle' >
                                     {
                                         selectValue == '4' ? handle_2(item,index) :
-                                        <IconHandle type='4' iconClick={()=>{this.clickOnline(item)}}/>
+                                        <div>
+                                            <IconHandle type='4' iconClick={()=>{this.clickOnline(item)}}/>
+                                            <IconHandle type='2' iconClick={()=>{this.clickDel(item)}}/>
+                                        </div>
                                     }
                                         
                                    </td>

@@ -18,7 +18,7 @@ class Banner extends Component{
                 url:'/news/newsAudit/banner'
             },
             {
-                name:'新闻文件',
+                name:'新闻列表',
                 url:'/news/newsAudit/file'
             }
         ]
@@ -34,7 +34,7 @@ class Banner extends Component{
             originDataList:[],
             //原数据
             originData:[],
-            pageSize:3,
+            pageSize:6,
             total:10,
             pageNum:1
         }

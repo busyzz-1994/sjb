@@ -6,6 +6,7 @@ import { Select , Input , Button ,message,Pagination,Modal} from 'antd';
 import { withRouter } from 'react-router-dom'; 
 import fileApi from 'api/news/file';
 import config from 'base/config.json';
+import IssueButton from 'components/global/issueButton/index.js';
 import IconHandle from 'components/global/icon';
 const Option = Select.Option;
 const Search = Input.Search;
@@ -23,7 +24,7 @@ class Banner extends Component{
                 url:'/news/newsIssue/type'
             },
             {
-                name:'新闻文件',
+                name:'新闻列表',
                 url:'/news/newsIssue/file'
             }
         ]
@@ -39,8 +40,8 @@ class Banner extends Component{
             originDataList:[],
             //原数据
             originData:[],
-            pageSize:4,
-            total:10,
+            pageSize:12,
+            total:1,
             pageNum:1
         }
     }
@@ -235,6 +236,7 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
+                            <IssueButton callback={()=>{this.loadList()}} type={0} dataList ={this.state.dataList} />
                         </div>
                     </div>
                     {/* 操作栏结束 */}

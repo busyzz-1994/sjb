@@ -36,7 +36,7 @@ class TypeSave extends Component{
                     path:'/news/newsEdit/file'
                 },
                 {
-                    name:'新增文件',
+                    name:'新增新闻',
                     path:''
                 }
             ],

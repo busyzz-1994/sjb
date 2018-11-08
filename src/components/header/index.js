@@ -9,6 +9,7 @@ import userApi from 'api/user/index.js'
 // import { connect } from 'react-redux';
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
+const confirm = Modal.confirm;
 import style from  './index.scss';
 class Header extends Component {
   constructor(props) {
@@ -18,7 +19,10 @@ class Header extends Component {
       modalShow:false,
       errorMsg:'',
       newPassword:'',
-      confirmPassword:''
+      confirmPassword:'',
+      oldPassword:'',
+      //提示密码修改
+      pwdShow:false
     }
   }
   componentWillMount(){
@@ -29,7 +33,22 @@ class Header extends Component {
     admin && ( admin = JSON.parse(admin))
     this.setState({
       userName:admin.name?admin.name:'未登陆'
+    },()=>{
+      let isPopup = admin.isPopup;
+      if(isPopup !='1'){
+        this.showPwd();
+      }
     })
+  }
+  showPwd(){
+    confirm({
+      title:'密码即将过期，是否前去修改？',
+      onOk:()=>{
+          this.setState({modalShow:true})
+      },
+      okText:'确认',
+      cancelText:'取消'
+  })
   }
   logout(){
     _mm.removeStorage('token');
@@ -38,22 +57,27 @@ class Header extends Component {
   }
   updatePassWord(){
     let msg = this.validate();
-    let {confirmPassword} = this.state;
+    let {confirmPassword,oldPassword} = this.state;
     this.setState({errorMsg:msg})
     if(!msg){
       userApi.updatePassword({
-        number:confirmPassword
+        number:confirmPassword,
+        initialPassword:oldPassword
       }).then(res=>{
         message.success('修改密码成功！');
-        this.setState({modalShow:false})
+        this.setState({modalShow:false},()=>{
+          this.props.history.push('/login');
+        });
       }).catch(err=>{
-        this.setState({errorMsg:err})
+        this.setState({errorMsg:err});
+        message.error(err)
       })
     }
   }
   validate(){
     let validate = new Validate();
-    let {newPassword,confirmPassword} = this.state;
+    let {newPassword,confirmPassword,oldPassword} = this.state;
+    validate.add(oldPassword,'notEmpty','输入密码不能为空！');
     validate.add(newPassword,'notEmpty','输入密码不能为空！');
     validate.add(confirmPassword,'notEmpty','输入密码不能为空！');
     validate.add(newPassword,`isSame:${confirmPassword}`,'两次输入密码不一致！');
@@ -67,6 +91,7 @@ class Header extends Component {
         })
   }
   render() {
+    let {pwdShow} = this.state;
     const menu = (
       <Menu>
         <Menu.Item>
@@ -87,6 +112,16 @@ class Header extends Component {
           okText = '确定'
           cancelText ='取消'
         >
+          <div style={{marginBottom:'10px'}}>
+            <Row>
+              <Col span={6}>
+                输入旧密码*
+              </Col>
+              <Col span={14}>
+                <Input value={this.state.oldPassword} type='password' name='oldPassword' onChange={(e)=>this.onInput(e)}/>
+              </Col>
+            </Row>
+          </div>
           <div style={{marginBottom:'10px'}}>
             <Row>
               <Col span={6}>

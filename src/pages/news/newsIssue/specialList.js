@@ -39,7 +39,7 @@ class Banner extends Component{
                 url:'/news/newsIssue/type'
             },
             {
-                name:'新闻文件',
+                name:'新闻列表',
                 url:'/news/newsIssue/file'
             }
         ]

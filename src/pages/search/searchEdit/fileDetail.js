@@ -16,7 +16,7 @@ class TypeSave extends Component{
         this.state = {
             breadList:[
                 {
-                    name:'推荐',
+                    name:'推荐搜索',
                     path:'/search/searchEdit/recommend'
                 },
                 {

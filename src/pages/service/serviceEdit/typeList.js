@@ -188,7 +188,7 @@ class Banner extends Component{
                         ok={()=>{this.setState({modalVisible:false})}}
                         cancel={()=>{this.setState({modalVisible:false})}}
                         callback = {(selectedRowKeys,fn)=>this.relevanceCallback(selectedRowKeys,fn)}
-                        canChange = {true}
+                        canChange = {false}
                     />
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>

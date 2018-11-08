@@ -17,7 +17,7 @@ class TypeSave extends Component{
             checked:_mm.getParam('checked'),
             breadList:[
                 {
-                    name:'视频文件',
+                    name:'视频列表',
                     path:'/video/videoEdit/file'
                 },
                 {

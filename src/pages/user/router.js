@@ -10,8 +10,8 @@ class UserRouter extends Component{
         return (
             <div>
                 <Switch>
-                    <Route path='/user/userInfo' component={UserInfo}/>
-                    <Route path='/user/userComment' component={UserComment}/>
+                    <Route path='/user/info' component={UserInfo}/>
+                    <Route path='/user/comment' component={UserComment}/>
                 </Switch>
             </div>
         )

@@ -5,11 +5,11 @@ class Nav extends Component{
         super(props)
         this.navList = [
             {
-                name:'推荐',
+                name:'推荐搜索',
                 url:'/search/searchEdit/recommend/7'
             },
             {
-                name:'热搜',
+                name:'热门搜索',
                 url:'/search/searchEdit/recommend/8'
             }
         ]

@@ -4,6 +4,7 @@ const getToken = () =>{
 }
 const Api = {
     getFileList(data){
+        console.log(data);
         return _mm.POST({
             url:'/admin/news/sjbnewslist',
             data:{

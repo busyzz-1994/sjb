@@ -3,18 +3,18 @@ import { NavLink } from 'react-router-dom';
 import {message,Modal,Button} from 'antd';
 import commonApi from 'api/common.js';
 import style from './index.scss';
-import uploadImg from 'images/zs2.png';
-import _mm from 'util/mm.js';
 import {connect} from 'react-redux';
+// import uploadImg from 'images/zs2.png';
+import _mm from 'util/mm.js';
+import {HIDE_MODAL} from 'store/actionCreater.js';
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
-import {SHOW_MODAL} from 'store/actionCreater.js';
 //传入 getUrl 回调函数获取数据；
 class UploadImg extends Component{
     constructor(props){
         super(props)
         this.state = {
-            modalShow:false,
+            modalShow:true,
             imgBase64:'',
             initBase64:''
         }
@@ -55,12 +55,10 @@ class UploadImg extends Component{
             commonApi.uploadImg({
                     data:imgBase64
                 }).then(res=>{
-                    this.props.getUrl(res,this.props.index);
-                    this.setState({
-                        modalShow:false,
-                        imgBase64:'',
-                        initBase64:''
-                    })
+                    this.props.callback(res);
+                    this.props.cancel();
+                    // this.props.getUrl(res,this.props.index);
+                    // this.setState({modalShow:false})
                 }).catch(err=>{
                     message.error(err);
                 })
@@ -68,16 +66,17 @@ class UploadImg extends Component{
     }
     render(){
         let {modalShow,imgBase64,initBase64} = this.state;
+        let {isShow,cancel} = this.props;
         return (
            <div>
-                {/* <Modal
+                <Modal
                     title="图片裁剪"
-                    visible={modalShow}
+                    visible={isShow}
                     width = '1000px'
                     okText = '确认'
                     cancelText = '取消'
                     onOk = {()=>{this.ok()}}
-                    onCancel = {()=>{this.setState({modalShow:false})}}
+                    onCancel = {()=>{cancel()}}
                     >
                     <div className={style.uploadDiv} >
                         <Button type='primary'>选择图片</Button>
@@ -98,27 +97,29 @@ class UploadImg extends Component{
                         <div className ='test' style={{width:'300px',height:'200px',overflow:'hidden'}}>
 
                         </div>
-                </Modal> */}
-                <div className={style.uploadDiv}>
-                    <img onClick = {(e)=>{this.props.showModal(e,(res)=>{this.props.getUrl(res,this.props.index)},this.props.aspectRatio)}} src={this.props.imgUrl?this.props.imgUrl:this.props.defaultImgUrl} width={this.props.imgWidth} height={this.props.imgHeight}/>
-                </div>
+                </Modal>
            </div>
                 
         )
     }
 }
-UploadImg.defaultProps={
-    imgWidth:328,
-    imgHeight:140,
-    defaultImgUrl:uploadImg,
-    index : 0,
-    aspectRatio : 1334 / 750
-}
-const mapActionsToProps = (dispatch) =>{
+let mapStateToProps =(state)=>{
     return {
-        showModal:(e,fn,aspectRatio)=>{
-            dispatch(SHOW_MODAL(fn,aspectRatio));
+        isShow:state.isShow,
+        callback:(res)=>{
+            state.fn(res)
+        },
+        aspectRatio:state.aspectRatio
+    }
+}
+let mapActionsToProps =(dispatch)=>{
+    return {
+        cancel(){
+            dispatch(HIDE_MODAL())
         }
     }
 }
-export default  connect(null,mapActionsToProps)(UploadImg);
+UploadImg.defaultProps={
+    aspectRatio : 1334 / 750
+}
+export default connect(mapStateToProps,mapActionsToProps)(UploadImg) ;

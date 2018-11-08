@@ -51,18 +51,17 @@ class General extends Component{
     }
     render(){
         let {moreImg,singleImg,img,signList,signChecked,hotChecked,defaultDetail,detail} = this.props;
-        console.log(img)
         let more = moreImg.map((item,index)=>{
             return (
                 <div key={index} style={{display:'inline-block',marginRight:'15px'}}>
-                    <ImgUpload index={index} imgWidth={160} imgUrl={item?config.server+item:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getMoreUrl(data,index)} />
+                    <ImgUpload aspectRatio={160/140} index={index} imgWidth={160} imgUrl={item?config.server+item:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getMoreUrl(data,index)} />
                 </div>
             )
         })
         let single = singleImg.map((item,index)=>{
             return (
                 <div key={index} style={{display:'inline-block',marginRight:'15px'}}>
-                    <ImgUpload  imgWidth={160} imgUrl={item ?config.server+item:'' }  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data)=>this.getSingleUrl(data)} />
+                    <ImgUpload  aspectRatio={160/140} imgWidth={160} imgUrl={item ?config.server+item:'' }  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data)=>this.getSingleUrl(data)} />
                 </div>
             )
         })
@@ -111,7 +110,7 @@ class General extends Component{
                         <Col span='4'>热门推荐*</Col>
                         <Col offset='1' span='16'>
                            <Checkbox onChange={(e)=>this.setHotChecked(e)} checked = {hotChecked} >
-                                显示热门推荐
+                                加入热门推荐
                            </Checkbox>
                         </Col>
                     </Row>

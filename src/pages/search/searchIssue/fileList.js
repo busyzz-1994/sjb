@@ -19,7 +19,7 @@ class Banner extends Component{
         super(props)
         this.breadList = [
             {
-                name:'推荐',
+                name:`${this.props.match.params.type == '7' ? '推荐搜索':'热门搜索'}`,
                 path:`/search/searchIssue/recommend/${this.props.match.params.type}`
             },
             {

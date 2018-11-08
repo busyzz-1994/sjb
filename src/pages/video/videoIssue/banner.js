@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import newsEditApi from 'api/news/banner';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import IssueButton from 'components/global/issueButton/index.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
@@ -248,6 +249,7 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
+                            <IssueButton callback={()=>{this.loadList()}} type={9} dataList ={this.state.dataList} />
                         </div>
                     </div>
                     {/* 操作栏结束 */}

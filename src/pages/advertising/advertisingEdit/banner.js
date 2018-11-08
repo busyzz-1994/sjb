@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import advertisingApi from 'api/advertising/index.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import _mm from 'util/mm.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
@@ -171,6 +172,7 @@ class Banner extends Component{
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>{item.advTitle}</td>
+                                   <td>{_mm.mapStatusToString(item.advStatus)}</td>
                                    <td>{item.advType == '1' ? '外链':'内链'}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle'>

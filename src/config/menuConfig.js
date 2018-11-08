@@ -62,26 +62,26 @@ const menuConfig = [
     //     ]
     // },
     {
-        title:'服务管理',
+        title:'商家管理',
         key:'/service',
         icon:'shop',
         children:[
             {
                 key:'/service/serviceEdit/banner',
-                title:'服务编辑'
+                title:'商家编辑'
             },
             {
                 key:'/service/serviceAudit/banner',
-                title:'服务审核'
+                title:'商家审核'
             },
             {
                 key:'/service/serviceIssue/banner',
-                title:'服务发布'
+                title:'商家发布'
             }
         ]
     },
     {
-        title:'惠民购物',
+        title:'商品管理',
         key:'/discounts',
         icon:'shopping-cart',
         children:[
@@ -158,8 +158,18 @@ const menuConfig = [
     },
     {
         title:'用户管理',
-        key:'/user/userInfo',
-        icon:'user'
+        key:'/user',
+        icon:'user',
+        children:[
+            {
+                key:'/user/info/1',
+                title:'用户信息'
+            },
+            {
+                key:'/user/comment/1',
+                title:'评论管理'
+            }
+        ]
     }
 ]
 

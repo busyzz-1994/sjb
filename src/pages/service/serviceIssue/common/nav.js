@@ -9,11 +9,11 @@ class Nav extends Component{
                 url:'/service/serviceIssue/banner'
             },
             {
-                name:'服务类型',
+                name:'商家类型',
                 url:'/service/serviceIssue/type'
             },
             {
-                name:'服务文件',
+                name:'商家列表',
                 url:'/service/serviceIssue/file'
             }
         ]

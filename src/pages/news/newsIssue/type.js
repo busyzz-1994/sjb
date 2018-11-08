@@ -8,6 +8,7 @@ import recommendApi from 'api/search/recommend.js';
 import videoApi from 'api/video/index.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import IssueButton from 'components/global/issueButton/index.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
@@ -24,7 +25,7 @@ class Banner extends Component{
                 url:'/news/newsIssue/type'
             },
             {
-                name:'新闻文件',
+                name:'新闻列表',
                 url:'/news/newsIssue/file'
             }
         ]
@@ -185,7 +186,7 @@ class Banner extends Component{
                 <div>
                     <IconHandle type='6' iconClick={()=>{this.clickUnline(item)}}/>
                     {
-                        (index <3 && pageNum ==1) ? null : <IconHandle type='5' iconClick={()=>{this.clickTop(item)}}/>
+                        (index <0 && pageNum ==1) ? null : <IconHandle type='5' iconClick={()=>{this.clickTop(item)}}/>
                     }
                 </div>
             )
@@ -217,6 +218,7 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
+                            <IssueButton callback={()=>{this.loadList()}} type={10} dataList ={this.state.dataList} />
                             {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
                                     新增类型
@@ -238,7 +240,10 @@ class Banner extends Component{
                                    <td className='td-handle' >
                                     {
                                         selectValue == '4' ? handle_2(item,index) :
-                                        <IconHandle type='4' iconClick={()=>{this.clickOnline(item)}}/>
+                                        <div>
+                                            <IconHandle type='4' iconClick={()=>{this.clickOnline(item)}}/>
+                                            <IconHandle type='2' iconClick={()=>{this.clickDel(item)}}/>
+                                        </div>
                                     }
                                         
                                    </td>

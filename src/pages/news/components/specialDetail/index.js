@@ -127,7 +127,8 @@ class NewsCategorySave extends Component{
                     <Row>
                         <Col span='4'>专题图片*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload 
+                            <ImgUpload
+                             aspectRatio = {280 / 120}
                             defaultImgUrl={ImgUrl} 
                             imgUrl={this.state.imgUrl? config.server +this.state.imgUrl:'' }
                             imgWidth ={280}

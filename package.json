@@ -8,7 +8,7 @@
     "dev": "node_modules/.bin/webpack-dev-server",
     "build": "node_modules/.bin/webpack",
     "build_product": "node_modules/.bin/webpack -p",
-    "online":"set WEBPACK_ENV=online && npm run build_product"
+    "online": "set WEBPACK_ENV=online && npm run build_product"
   },
   "keywords": [],
   "author": "",
@@ -37,6 +37,8 @@
   "dependencies": {
     "font-awesome": "^4.7.0",
     "react": "^16.2.0",
+    "react-cropper": "^1.0.1",
+    "react-cropperjs": "^1.2.5",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
     "simditor": "^2.3.6",

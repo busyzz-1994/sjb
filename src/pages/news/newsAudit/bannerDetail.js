@@ -13,7 +13,7 @@ class BannerAdd extends Component{
                 url:'/news/newsAudit/banner'
             },
             {
-                name:'新闻文件',
+                name:'新闻列表',
                 url:'/news/newsAudit/file'
             }
         ]

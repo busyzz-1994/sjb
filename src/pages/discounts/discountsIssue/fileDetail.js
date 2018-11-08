@@ -17,7 +17,7 @@ class TypeSave extends Component{
             checked:_mm.getParam('checked'),
             breadList:[
                 {
-                    name:'商品文件',
+                    name:'商品列表',
                     path:'/discounts/discountsIssue/file'
                 },
                 {

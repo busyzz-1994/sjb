@@ -13,7 +13,7 @@ class Nav extends Component{
             //     url:'/service/serviceEdit/type'
             // },
             {
-                name:'服务文件',
+                name:'商家列表',
                 url:'/service/serviceAudit/file'
             }
         ]

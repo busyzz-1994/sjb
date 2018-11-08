@@ -21,18 +21,18 @@ class TypeSave extends Component{
                 url:'/news/newsAudit/banner'
             },
             {
-                name:'新闻文件',
+                name:'新闻列表',
                 url:'/news/newsAudit/file'
             }
         ]
         this.state = {
             breadList:[
                 {
-                    name:'新闻文件',
+                    name:'新闻列表',
                     path:'/news/newsAudit/file'
                 },
                 {
-                    name:'新增文件',
+                    name:'新增新闻',
                     path:''
                 }
             ],

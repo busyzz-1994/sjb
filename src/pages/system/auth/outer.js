@@ -4,9 +4,10 @@ import style from '../common/common.scss';
 import NavBar from './common/nav.js';
 import TableList from 'components/global/tableList';
 import IconHandle from 'components/global/icon';
-import {Pagination,Button,Input,message} from 'antd';
+import {Pagination,Button,Input,message,Modal} from 'antd';
 import systemApi from 'api/system';
-const Search = Input.Search
+const Search = Input.Search;
+const confirm = Modal.confirm;
 class Sign extends Component{
     constructor(props){
         super(props)
@@ -60,14 +61,22 @@ class Sign extends Component{
     }
     //恢复初始密码
     resetPassword(){
-        systemApi.resetPassword({
-            initialPassword:'123456',
-            isInternal:1
-        }).then(res=>{
-                message.success('重置密码成功！')
-        }).catch(err=>{
-                message.success(err)
+        confirm({
+            title:'恢复用户密码会将所有用户的密码重置，确定恢复吗？',
+            onOk:()=>{
+                systemApi.resetPassword({
+                    initialPassword:'123456',
+                    isInternal:1
+                }).then(res=>{
+                        message.success('重置密码成功！')
+                }).catch(err=>{
+                        message.error(err)
+                })
+            },
+            okText:'确认',
+            cancelText:'取消'
         })
+       
     }
     goAdd(){
         this.props.history.push('/system/auth/outer/detail');

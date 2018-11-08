@@ -1,22 +1,22 @@
 export default 
     [
-        {
-            name:'首页',
-            value:'1',
-            options:[
-                {
-                    label:'查看',
-                    value:'101'
-                },
-                {
-                    label:'导出报表',
-                    value:'102'
-                }
-            ],
-            selectOptions:[],
-            checkAll:false,
-            indeterminate:true
-        },
+        // {
+        //     name:'首页',
+        //     value:'1',
+        //     options:[
+        //         {
+        //             label:'查看',
+        //             value:'101'
+        //         },
+        //         {
+        //             label:'导出报表',
+        //             value:'102'
+        //         }
+        //     ],
+        //     selectOptions:[],
+        //     checkAll:false,
+        //     indeterminate:true
+        // },
         {
             name:'新闻管理',
             value:'2',
@@ -58,7 +58,7 @@ export default
             indeterminate:true
         },
         {
-            name:'服务管理',
+            name:'商家管理',
             value:'4',
             options:[
                 {
@@ -78,7 +78,7 @@ export default
             indeterminate:true
         },
         {
-            name:'惠民购物',
+            name:'商品管理',
             value:'5',
             options:[
                 {
@@ -91,6 +91,9 @@ export default
                 },{
                     label:'发布',
                     value:'503'
+                },{
+                    label:'订单管理',
+                    value:'504'
                 }
             ],
             selectOptions:[],
@@ -117,23 +120,23 @@ export default
             checkAll:false,
             indeterminate:true
         },
-        {
-            name:'投诉爆料',
-            value:'7',
-            options:[
-                {
-                    label:'查看',
-                    value:'701'
-                },
-                {
-                    label:'导出报表',
-                    value:'702'
-                }
-            ],
-            selectOptions:[],
-            checkAll:false,
-            indeterminate:true
-        },
+        // {
+        //     name:'投诉爆料',
+        //     value:'7',
+        //     options:[
+        //         {
+        //             label:'查看',
+        //             value:'701'
+        //         },
+        //         {
+        //             label:'导出报表',
+        //             value:'702'
+        //         }
+        //     ],
+        //     selectOptions:[],
+        //     checkAll:false,
+        //     indeterminate:true
+        // },
         {
             name:'广告管理',
             value:'8',
@@ -155,19 +158,16 @@ export default
             indeterminate:true
         },
         {
-            name:'标签管理',
+            name:'系统管理',
             value:'9',
             options:[
                 {
-                    label:'编辑',
+                    label:'权限管理',
                     value:'901'
                 },
                 {
-                    label:'审核',
+                    label:'标签管理',
                     value:'902'
-                },{
-                    label:'发布',
-                    value:'903'
                 }
             ],
             selectOptions:[],
@@ -179,39 +179,36 @@ export default
             value:'10',
             options:[
                 {
-                    label:'编辑',
+                    label:'用户信息',
                     value:'1001'
                 },
                 {
-                    label:'审核',
+                    label:'评论管理',
                     value:'1002'
-                },{
-                    label:'发布',
-                    value:'1003'
-                }
-            ],
-            selectOptions:[],
-            checkAll:false,
-            indeterminate:true
-        },
-        {
-            name:'审核',
-            value:'11',
-            options:[
-                {
-                    label:'编辑',
-                    value:'1101'
-                },
-                {
-                    label:'审核',
-                    value:'1102'
-                },{
-                    label:'发布',
-                    value:'1103'
                 }
             ],
             selectOptions:[],
             checkAll:false,
             indeterminate:true
         }
+        // {
+        //     name:'审核',
+        //     value:'11',
+        //     options:[
+        //         {
+        //             label:'编辑',
+        //             value:'1101'
+        //         },
+        //         {
+        //             label:'审核',
+        //             value:'1102'
+        //         },{
+        //             label:'发布',
+        //             value:'1103'
+        //         }
+        //     ],
+        //     selectOptions:[],
+        //     checkAll:false,
+        //     indeterminate:true
+        // }
     ]

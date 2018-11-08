@@ -5,7 +5,7 @@ class Nav extends Component{
         super(props)
         this.navList = [
             {
-                name:'商品文件',
+                name:'商品列表',
                 url:'/discounts/discountsAudit/file'
             }
         ]

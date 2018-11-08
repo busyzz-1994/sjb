@@ -241,6 +241,16 @@ const mm = {
     filterLink(url){
         var reg = /^(http:\/\/)|(https:\/\/)/;
         return url.replace(reg,'');
+    },
+    //将状态0,1,2 转换成 所属区域
+    mapStatusToString(type){
+        let map = {
+            '0':'首页',
+            '1':'生活',
+            '2':'媒体',
+            '3':'AR'
+        }
+        return map[type];
     }
 }
 export default mm;

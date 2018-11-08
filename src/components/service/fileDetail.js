@@ -31,6 +31,8 @@ class TypeSave extends Component{
             title:'',
             // 服务缩略图
             tpImg:'',
+            //商家电话
+            phone:'',
             //地址
             address:'',
             //评分
@@ -47,7 +49,7 @@ class TypeSave extends Component{
             //新闻内容detail
             detail:'',
             //选中的signList:
-            signList:[],
+            signList:[''],
             signChecked:false,
             defaultDetail:'',
             detail:'',
@@ -89,7 +91,8 @@ class TypeSave extends Component{
         }).then(res=>{
             console.log(res);
             let {categoryId,title,thumbnail,score,degree,address,detailed,price,
-                content,listag,coverimg,spectacular,isHot} = res[0];
+                content,listag,coverimg,spectacular,isHot,phone} = res[0];
+                console.log('ok')
             this.setState({
                 categoryValue:categoryId,
                 title:title,
@@ -101,7 +104,8 @@ class TypeSave extends Component{
                 startPrice:price,
                 defaultDetail:content,
                 detail:content,
-                signList:listag,
+                phone,
+                signList:listag.length!=0?listag:[''],
                 signChecked:spectacular=='1'?true:false,
                 fwImgList:coverimg.split(','),
                 isHot:isHot == '1' ? true : false
@@ -197,7 +201,7 @@ class TypeSave extends Component{
     //添加或编辑文件
     addFile(){
         let {title,categoryValue,score,count,tpImg,signList,address,startPrice,
-            signChecked,id,exactAddress,fwImgList,detail,isHot} = this.state;
+            signChecked,id,exactAddress,fwImgList,detail,isHot,phone} = this.state;
             console.log({
                 title,
                 thumbnail:tpImg,
@@ -227,10 +231,13 @@ class TypeSave extends Component{
             coverimg:fwImgList.join(','),
             categoryId:categoryValue,
             content:detail,
-            isHot:isHot?'1':'0'
+            isHot:isHot?'1':'0',
+            phone
         }).then(res=>{
             message.success('保存文件成功！');
             this.props.history.goBack()
+            // this.props.history.push('/service/serviceIssue/banner')
+            // location.href = document.referrer;
         }).catch(err=>{
             message.error(err);
         })
@@ -242,7 +249,7 @@ class TypeSave extends Component{
     }
     render(){
         let {category,categoryValue,tpImg,signList,signChecked,fwImgList,
-            defaultDetail,authStatus,authString,checked,isHot} = this.state;
+            defaultDetail,authStatus,authString,checked,isHot,phone} = this.state;
         return (
             <div className='form-container'>
                 <div className='form-item'>
@@ -280,7 +287,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>服务缩略图*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                            <ImgUpload aspectRatio={160/140} imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
                     </Row>
                 </div>
@@ -289,6 +296,14 @@ class TypeSave extends Component{
                         <Col span='4'></Col>
                         <Col offset='1' span='16'>
                             建议上传尺寸180*180,10-65KB
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>商家电话*</Col>
+                        <Col offset='1' span='12'>
+                            <Input value={this.state.phone} onChange={(e)=>this.onInput(e)} name='phone' placeholder='请输入商家电话' />
                         </Col>
                     </Row>
                 </div>
@@ -362,7 +377,7 @@ class TypeSave extends Component{
                         <Col span='4'>热门推荐*</Col>
                         <Col offset='1' span='16'>
                            <Checkbox onChange={(e)=>this.setHotChecked(e)} checked = {isHot} >
-                                显示热门推荐
+                                加入热门推荐
                            </Checkbox>
                         </Col>
                     </Row>

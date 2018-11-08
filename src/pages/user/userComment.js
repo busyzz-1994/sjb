@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import { withRouter ,Link} from 'react-router-dom'; 
 import style from 'common/layout.scss';
-import NavBar from './common/nav.js';
+import NavTab from 'components/global/navTab';
 import TableList from 'components/global/tableList';
 import IconHandle from 'components/global/icon';
 import {Pagination,Button,Input,message,Select,Modal,Tooltip} from 'antd';
@@ -12,6 +12,12 @@ const confirm = Modal.confirm;
 class Sign extends Component{
     constructor(props){
         super(props)
+        this.navList = [
+            {
+                name:'评论管理',
+                url:'/user/comment/1'
+            }
+        ]
         this.state = {
             selectValue:'1',
             pageNum : 1,
@@ -185,7 +191,7 @@ class Sign extends Component{
         }
         return (
             <div className={style.container}>
-                <NavBar/>
+                <NavTab navList={this.navList}/>
                 <div className={style.content}>
                     {/* 操作开始 */}
                     <div className={style.handle + ' clearfix'}>

@@ -33,10 +33,13 @@ import SearchRouter from 'pages/search/router.js';
 import AdvertisingRouter from 'pages/advertising/router.js';
 //用户管理
 import UserRouter from 'pages/user/router.js';
+//裁剪img
+import CropperImg from 'components/global/cropper/index.js';
 class App extends Component{
 	render(){
 		let layoutRouter = (
 			<Layout>
+				<CropperImg/>
 				<Switch>
 					<Route exact path='/' component = {Home} />
 					<Route path='/news' component = {NewsRouter} />

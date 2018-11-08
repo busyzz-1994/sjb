@@ -9,7 +9,7 @@ class Nav extends Component{
                 url:'/discounts/discountsIssue/type'
             },
             {
-                name:'商品文件',
+                name:'商品列表',
                 url:'/discounts/discountsIssue/file'
             }
         ]

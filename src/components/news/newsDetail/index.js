@@ -39,7 +39,7 @@ class NewsDetail extends Component{
             //多个缩率图
             ptMoreImg:['','',''],
             //标签列表
-            ptSignList:[],
+            ptSignList:[''],
             //标签是否选中
             ptSignChecked:false,
             //热门是否可选
@@ -50,11 +50,11 @@ class NewsDetail extends Component{
             ptDetail:'',
             /*图片新闻的数据*/
             tpImg:'',
-            tpSignList:[],
+            tpSignList:[''],
             tpImgList:[{imgUrl:'',desc:''},{imgUrl:'',desc:''}],
             tpSignChecked:false,
             /*文本新闻的数据*/
-            wbSignList:[],
+            wbSignList:[''],
             wbSignChecked:false,
             wbHotChecked:false,
             wbDefaultDetail:'',
@@ -172,7 +172,6 @@ class NewsDetail extends Component{
             let {newsType,categoryId,title,sourceAdress,sourceAdressState,
                 tagsName,tagsState,isHot,content,thumbnails,images
             } = result;
-            console.log(sourceAdressState)
             this.setState({
                 category:categoryId,
                 type:newsType,
@@ -186,7 +185,7 @@ class NewsDetail extends Component{
                         ptDefaultDetail:content,
                         ptDetail:content,
                         ptHotChecked:isHot == '1'?true:false,
-                        ptSignList:tagsName,
+                        ptSignList:tagsName.length!=0?tagsName:[''],
                         ptSignChecked:tagsState == '1'?true:false,
                         ptSingleImg:thumbnails.length>1?['']:thumbnails,
                         ptMoreImg:thumbnails.length>1?thumbnails:['','',''],
@@ -202,7 +201,7 @@ class NewsDetail extends Component{
                     })
                     this.setState({
                         tpImg:thumbnails[0],
-                        tpSignList:tagsName,
+                        tpSignList:tagsName.length!=0?tagsName:[''],
                         tpSignChecked:tagsState =='1'?true:false,
                         tpImgList
                     })
@@ -212,7 +211,7 @@ class NewsDetail extends Component{
                         wbDefaultDetail:content,
                         wbDetail:content,
                         wbHotChecked:isHot == '1'?true:false,
-                        wbSignList:tagsName,
+                        wbSignList:tagsName.length!=0?tagsName:[''],
                         wbSignChecked:tagsState == '1'?true:false
                     })
                 break;
