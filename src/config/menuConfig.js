@@ -29,15 +29,15 @@ const menuConfig = [
         icon:'video-camera',
         children:[
             {
-                key:'/video/videoEdit/banner',
+                key:'/video/videoEdit/type',
                 title:'视频编辑'
             },
             {
-                key:'/video/videoAudit/banner',
+                key:'/video/videoAudit/file',
                 title:'视频审核'
             },
             {
-                key:'/video/videoIssue/banner',
+                key:'/video/videoIssue/type',
                 title:'视频发布'
             }
         ]

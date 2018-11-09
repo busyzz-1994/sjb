@@ -186,7 +186,7 @@ class Banner extends Component{
                 <div>
                     <IconHandle type='6' iconClick={()=>{this.clickUnline(item)}}/>
                     {
-                        (index <0 && pageNum ==1) ? null : <IconHandle type='5' iconClick={()=>{this.clickTop(item)}}/>
+                        (index <1 && pageNum ==1) ? null : <IconHandle type='5' iconClick={()=>{this.clickTop(item)}}/>
                     }
                 </div>
             )
@@ -235,7 +235,7 @@ class Banner extends Component{
                            return (
                                <tr key={index}>
                                    <td>{index + 1}</td>
-                                   <td style={item.exclusive=='1' || item.exclusive=='2'?{color:'#F8AD2F'}:{}} >{item.name}</td>
+                                   <td style={item.exclusive=='1' || item.exclusive=='2' || item.name=='党政参考'?{color:'#F8AD2F'}:{}} >{item.name}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
                                     {
@@ -249,7 +249,8 @@ class Banner extends Component{
                                    </td>
                                    <td>
                                         {
-                                            item.exclusive == '1'?
+                                            item.name =='党政参考'?null:
+                                            item.exclusive == '2'?
                                             <Link className='gl-link' to={`/news/newsIssue/type/specialList/${item.id}/?name=${item.name}`} ><Icon type="link" />
                                                 关联类型
                                             </Link>:
@@ -258,8 +259,6 @@ class Banner extends Component{
                                                 关联文件
                                             </Link>
                                         }
-                                        
-                                       
                                    </td>
                                </tr>
                            )

@@ -54,14 +54,14 @@ class General extends Component{
         let more = moreImg.map((item,index)=>{
             return (
                 <div key={index} style={{display:'inline-block',marginRight:'15px'}}>
-                    <ImgUpload aspectRatio={160/140} index={index} imgWidth={160} imgUrl={item?config.server+item:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getMoreUrl(data,index)} />
+                    <ImgUpload aspectRatio={200/185} index={index} imgWidth={160} imgUrl={item?config.server+item:''}  imgHeight={145} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getMoreUrl(data,index)} />
                 </div>
             )
         })
         let single = singleImg.map((item,index)=>{
             return (
                 <div key={index} style={{display:'inline-block',marginRight:'15px'}}>
-                    <ImgUpload  aspectRatio={160/140} imgWidth={160} imgUrl={item ?config.server+item:'' }  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data)=>this.getSingleUrl(data)} />
+                    <ImgUpload  aspectRatio={275/185} imgWidth={160} imgUrl={item ?config.server+item:'' }  imgHeight={108} defaultImgUrl={defaultImg} getUrl = {(data)=>this.getSingleUrl(data)} />
                 </div>
             )
         })
@@ -91,7 +91,7 @@ class General extends Component{
                     <Row>
                         <Col span='4'></Col>
                         <Col offset='1' span='16'>
-                            建议上传尺寸160*140,10-65KB
+                            建议上传尺寸275*185,10-65KB
                         </Col>
                     </Row>
                 </div>

@@ -62,7 +62,7 @@ class Picture extends Component{
                     <Row>
                         <Col span='4'>封面图*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload aspectRatio={160/140} imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                            <ImgUpload aspectRatio={690/380} imgWidth={230} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={126} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
                     </Row>
                 </div>
@@ -71,7 +71,7 @@ class Picture extends Component{
                     <Row>
                         <Col span='4'></Col>
                         <Col offset='1' span='16'>
-                            建议上传尺寸160*140,10-65KB
+                            建议上传尺寸690*380,10-65KB
                         </Col>
                     </Row>
                 </div>
@@ -97,9 +97,9 @@ class Picture extends Component{
                                     return (
                                         <div key={index} className='clearfix'>
                                             <div className='fl'>
-                                                <ImgUpload aspectRatio={160/140} imgWidth={160} imgUrl={item.imgUrl?config.server+ item.imgUrl:''} index={index} imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getListUrl(data,index)} />
+                                                <ImgUpload aspectRatio={750/630} imgWidth={187} imgUrl={item.imgUrl?config.server+ item.imgUrl:''} index={index} imgHeight={157} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getListUrl(data,index)} />
                                             </div>
-                                            <div className='fl' style={{width:'400px',height:'140px',marginLeft:'20px',marginRight:'10px'}}>
+                                            <div className='fl' style={{width:'400px',height:'157px',marginLeft:'20px',marginRight:'10px'}}>
                                                 <TextArea onChange={(e)=>{this.getListDesc(e,index)}} value={item.desc} style={{width:'100%',height:'100%',display:'block'}}   />
                                             </div>
                                             <div className='fl' onClick={()=>this.delList(index)}>

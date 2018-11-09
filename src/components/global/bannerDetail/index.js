@@ -258,8 +258,8 @@ class BannerDetail extends Component{
                     <Row>
                         <Col span='4'>轮播图*</Col>
                         <Col offset='1' span='16'>
-                            <UploadImg  aspectRatio={320/140}  imgUrl={this.state.imgUrl ? config.server +this.state.imgUrl:'' } getUrl={(data)=>{this.getImgData(data)}}/>
-                            <div>建议尺寸（320 * 140 px）</div>
+                            <UploadImg  aspectRatio={750/320}  imgUrl={this.state.imgUrl ? config.server +this.state.imgUrl:'' } getUrl={(data)=>{this.getImgData(data)}}/>
+                            <div>建议尺寸（750 * 320 px）</div>
                         </Col>
                     </Row>
                 </div>

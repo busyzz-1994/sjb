@@ -112,18 +112,18 @@ class Banner extends Component{
                     {/* 操作栏结束 */}
                     <TableList
                         tdHeight='58px'
-                        thead={[{width:'5%',name:' '},{width:'20%',name:'商品名称'},{width:'15%',name:'商品价格（元）'},{width:'10%',name:'商品数量'},{width:'15%',name:'购买者账号'},{width:'20%',name:'订单编号'},{width:'15%',name:'订单时间'}]}
+                        thead={[{width:'5%',name:' '},{width:'20%',name:'商品名称'},{width:'15%',name:'商品价格（元）'},{width:'10%',name:'商品数量'},{width:'15%',name:'购买者电话'},{width:'20%',name:'订单编号'},{width:'15%',name:'下单时间'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>{item.productName}</td>
-                                   <td>{item.productPrice}</td>
-                                   <td>{item.productNumber}</td>
+                                   <td>{item.orderAmount/100}</td>
+                                   <td>{item.buyCounts}</td>
                                    <td>{item.userNumber}</td>
                                    <td>{item.orderNumber}</td>
-                                   <td>{item.creatTime}</td>
+                                   <td>{item.paidTime}</td>
                                </tr>
                            )
                        })}

@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom';
 import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Radio } from 'antd';
 import { withRouter } from 'react-router-dom';
 import advertisingApi from 'api/advertising/index.js';
-
+import defaultImg from 'images/newsas.png';
 import commonApi from 'api/common.js';
 import config from 'base/config.json';
 import UploadImg from 'components/global/uploadImg';
@@ -262,8 +262,8 @@ class startDetail extends Component{
                     <Row>
                         <Col span='4'>广告图片*</Col>
                         <Col offset='1' span='16'>
-                            <UploadImg   aspectRatio={320/140} imgUrl={this.state.imgUrl? config.server + this.state.imgUrl:''} getUrl={(data)=>{this.getImgData(data)}}/>
-                            <div>建议尺寸（320 * 140 px）</div>
+                            <UploadImg defaultImgUrl={defaultImg}  imgHeight={200} imgWidth={200}  aspectRatio={590/590} imgUrl={this.state.imgUrl? config.server + this.state.imgUrl:''} getUrl={(data)=>{this.getImgData(data)}}/>
+                            <div>建议尺寸（590 * 590 px）</div>
                         </Col>
                     </Row>
                 </div>

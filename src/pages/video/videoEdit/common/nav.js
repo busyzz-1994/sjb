@@ -4,10 +4,10 @@ class Nav extends Component{
     constructor(props){
         super(props)
         this.navList = [
-            {
-                name:'banner管理',
-                url:'/video/videoEdit/banner'
-            },
+            // {
+            //     name:'banner管理',
+            //     url:'/video/videoEdit/banner'
+            // },
             {
                 name:'视频类型',
                 url:'/video/videoEdit/type'

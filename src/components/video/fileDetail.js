@@ -8,6 +8,7 @@ import AuditForm from 'components/global/auditForm';
 import commonApi from 'api/common.js';
 import videoApi from 'api/video/index.js';
 import Validate from 'util/validate/index.js';
+import widthImg from 'images/zs2.png';
 // import self from './bannerAdd.scss';
 import {Link} from 'react-router-dom';
 import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,Checkbox } from 'antd';
@@ -25,8 +26,10 @@ class TypeSave extends Component{
             category:[],
             categoryValue:'',
             title:'',
-            // 服务缩略图
+            // 视频封面图
             tpImg:'',
+            //视频缩率图
+            thumbnail:'',
             //是否显示新闻来源
             newsSource:'',
             newsOrigin:false,
@@ -73,7 +76,7 @@ class TypeSave extends Component{
             videoId:id
         }).then(res=>{
             let {categoryId,videoTitle,videoSourceAdress,sourceIsShow,videoImage,tags,
-                tagsIsShow,isHot,videoUrl,videoDesc} = res[0];
+                tagsIsShow,isHot,videoUrl,videoDesc,thumbnail} = res[0];
             this.setState({
                 categoryValue:categoryId,
                 title:videoTitle,
@@ -84,7 +87,8 @@ class TypeSave extends Component{
                 signChecked:+tagsIsShow?true:false,
                 hot:+isHot?true:false,
                 videoUrl,
-                videoDetail:videoDesc
+                videoDetail:videoDesc,
+                thumbnail
             })    
         }).catch(err=>{
             message.error(err);
@@ -102,11 +106,18 @@ class TypeSave extends Component{
             [name]:value
         })  
     }
-    //获取缩略图
+    //获取封面图
     getUrl(data,index){
         let url =data[0].attachFilenames;
         this.setState({
             tpImg:url
+        })
+    }
+    //获取缩略图
+    getUrl_2(data,index){
+        let url =data[0].attachFilenames;
+        this.setState({
+            thumbnail:url
         })
     }
     //获取signList
@@ -188,7 +199,7 @@ class TypeSave extends Component{
     //添加或编辑文件
     addFile(){
         let {title,categoryValue,newsSource,newsOrigin,tpImg,signList,
-            signChecked,hot,videoDetail,videoUrl,id} = this.state;
+            signChecked,hot,videoDetail,videoUrl,id,thumbnail} = this.state;
         videoApi.addFile({
             videoId:id,
             videoTitle:title,
@@ -200,7 +211,8 @@ class TypeSave extends Component{
             isHot:hot?'1':'0',
             videoUrl,
             videoDesc:videoDetail,
-            categoryId:categoryValue
+            categoryId:categoryValue,
+            thumbnail
         }).then(res=>{
             message.success('保存文件成功！');
             this.props.history.goBack()
@@ -210,7 +222,7 @@ class TypeSave extends Component{
     }
     render(){
         let {category,tpImg,signList,signChecked,authStatus,authString,checked,
-            newsOrigin,hot,videoUrl,videoMin,videoSec,videoDetail,categoryValue
+            newsOrigin,hot,videoUrl,videoMin,videoSec,videoDetail,categoryValue,thumbnail
         } = this.state;
         return (
             <div className='form-container'>
@@ -264,7 +276,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>视频封面图*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload aspectRatio={160/140} imgWidth={160} imgUrl={tpImg?config.server + tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                            <ImgUpload defaultImgUrl={widthImg} aspectRatio={690/380} imgWidth={230} imgUrl={tpImg?config.server + tpImg:''}  imgHeight={125} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
                     </Row>
                 </div>
@@ -272,7 +284,23 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'></Col>
                         <Col offset='1' span='16'>
-                            建议上传尺寸228*152,10-65KB
+                            建议上传尺寸690*380,10-65KB
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>视频缩略图*</Col>
+                        <Col offset='1' span='12'>
+                            <ImgUpload  aspectRatio={240/310} imgWidth={160} imgUrl={thumbnail?config.server + thumbnail:''}  imgHeight={206} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl_2(data,index)} />
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'></Col>
+                        <Col offset='1' span='16'>
+                            建议上传尺寸240*310,10-65KB
                         </Col>
                     </Row>
                 </div>

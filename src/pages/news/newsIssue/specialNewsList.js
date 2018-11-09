@@ -239,7 +239,7 @@ class Banner extends Component{
                                    <td>{index + 1}</td>
                                    <td>{item.resourcesName}</td>
                                    {/* <td>{item.resourcesType}</td> */}
-                                   <td>{item.resourcesType}</td>
+                                   <td>{_mm.mapTypeToString(item.resourcesType)}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
                                         <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>

@@ -11,6 +11,8 @@ import Login5 from 'images/login/login5.png';
 class Login extends Component{
     static getRedirect(){
         let res = window.location.hash.split('#')[2];
+        // Login.getRedirect() ||
+        console.log(res);
         return res;
     }
     constructor(props){
@@ -20,7 +22,7 @@ class Login extends Component{
             username: '',
             password: '',
             verifyCode:'',
-            redirect: Login.getRedirect() || '/',
+            redirect: '/',
             errorMsg:'',
             //获取验证码按钮是否可点击
             buttonIs:true,

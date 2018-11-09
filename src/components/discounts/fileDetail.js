@@ -11,13 +11,14 @@ import Editor from 'components/global/editor';
 import AuditForm from 'components/global/auditForm';
 // import self from './bannerAdd.scss';
 import {Link} from 'react-router-dom';
-import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,DatePicker,Checkbox} from 'antd';
+import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,DatePicker,Checkbox,AutoComplete} from 'antd';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import { withRouter } from 'react-router-dom';
 import commonApi from 'api/common.js';
 import config from 'base/config.json';
 import typeApi from 'api/discounts/type.js';
 import fileApi from 'api/discounts/file.js';
+import serviceApi from 'api/service/index.js';
 import Validate from 'util/validate';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -54,7 +55,19 @@ class TypeSave extends Component{
             defaultDetail:'',
             startTime:'2018-06-01 12:00:00',
             endTime:'2018-06-12 12:00:00',
-            isHot:false
+            isHot:false,
+            //是否显示库存
+            isShowCount:false,
+            //已售出的数量
+            salesNum:0,
+            //选中的管理商家ID
+            businessId:'',
+            //已发布的商家列表
+            businessList:[],
+            //联想的商家名称
+            businessName:[],
+            //选中的商家名称
+            selectedName:''
         }
     }
     selectCategory(value){
@@ -63,7 +76,8 @@ class TypeSave extends Component{
         })
     }
     componentDidMount(){
-        this.loadTypeList()
+        this.loadTypeList();
+        this.loadService();
     }
     onInput(e){
         let name = e.target.name,
@@ -71,6 +85,26 @@ class TypeSave extends Component{
         this.setState({
             [name]:value
         })  
+    }
+    //获取已发布的商家列表
+    loadService(){
+        serviceApi.getFileList({
+            currPage:1,
+            pageSize:99999,
+            theissue:4
+        }).then(res=>{
+            let totalCount = res[0].total;
+            let list = res[0].list,
+                listName = list.map(item=>{
+                    return item.title
+                })
+            this.setState({
+                businessList:list,
+                businessName:listName
+            },()=>{
+                console.log(this.state.businessList)
+            })
+        })
     }
     //添加类型选项
     loadTypeList(){
@@ -96,7 +130,8 @@ class TypeSave extends Component{
         fileApi.getFileDetail({id}).then(res=>{
             var res = res[0];
             let {typeId,title,thumbnail,listPositive,price,inventory,
-                listag,introduce,reveal,isHot,startTime,endTime} = res;
+                listag,introduce,reveal,isHot,startTime,endTime,inventoryShow,salesNum,businessId,bussinessName} = res;
+                console.log(res)
             this.setState({
                 categoryValue:typeId,
                 title,
@@ -110,7 +145,11 @@ class TypeSave extends Component{
                 signChecked:reveal == 1 ,
                 isHot:isHot =='1' ? true : false,
                 startTime,
-                endTime
+                endTime,
+                isShowCount: inventoryShow =='1' ? true :false,
+                salesNum,
+                businessId,
+                selectedName:bussinessName
             })
             
         }).catch(err=>{
@@ -156,9 +195,12 @@ class TypeSave extends Component{
     }
     //验证表单信息
     validate(){
-        let {title,tpImg,price,count,signList,fwImgList,editDetail} = this.state;
+        let {title,tpImg,price,count,signList,fwImgList,editDetail,selectedName} = this.state;
         let validate = new Validate();
         validate.add(title,'notEmpty','商品标题不能为空！');
+        validate.addFn(()=>{
+            return this.mapNameToId(selectedName)?'':'输入的商家不存在！'
+        });
         validate.add(tpImg,'notEmpty','商品缩略图不能为空！');
         validate.add(price,'notFloatMinus','商品价格只能为正数！');
         validate.add(count,'notMinus','库存只能为整数！');
@@ -186,7 +228,7 @@ class TypeSave extends Component{
     }
     getFileDetail(){
         let {categoryValue,title,tpImg,price,count,signList,
-            fwImgList,editDetail,signChecked,endTime,startTime,isHot} = this.state;
+            fwImgList,editDetail,signChecked,endTime,startTime,isHot,isShowCount,salesNum,selectedName} = this.state;
         let obj = {
             typeId:categoryValue,
             title,
@@ -200,7 +242,10 @@ class TypeSave extends Component{
             reveal:signChecked?1:0,
             endTime,
             startTime,
-            isHot:isHot?'1':'0'
+            isHot:isHot?'1':'0',
+            inventoryShow:isShowCount?'1':'0',
+            salesNum,
+            businessId:this.mapNameToId(selectedName)
         }
         return obj;
     }
@@ -247,9 +292,31 @@ class TypeSave extends Component{
             isHot:e.target.checked 
         })
     }
+    setCountChecked(e){
+        this.setState({
+            isShowCount:e.target.checked 
+        })
+    }
+    onSelect(val){
+        this.changeName(val)
+    }
+    changeName(val){
+        this.setState({
+            selectedName:val
+        })
+    }
+    mapNameToId(name){
+        let {businessList} = this.state;
+        for(let i = 0 ;i<businessList.length;i++){
+            if(businessList[i].title == name){
+                return businessList[i].id
+            }
+        }
+        return null;
+    }
     render(){
         let {category,tpImg,signList,signChecked,fwImgList,defaultDetail
-            ,authStatus,authString,checked,categoryValue,endTime,startTime,isHot
+            ,authStatus,authString,checked,categoryValue,endTime,startTime,isHot,isShowCount,bussinessName,selectedName
         } = this.state;
         return (
             <div className='form-container'>
@@ -286,9 +353,27 @@ class TypeSave extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
+                        <Col span='4'>所属商家*</Col>
+                        <Col offset='1' span='12'>
+                            <AutoComplete
+                                dataSource={bussinessName}
+                                style={{ width: '100%' }}
+                                onSelect={(val)=>{this.onSelect(val)}}
+                                placeholder="请输入商家名称"
+                                onChange = {(e) => this.changeName(e)}
+                                value={selectedName}
+                                filterOption = {(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+                            />
+                            {/* <Input maxLength='30' value={this.state.title} onChange={(e)=>this.onInput(e)} name='title' placeholder='请输入不超过30个字的商品标题' /> */}
+                        </Col>
+                    </Row>
+                </div>
+                
+                <div className='form-item'>
+                    <Row>
                         <Col span='4'>商品缩略图*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload aspectRatio={160/140} imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                            <ImgUpload aspectRatio={180/180} imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
                     </Row>
                 </div>
@@ -324,8 +409,21 @@ class TypeSave extends Component{
                 <div className='form-item'>
                     <Row>
                         <Col span='4'>商品库存*</Col>
-                        <Col offset='1' span='12'>
+                        <Col offset='1' span='9'>
                             <Input value={this.state.count} onChange={(e)=>this.onInput(e)} name='count' placeholder='请输入0-100000的整数' />
+                        </Col>
+                        <Col span='3' offset='1'>
+                            <Checkbox onChange={(e)=>this.setCountChecked(e)} checked = {isShowCount} >
+                                显示库存
+                           </Checkbox> 
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>已售数量*</Col>
+                        <Col offset='1' span='9'>
+                            <Input value={this.state.salesNum} onChange={(e)=>this.onInput(e)} name='salesNum' placeholder='请输入0-100000的整数' />
                         </Col>
                     </Row>
                 </div>

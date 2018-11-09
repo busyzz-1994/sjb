@@ -102,7 +102,8 @@ const mm = {
     },
      // 跳转登录
     doLogin(){
-        window.location.href = '#/login?redirect=' + window.location.hash;
+        // window.location.href = '#/login?redirect=' + window.location.hash;
+        window.location.href = '#/login';
     },
     //获取url参数
 	getParam:function(name){
