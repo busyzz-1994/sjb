@@ -44,7 +44,7 @@ class IssueButton extends Component{
     render(){
         return (
             <div style={{display:'inline-block',marginLeft:'10px'}}>
-                <Button onClick={()=>{this.issue()}} type='primary' >发布本页</Button>
+                <Button onClick={()=>{this.issue()}} type='primary' >发布选中</Button>
             </div>
         )
     }

@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import NavTab from './common/nav.js';
 import TableList from 'components/global/tableList';
 import style from 'common/layout.scss';
-import { Select , Input , Button ,message,Pagination,Modal} from 'antd';
+import { Select , Input , Button ,message,Pagination,Modal,Checkbox} from 'antd';
 import { withRouter } from 'react-router-dom'; 
 import advertisingApi from 'api/advertising/index.js';
 import config from 'base/config.json';
@@ -20,6 +20,7 @@ class Banner extends Component{
             selectValue:'3',
             //当前render的数据
             dataList:[],
+            issueList:[],
             //是否处于搜索状态
             isSearch:false,
             searchValue:'',
@@ -168,6 +169,64 @@ class Banner extends Component{
             cancelText:'取消'
         })
     }
+    /**********支持多选代码 **********/
+    //选中当前项
+    checkbox(e){
+        let list = this.getIssueId();
+        let {issueList} = this.state;
+        let has = list.indexOf(e.target.id) == -1 ? false:true;
+        if(has){
+            issueList.forEach((item,index)=>{
+                if(e.target.id == item.advId){
+                    issueList.splice(index,1);
+                    this.setState({
+                        issueList
+                    })
+                }
+            })
+        }else{
+           let item =  this.mapIdToItem(e.target.id);
+           issueList.push(item);
+           this.setState({
+                issueList
+           })
+        }
+    }
+    //选中所有的项
+    checkboxAll(){
+        let {dataList,issueList} = this.state;
+        if(issueList.length>0){
+            this.setState({
+                issueList:[]
+            })
+        }else{
+            this.setState({
+                issueList:JSON.parse(JSON.stringify(dataList))
+            })
+        }
+    }
+    //是否选中
+    isChecked(id){
+        let list = this.getIssueId();
+        return list.indexOf(id) == -1 ? false:true;
+    }
+    //获取已经选中的id
+    getIssueId(){
+        let {issueList} = this.state;
+        let list = issueList.map(item=>{
+            return item.advId
+        })
+        return list;
+    }
+    //通过id在datalist里面获取item
+    mapIdToItem(id){
+        let {dataList} = this.state;
+        for(let i = 0 ; i<dataList.length;i++){
+            if(dataList[i].advId == id){
+                return dataList[i] ;
+            }
+        }
+    }
     render(){
         let {selectValue,pageNum} = this.state;
         //待发布
@@ -238,7 +297,8 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
-                            <IssueButton callback={()=>{this.loadList()}} type={6} dataList ={this.state.dataList} />
+                            {selectValue != '4' ? <IssueButton callback={()=>{this.loadList();this.setState({issueList:[]})}} type={6} dataList ={this.state.issueList} />:null }
+                            {/* <IssueButton callback={()=>{this.loadList()}} type={6} dataList ={this.state.dataList} /> */}
                             {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
                                     新增广告
@@ -248,11 +308,14 @@ class Banner extends Component{
                     </div>
                     {/* 操作栏结束 */}
                     <TableList
-                        thead={[{width:'5%',name:' '},{width:'25%',name:'标题'},{width:'10%',name:'所属区域'},{width:'15%',name:'广告类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
+                        thead={[{checked:()=>{this.checkboxAll()},isChecked:this.state.dataList.length == this.state.issueList.length},{width:'5%',name:' '},{width:'25%',name:'标题'},{width:'10%',name:'显示区域'},{width:'10%',name:'广告类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
                                <tr key={index}>
+                                    <td>
+                                       <Checkbox checked={this.isChecked(item.advId)} id={item.advId} onChange={(e)=>{this.checkbox(e)}} />
+                                   </td>
                                    <td>{index + 1}</td>
                                    <td>{item.advTitle}</td>
                                    <td>{_mm.mapStatusToString(item.advStatus)}</td>

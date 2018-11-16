@@ -76,6 +76,7 @@ class Picture extends Component{
                     </Row>
                 </div>
                 <SignList
+                    type={0}
                     signList = {tpSignList}
                     checked = {tpSignChecked}
                     getList = {(list)=>this.getSignList(list)}

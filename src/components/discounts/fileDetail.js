@@ -57,7 +57,7 @@ class TypeSave extends Component{
             endTime:'2018-06-12 12:00:00',
             isHot:false,
             //是否显示库存
-            isShowCount:false,
+            isShowCount:true,
             //已售出的数量
             salesNum:0,
             //选中的管理商家ID
@@ -98,6 +98,7 @@ class TypeSave extends Component{
                 listName = list.map(item=>{
                     return item.title
                 })
+                console.log(listName)
             this.setState({
                 businessList:list,
                 businessName:listName
@@ -229,6 +230,8 @@ class TypeSave extends Component{
     getFileDetail(){
         let {categoryValue,title,tpImg,price,count,signList,
             fwImgList,editDetail,signChecked,endTime,startTime,isHot,isShowCount,salesNum,selectedName} = this.state;
+            console.log(_mm.processImgUrl(fwImgList));
+            return;
         let obj = {
             typeId:categoryValue,
             title,
@@ -316,7 +319,7 @@ class TypeSave extends Component{
     }
     render(){
         let {category,tpImg,signList,signChecked,fwImgList,defaultDetail
-            ,authStatus,authString,checked,categoryValue,endTime,startTime,isHot,isShowCount,bussinessName,selectedName
+            ,authStatus,authString,checked,categoryValue,endTime,startTime,isHot,isShowCount,businessName,selectedName
         } = this.state;
         return (
             <div className='form-container'>
@@ -356,7 +359,7 @@ class TypeSave extends Component{
                         <Col span='4'>所属商家*</Col>
                         <Col offset='1' span='12'>
                             <AutoComplete
-                                dataSource={bussinessName}
+                                dataSource={businessName}
                                 style={{ width: '100%' }}
                                 onSelect={(val)=>{this.onSelect(val)}}
                                 placeholder="请输入商家名称"
@@ -389,7 +392,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>起始时间*</Col>
                         <Col offset='1' span='12'>
-                            <RangePicker locale={locale} showTime={true}
+                            <RangePicker locale={locale} showTime={true} allowClear= {false}
                             onChange = {(date,dateString)=>{this.selectTime(date,dateString)}} 
                             format="YYYY-MM-DD HH:mm:ss"
                             value = {[moment(`${startTime}`, 'YYYY-MM-DD HH:mm:ss'),moment(`${endTime}`, 'YYYY-MM-DD HH:mm:ss')]}
@@ -428,6 +431,7 @@ class TypeSave extends Component{
                     </Row>
                 </div>
                 <SignList
+                    type={1}
                     signList = {signList}
                     checked = {signChecked}
                     getList = {(list)=>this.getSignList(list)}
@@ -435,7 +439,7 @@ class TypeSave extends Component{
                 />
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>服务主图*</Col>
+                        <Col span='4'>商品主图*</Col>
                         <Col offset='1' span='19'>
                            <ImgList 
                             fwImgList={fwImgList}

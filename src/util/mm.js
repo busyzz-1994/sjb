@@ -216,6 +216,7 @@ const mm = {
     processImgUrl(data){
         let type = typeof data;
         let reg = /(\/Upload\/.*)/;
+        console.log(data);
         if(type == 'object'){
             let newData = data.map((item)=>{
                 return item.match(reg)[0];

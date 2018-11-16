@@ -5,8 +5,12 @@ class Nav extends Component{
         super(props)
         this.navList = [
             {
-                name:'标签管理',
-                url:'/system/sign'
+                name:'新闻标签',
+                url:'/system/sign/0'
+            },
+            {
+                name:'生活标签',
+                url:'/system/sign/1'
             }
         ]
     }

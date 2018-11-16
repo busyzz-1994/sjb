@@ -170,16 +170,16 @@ class Banner extends Component{
                                 style={{ width: 350 }}
                             />
                             <div style={{display:'inline-block',marginLeft:'10px'}}>
-                                <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
+                                {/* <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
                                     新增文件
-                                </Button>
+                                </Button> */}
                             </div>
                         </div>
                     </div>
                     {/* 操作栏结束 */}
                     <TableList
                         tdHeight='58px'
-                        thead={[{width:'5%',name:' '},{width:'30%',name:'服务标题'},{width:'20%',name:'类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
+                        thead={[{width:'5%',name:' '},{width:'30%',name:'商家标题'},{width:'20%',name:'类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (

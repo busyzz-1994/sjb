@@ -9,12 +9,13 @@ const confirm = Modal.confirm;
 class Sign extends Component{
     constructor(props){
         super(props)
-        console.log(Pagination)
+        console.log(props)
         this.state={
             pageNum : 1,
             total : 0,
             pageSize : 12,
-            dataList:[]
+            dataList:[],
+            type:props.match.params.type
         }
         //mock数据
         this.data = [
@@ -29,9 +30,10 @@ class Sign extends Component{
         this.loadList();
     }
     loadList(){
-        let {pageNum,pageSize} = this.state;
+        let {pageNum,pageSize,type} = this.state;
+        console.log(type)
         systemApi.getSignList({
-            currPage:pageNum,pageSize
+            currPage:pageNum,pageSize,type
         }).then(res=>{
             if(res.length>0){
                 let total = res[0].totalCount,
@@ -55,7 +57,8 @@ class Sign extends Component{
         confirm({
             title:'删除的内容无法恢复，确认删除？',
             onOk:()=>{
-                systemApi.delSign({name}).then(res=>{
+                let {type} = this.state;
+                systemApi.delSign({name,type}).then(res=>{
                     this.loadList();
                 }).catch(res=>{
                     message.error(res);
@@ -66,7 +69,8 @@ class Sign extends Component{
         })
     }
     goAdd(){
-        this.props.history.push('/system/sign/detail')
+        let {type} = this.state;
+        this.props.history.push(`/system/sign/${type}/detail`)
     }
     render(){
         let {dataList} = this.state;

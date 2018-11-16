@@ -100,6 +100,7 @@ class General extends Component{
                     checked = {signChecked}
                     getList = {(list)=>this.getSignList(list)}
                     getStatus = {(val)=>this.getSignStatus(val)}
+                    type = {0}
                 />
                 {/* <SignList signList={signList} checked={signChecked} 
                     getList = {(arr)=>this.getSignList(arr)}

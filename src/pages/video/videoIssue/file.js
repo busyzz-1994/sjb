@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import NavTab from './common/nav.js';
 import TableList from 'components/global/tableList';
 import style from 'common/layout.scss';
-import { Select , Input , Button ,message,Pagination,Modal,Icon} from 'antd';
+import { Select , Input , Button ,message,Pagination,Modal,Icon,Checkbox} from 'antd';
 import { withRouter,Link } from 'react-router-dom'; 
 import fileApi from 'api/video/index.js';
 import config from 'base/config.json';
@@ -19,6 +19,7 @@ class Banner extends Component{
             selectValue:'3',
             //当前render的数据
             dataList:[],
+            issueList:[],
             //当前的原数据
             originDataList:[],
             //原数据
@@ -59,7 +60,6 @@ class Banner extends Component{
             }).then(res=>{
                 let totalCount = res[0].total;
                 let list = res[0].list ;
-                console.log(list)
                 this.setState({
                     dataList:list,
                     total:totalCount
@@ -113,16 +113,16 @@ class Banner extends Component{
     clickCheck(item){
         this.props.history.push(`/video/videoIssue/file/detail/${item.videoId}/?checked=0&name=${item.videoTitle}`)
     }
-    //点击审核
+    //点击修改
     clickEdit(item){
         this.props.history.push(`/video/videoIssue/file/detail/${item.videoId}/?checked=1&name=${item.videoTitle}`)
     }
     //点击编辑图标
-    clickEdit(item){
-        this.props.history.push({
-            pathname:`/video/videoEdit/file/detail/${item.videoId}/?checked=1&name=${item.videoTitle}`
-        })
-    }
+    // clickEdit(item){
+    //     this.props.history.push({
+    //         pathname:`/video/videoEdit/file/detail/${item.videoId}/?checked=1&name=${item.videoTitle}`
+    //     })
+    // }
     //点击删除图标
     clickDel(item){
         confirm({
@@ -173,6 +173,63 @@ class Banner extends Component{
             message.error(err)
         })
     }
+    //选中当前项
+    checkbox(e){
+        let list = this.getIssueId();
+        let {issueList} = this.state;
+        let has = list.indexOf(e.target.id) == -1 ? false:true;
+        if(has){
+            issueList.forEach((item,index)=>{
+                if(e.target.id == item.videoId){
+                    issueList.splice(index,1);
+                    this.setState({
+                        issueList
+                    })
+                }
+            })
+        }else{
+           let item =  this.mapIdToItem(e.target.id);
+           issueList.push(item);
+           this.setState({
+                issueList
+           })
+        }
+    }
+    //选中所有的项
+    checkboxAll(){
+        let {dataList,issueList} = this.state;
+        if(issueList.length>0){
+            this.setState({
+                issueList:[]
+            })
+        }else{
+            this.setState({
+                issueList:JSON.parse(JSON.stringify(dataList))
+            })
+        }
+    }
+    //是否选中
+    isChecked(id){
+        let list = this.getIssueId();
+        return list.indexOf(id) == -1 ? false:true;
+    }
+    //获取已经选中的id
+    getIssueId(){
+        let {issueList} = this.state;
+        let list = issueList.map(item=>{
+            return item.videoId
+        })
+        return list;
+    }
+    //通过id在datalist里面获取item
+    mapIdToItem(id){
+        let {dataList} = this.state;
+        for(let i = 0 ; i<dataList.length;i++){
+            if(dataList[i].videoId == id){
+                return dataList[i] ;
+            }
+        }
+    }
     render(){
         let {selectValue,pageNum} = this.state;
         //待发布
@@ -181,7 +238,7 @@ class Banner extends Component{
                 <div>
                     <IconHandle type='1' iconClick={()=>{this.clickCheck(item)}}/>
                     <IconHandle type='4' iconClick={()=>{this.clickOnline(item)}}/>
-                    {/* <IconHandle type='3' iconClick={()=>{this.clickEdit(item)}}/> */}
+                    <IconHandle type='3' iconClick={()=>{this.clickEdit(item)}}/>
                     <IconHandle type='2' iconClick={()=>{this.clickDel(item)}}/>
                 </div>
             )
@@ -204,7 +261,7 @@ class Banner extends Component{
                 <div>
                     <IconHandle type='1' iconClick={()=>{this.clickCheck(item)}}/>
                     <IconHandle type='4' iconClick={()=>{this.clickOnline(item)}}/>
-                    {/* <IconHandle type='3' iconClick={()=>{this.clickEdit(item)}}/> */}
+                    <IconHandle type='3' iconClick={()=>{this.clickEdit(item)}}/>
                     <IconHandle type='2' iconClick={()=>{this.clickDel(item)}}/>
                 </div>
             )
@@ -244,7 +301,7 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
-                            <IssueButton callback={()=>{this.loadList()}} type={4} dataList ={this.state.dataList} />
+                            {selectValue != '4' ? <IssueButton callback={()=>{this.loadList();this.setState({issueList:[]})}} type={4} dataList ={this.state.issueList} />:null }
                             {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
                                 <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
                                     新增文件
@@ -255,11 +312,14 @@ class Banner extends Component{
                     {/* 操作栏结束 */}
                     <TableList
                         tdHeight='58px'
-                        thead={[{width:'5%',name:' '},{width:'30%',name:'商品标题'},{width:'20%',name:'类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
+                        thead={[{checked:()=>{this.checkboxAll()},isChecked:this.state.dataList.length == this.state.issueList.length},{width:'5%',name:' '},{width:'30%',name:'视频标题'},{width:'15%',name:'类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
                                <tr key={index}>
+                                   <td>
+                                       <Checkbox checked={this.isChecked(item.videoId)} id={item.videoId} onChange={(e)=>{this.checkbox(e)}} />
+                                   </td>
                                    <td>{index + 1}</td>
                                    <td>{item.videoTitle}</td>
                                    <td>{item.videoCategory}</td>

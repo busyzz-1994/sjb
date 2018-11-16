@@ -171,7 +171,7 @@ class Banner extends Component{
                     </div>
                     {/* 操作栏结束 */}
                     <TableList
-                        thead={[{width:'5%',name:' '},{width:'35%',name:'标题'},{width:'15%',name:'广告类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
+                        thead={[{width:'5%',name:' '},{width:'35%',name:'标题'},{width:'10%',name:'显示区域'},{width:'10%',name:'广告类型'},{width:'20%',name:'创建时间'},{width:'20%',name:'操作'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (

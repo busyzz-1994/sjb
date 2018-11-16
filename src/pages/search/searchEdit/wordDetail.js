@@ -38,7 +38,7 @@ class Banner extends Component{
                         edit = {typeName}
                         check = {typeName}
                     />
-                    <WordDetail/>
+                    <WordDetail type={this.props.match.params.type} />
                 </div>
             </div>
         )

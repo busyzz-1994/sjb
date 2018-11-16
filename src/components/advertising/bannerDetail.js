@@ -300,8 +300,8 @@ class startDetail extends Component{
                         <Col span='4'>展示频率*</Col>
                         <Col offset='1' span='16'>
                             <RadioGroup onChange={(v)=>this.displayFrequencyChange(v)} value={displayFrequency}>
-                                <Radio value={1}>只展示一次（有更新才展示，下一次打开APP点击相应区域就不展示）</Radio>
-                                <Radio value={0}>每次展示（每次启动APP时点击相应区域展示）</Radio>
+                                <Radio value={1}>只展示一次（启动APP后点击相应区域展示一次）</Radio>
+                                <Radio value={0}>每次展示（每次启动APP后点击相应区域每次都展示）</Radio>
                             </RadioGroup>
                         </Col>
                     </Row>

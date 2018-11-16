@@ -10,15 +10,15 @@ const menuConfig = [
         icon:'calendar',
         children:[
             {
-                key:'/news/newsEdit/banner',
+                key:'/news/newsEdit/file',
                 title:'新闻编辑'
             },
             {
-                key:'/news/newsAudit/banner',
+                key:'/news/newsAudit/file',
                 title:'新闻审核'
             },
             {
-                key:'/news/newsIssue/banner',
+                key:'/news/newsIssue/file',
                 title:'新闻发布'
             }
         ]
@@ -29,7 +29,7 @@ const menuConfig = [
         icon:'video-camera',
         children:[
             {
-                key:'/video/videoEdit/type',
+                key:'/video/videoEdit/file',
                 title:'视频编辑'
             },
             {
@@ -37,7 +37,7 @@ const menuConfig = [
                 title:'视频审核'
             },
             {
-                key:'/video/videoIssue/type',
+                key:'/video/videoIssue/file',
                 title:'视频发布'
             }
         ]
@@ -67,15 +67,15 @@ const menuConfig = [
         icon:'shop',
         children:[
             {
-                key:'/service/serviceEdit/banner',
+                key:'/service/serviceEdit/file',
                 title:'商家编辑'
             },
             {
-                key:'/service/serviceAudit/banner',
+                key:'/service/serviceAudit/file',
                 title:'商家审核'
             },
             {
-                key:'/service/serviceIssue/banner',
+                key:'/service/serviceIssue/file',
                 title:'商家发布'
             }
         ]
@@ -86,7 +86,7 @@ const menuConfig = [
         icon:'shopping-cart',
         children:[
             {
-                key:'/discounts/discountsEdit/type',
+                key:'/discounts/discountsEdit/file',
                 title:'商品编辑'
             },
             {
@@ -94,7 +94,7 @@ const menuConfig = [
                 title:'商品审核'
             },
             {
-                key:'/discounts/discountsIssue/type',
+                key:'/discounts/discountsIssue/file',
                 title:'商品发布'
             },
             {
@@ -151,7 +151,7 @@ const menuConfig = [
                 title:'权限管理'
             },
             {
-                key:'/system/sign',
+                key:'/system/sign/0',
                 title:'标签管理'
             }
         ]

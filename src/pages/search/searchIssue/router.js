@@ -13,7 +13,7 @@ class EditRouter extends Component{
         return (
             <div>
                 <Switch>
-                    <Route exact path='/search/searchIssue/recommend/:type?' render={(props)=><Recommend key={props.match.params.type}/>}/>
+                    <Route exact path='/search/searchIssue/recommend/:type?' render={(props)=><Recommend  key={props.match.params.type}/>}/>
                     <Route path='/search/searchIssue/recommend/:type?/wordDetail/:id?' render={(props)=><WordDetail key={props.match.params.type}/>}/>
                     <Route path='/search/searchIssue/recommend/:type?/fileList/:id?'  render={(props)=><FileList key={props.match.params.type}/>}/>
                     <Route path='/search/searchIssue/recommend/:type?/fileDetail/:id?' render={(props)=><FileDetail key={props.match.params.type}/>}/>

@@ -2,6 +2,7 @@ import React,{Component} from 'react';
 // import { NavLink } from 'react-router-dom';
 import style from './index.scss';
 import NullImg from 'images/null.png';
+import {Checkbox} from 'antd';
 //实例
 
 class tableList extends Component{
@@ -31,9 +32,15 @@ class tableList extends Component{
                     <th key={index}>{item}</th>
                  )
             }else{
-                return(
-                    <th key={index} width={item.width} >{item.name}</th>
-                )
+                if(item.checked){
+                    return (
+                        <th style={{textAlign:'center'}} key={index}><Checkbox checked={item.isChecked} onChange={item.checked}/></th>
+                    )
+                }else{
+                    return(
+                        <th key={index} width={item.width} >{item.name}</th>
+                    )
+                }
             }
         })
          // 列表内容

@@ -2,6 +2,7 @@ import React,{Component,Fragments} from 'react';
 import { Input , Button ,message,Breadcrumb,Row, Col,Checkbox,Icon,Select,AutoComplete } from 'antd';
 import style from './index.scss';
 import commonApi from 'api/common.js';
+import systemApi from 'api/system/index.js';
 const Option = Select.Option;
 //参数必须传入
 //1.signList 即标签的列表 选中的list array signList
@@ -17,8 +18,9 @@ class SignList extends Component{
         }
     }
     componentDidMount(){
-        commonApi.getAllWords({}).then(res=>{
-            let signList = res[0];
+        let {type} = this.props;
+        systemApi.getSignList({pageSize:9999,currPage:1,type}).then(res=>{
+            let signList = res[0].lists;
             signList = signList.map(item=>{
                 return item.name
             })
@@ -38,8 +40,8 @@ class SignList extends Component{
     // }
     //选中select
     Select(val){
-        if(val.length > 3){
-            message.warning('最多可以添加3条标签！')
+        if(val.length >= 6){
+            message.warning('最多可以添加6条标签！')
         }else{
             this.props.getList(val)
         }
@@ -49,8 +51,8 @@ class SignList extends Component{
     addSignList(e){
         let signList = this.props.signList;
         console.log(signList)
-        if(signList.length >= 3){
-            message.warning('最多可以添加3条标签！')
+        if(signList.length >= 6){
+            message.warning('最多可以添加6条标签！')
         }else{
             this.props.signList.push('');
             this.props.getList(this.props.signList);
@@ -190,5 +192,8 @@ class SignList extends Component{
             </div>
         )
     }
+}
+SignList.defaultProps = {
+    type:0 //0->新闻标签 1->生活标签
 }
 export default SignList;

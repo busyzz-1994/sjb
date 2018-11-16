@@ -200,6 +200,7 @@ class TypeSave extends Component{
     addFile(){
         let {title,categoryValue,newsSource,newsOrigin,tpImg,signList,
             signChecked,hot,videoDetail,videoUrl,id,thumbnail} = this.state;
+            console.log(id)
         videoApi.addFile({
             videoId:id,
             videoTitle:title,

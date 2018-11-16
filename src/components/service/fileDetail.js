@@ -55,7 +55,9 @@ class TypeSave extends Component{
             detail:'',
             authStatus:2,
             authString:'',
-            isHot:false
+            isHot:false,
+            //商家类型
+            merchant:'0'
         }
     }
     selectCategory(value){
@@ -89,10 +91,8 @@ class TypeSave extends Component{
         serviceApi.getFileDetail({
             id
         }).then(res=>{
-            console.log(res);
             let {categoryId,title,thumbnail,score,degree,address,detailed,price,
-                content,listag,coverimg,spectacular,isHot,phone} = res[0];
-                console.log('ok')
+                content,listag,coverimg,spectacular,isHot,phone,bussinessType} = res[0];
             this.setState({
                 categoryValue:categoryId,
                 title:title,
@@ -108,7 +108,8 @@ class TypeSave extends Component{
                 signList:listag.length!=0?listag:[''],
                 signChecked:spectacular=='1'?true:false,
                 fwImgList:coverimg.split(','),
-                isHot:isHot == '1' ? true : false
+                isHot:isHot == '1' ? true : false,
+                merchant:bussinessType
             })    
         }).catch(err=>{
             message.error(err);
@@ -176,12 +177,12 @@ class TypeSave extends Component{
     validate(){
         let validate = new Validate();
         let {title,tpImg,score,count,address,startPrice} = this.state;
-        validate.add(title,'notEmpty','服务标题不能为空！');
-        validate.add(tpImg,'notEmpty','服务缩略图不能为空！');
-        validate.add(score,'numberRange:0:5','评分只能为0-5的数字！');
-        validate.add(count,'notMinus','消费次数为整数！');
+        validate.add(title,'notEmpty','商家标题不能为空！');
+        validate.add(tpImg,'notEmpty','商家缩略图不能为空！');
+        // validate.add(score,'numberRange:0:5','评分只能为0-5的数字！');
+        // validate.add(count,'notMinus','消费次数为整数！');
         validate.add(address,'notEmpty','地址不能为空！');
-        validate.add(startPrice,'notFloatMinus','起始价格必须为数字！');
+        // validate.add(startPrice,'notFloatMinus','起始价格必须为数字！');
         return validate.start();
     }
     //审核文件
@@ -201,7 +202,7 @@ class TypeSave extends Component{
     //添加或编辑文件
     addFile(){
         let {title,categoryValue,score,count,tpImg,signList,address,startPrice,
-            signChecked,id,exactAddress,fwImgList,detail,isHot,phone} = this.state;
+            signChecked,id,exactAddress,fwImgList,detail,isHot,phone,merchant} = this.state;
             console.log({
                 title,
                 thumbnail:tpImg,
@@ -232,7 +233,8 @@ class TypeSave extends Component{
             categoryId:categoryValue,
             content:detail,
             isHot:isHot?'1':'0',
-            phone
+            phone,
+            bussinessType:merchant
         }).then(res=>{
             message.success('保存文件成功！');
             this.props.history.goBack()
@@ -247,9 +249,15 @@ class TypeSave extends Component{
             isHot:e.target.checked
         })
     }
+    selectMerchant(val){
+        this.setState({
+            merchant:val
+        })
+    }
     render(){
         let {category,categoryValue,tpImg,signList,signChecked,fwImgList,
-            defaultDetail,authStatus,authString,checked,isHot,phone} = this.state;
+            defaultDetail,authStatus,authString,checked,isHot,phone,merchant} = this.state;
+        let dis = merchant =='1'?true:false;
         return (
             <div className='form-container'>
                 <div className='form-item'>
@@ -277,15 +285,33 @@ class TypeSave extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>服务标题*</Col>
-                        <Col offset='1' span='12'>
-                            <Input maxLength='30' value={this.state.title} onChange={(e)=>this.onInput(e)} name='title' placeholder='请输入不超过30个字的服务标题' />
+                        <Col span='4'>商家类别*</Col>
+                        <Col offset='1' span='6'>
+                            <Select
+                                showSearch
+                                style={{ width: 200 }}
+                                optionFilterProp="children"
+                                // defaultValue = {this.state.selectValue}
+                                value = {merchant}
+                                onChange={(value)=>{this.selectMerchant(value)}}
+                            >
+                                <Option  value='0'>普通商家</Option>
+                                <Option  value='1'>广告商家</Option>
+                            </Select>
                         </Col>
                     </Row>
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>服务缩略图*</Col>
+                        <Col span='4'>商家标题*</Col>
+                        <Col offset='1' span='12'>
+                            <Input maxLength='30' value={this.state.title} onChange={(e)=>this.onInput(e)} name='title' placeholder='请输入不超过30个字的商家标题' />
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>商家缩略图*</Col>
                         <Col offset='1' span='12'>
                             <ImgUpload aspectRatio={160/140} imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
@@ -309,23 +335,23 @@ class TypeSave extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>服务评分*</Col>
+                        <Col span='4'>商家评分</Col>
                         <Col offset='1' span='12'>
-                            <Input value={this.state.score} onChange={(e)=>this.onInput(e)} name='score' placeholder='请输入0-5评分,可以有小数点' />
+                            <Input disabled={dis} value={this.state.score} onChange={(e)=>this.onInput(e)} name='score' placeholder='请输入0-5评分,可以有小数点' />
                         </Col>
                     </Row>
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>消费次数*</Col>
+                        <Col span='4'>消费次数</Col>
                         <Col offset='1' span='12'>
-                            <Input value={this.state.count} onChange={(e)=>this.onInput(e)} name='count' placeholder='请输入消费次数' />
+                            <Input disabled={dis}  value={this.state.count} onChange={(e)=>this.onInput(e)} name='count' placeholder='请输入消费次数' />
                         </Col>
                     </Row>
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>地址*</Col>
+                        <Col span='4'>商家地址*</Col>
                         <Col offset='1' span='12'>
                             <Input value={this.state.address} onChange={(e)=>this.onInput(e)} name='address' placeholder='请输入地址' />
                         </Col>
@@ -335,11 +361,12 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>起始价格*</Col>
                         <Col offset='1' span='12'>
-                            <Input value={this.state.startPrice} onChange={(e)=>this.onInput(e)} name='startPrice' placeholder='请输入起始价格' />
+                            <Input disabled={dis}  value={this.state.startPrice} onChange={(e)=>this.onInput(e)} name='startPrice' placeholder='请输入起始价格' />
                         </Col>
                     </Row>
                 </div>
                 <SignList
+                    type={1}
                     signList = {signList}
                     checked = {signChecked}
                     getList = {(list)=>this.getSignList(list)}
@@ -355,7 +382,7 @@ class TypeSave extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>服务主图*</Col>
+                        <Col span='4'>商家主图*</Col>
                         <Col offset='1' span='19'>
                             <ImgList 
                                 fwImgList={fwImgList}

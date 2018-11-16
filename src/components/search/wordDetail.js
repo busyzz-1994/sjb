@@ -18,6 +18,8 @@ class NewsCategorySave extends Component{
     //判断是添加、查看、还是修改；
     componentDidMount(){
        this.getDetail();
+       console.log(this.props.type);
+       console.log('xxx')
     }
     //判断是添加、查看、还是修改；
     getDetail(){
@@ -44,6 +46,7 @@ class NewsCategorySave extends Component{
        }
     }
     addWord(){
+       
         let msg = this.validate();
         if(msg){
             message.error(msg)

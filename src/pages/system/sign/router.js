@@ -10,8 +10,8 @@ class newsRouter extends Component{
         return (
             <div>
                 <Switch>
-                    <Route exact path='/system/sign' component={Sign}/>
-                    <Route  path='/system/sign/detail' component={SignDetail}/>
+                    <Route exact path='/system/sign/:type'  render={(props)=><Sign {...props}  key={props.match.params.type}/>}/>
+                    <Route  path='/system/sign/:type/detail'  render={props=><SignDetail {...props} key={props.match.params.type} />}/>
                 </Switch>
             </div>
         )

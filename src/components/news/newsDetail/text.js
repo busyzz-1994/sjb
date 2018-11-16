@@ -31,6 +31,7 @@ class Text extends Component{
         return (
             <div>
                 <SignList
+                    type={0}
                     signList = {wbSignList}
                     checked = {wbSignChecked}
                     getList = {(list)=>this.getSignList(list)}

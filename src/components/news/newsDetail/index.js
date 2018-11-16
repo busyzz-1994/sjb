@@ -159,7 +159,7 @@ class NewsDetail extends Component{
     auditFile(){
         let {id,auditStatus,auditDetail,categoryId} = this.state;
         fileApi.authFile({id,checkview:auditStatus,remark:auditDetail,categoryId}).then(res=>{
-            message.success('修改成功！');
+            message.success('审核完成！');
             this.props.history.goBack()
         }).catch(err=>{
             message.error(err);

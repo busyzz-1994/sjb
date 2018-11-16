@@ -22,7 +22,8 @@ class Banner extends Component{
                     path:''
                 }
             ],
-            signName:''
+            signName:'',
+            type:props.match.params.type
         }
     }
     Input(e){
@@ -43,9 +44,8 @@ class Banner extends Component{
         if(msg){
             message.error(msg)
         }else{
-            let {signName} = this.state;
-            console.log(signName)
-            systemApi.addSign({name:signName}).then(res=>{
+            let {signName,type} = this.state;
+            systemApi.addSign({name:signName,type}).then(res=>{
                 message.success('添加成功！');
                 this.props.history.goBack();
             }).catch(msg=>{
