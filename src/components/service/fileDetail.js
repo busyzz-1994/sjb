@@ -53,7 +53,7 @@ class TypeSave extends Component{
             signChecked:false,
             defaultDetail:'',
             detail:'',
-            authStatus:2,
+            authStatus:-1,
             authString:'',
             isHot:false,
             //商家类型
@@ -188,6 +188,10 @@ class TypeSave extends Component{
     //审核文件
     authFile(){
         let {id,authStatus,authString} = this.state;
+        if(authStatus == -1){
+            message.error('未进行审核操作！');
+            return ;
+        }
         serviceApi.authFile({
             id:id,
             checkview:authStatus,

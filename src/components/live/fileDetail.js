@@ -6,16 +6,21 @@ import ImgUpload from 'components/global/uploadImg';
 import SignList from 'components/global/signList/indexNew.js';
 import AuditForm from 'components/global/auditForm';
 import commonApi from 'api/common.js';
-import videoApi from 'api/video/index.js';
+import liveApi from 'api/live/index.js';
 import Validate from 'util/validate/index.js';
 import widthImg from 'images/zs2.png';
 // import self from './bannerAdd.scss';
 import {Link} from 'react-router-dom';
-import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,Checkbox } from 'antd';
+import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,Checkbox,DatePicker } from 'antd';
+import locale from 'antd/lib/date-picker/locale/zh_CN';
 import { withRouter } from 'react-router-dom';
 import config from 'base/config.json';
 const Option = Select.Option;
 const TextArea = Input.TextArea;
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
+const {RangePicker} = DatePicker;
 // import NewsCategorySave from '../components/newsCategorySave';
 class TypeSave extends Component{
     constructor(props){
@@ -26,9 +31,9 @@ class TypeSave extends Component{
             category:[],
             categoryValue:'',
             title:'',
-            // 视频封面图
+            // 直播封面图
             tpImg:'',
-            //视频缩率图
+            //直播缩率图
             // thumbnail:'',
             //是否显示新闻来源
             newsSource:'',
@@ -37,16 +42,19 @@ class TypeSave extends Component{
             hot:false,
             //video地址
             videoUrl:'',
-            //视频长度
+            //直播长度
             videoMin:'',
             videoSec:'',
-            //视频概要
+            //直播概要
             videoDetail:'',
             //选中的signList:
             signList:[''],
             signChecked:false,
             authStatus:-1,
-            authString:''
+            authString:'',
+            //直播时间
+            startTime:'2018-06-01 12:00:00',
+            endTime:'2018-06-12 12:00:00'
         }
     }
     componentDidMount(){
@@ -54,7 +62,7 @@ class TypeSave extends Component{
     }
     //添加类型选项
     loadTypeList(){
-        commonApi.getIssueType({currPage:1,pageSize:9999,type:'4',theissue:'4'}).then(res=>{
+        commonApi.getIssueType({currPage:1,pageSize:9999,type:'3',theissue:'4'}).then(res=>{
             let list = res[0].lists;
             this.setState({
                 category:list
@@ -72,11 +80,11 @@ class TypeSave extends Component{
     }
     getDetail(){
         let {id} = this.state;
-        videoApi.getVideoDetail({
+        liveApi.getVideoDetail({
             videoId:id
         }).then(res=>{
             let {categoryId,videoTitle,videoSourceAdress,sourceIsShow,videoImage,tags,
-                tagsIsShow,isHot,videoUrl,videoDesc} = res[0];
+                tagsIsShow,isHot,videoUrl,videoDesc,startTime,endTime} = res[0];
             this.setState({
                 categoryValue:categoryId,
                 title:videoTitle,
@@ -87,7 +95,8 @@ class TypeSave extends Component{
                 signChecked:+tagsIsShow?true:false,
                 hot:+isHot?true:false,
                 videoUrl,
-                videoDetail:videoDesc
+                videoDetail:videoDesc,
+                startTime,endTime
             })    
         }).catch(err=>{
             message.error(err);
@@ -175,11 +184,18 @@ class TypeSave extends Component{
     validate(){
         let validate = new Validate();
         let {title,newsSource,tpImg,signList,videoUrl} = this.state;
-        validate.add(title,'notEmpty','视频标题不能为空！');
+        validate.add(title,'notEmpty','直播标题不能为空！');
         // validate.add(newsSource,'notEmpty','新闻来源不能为空！');
-        validate.add(tpImg,'notEmpty','视频封面图不能为空！');
-        validate.add(videoUrl,'notEmpty','上传视频文件地址不能为空！');
+        validate.add(tpImg,'notEmpty','直播封面图不能为空！');
+        validate.add(videoUrl,'notEmpty','上传直播文件地址不能为空！');
         return validate.start();
+    }
+    selectTime(date,dateString){
+        let startTime = dateString[0],
+            endTime = dateString[1];
+        this.setState({
+            startTime,endTime
+        })
     }
     //审核文件
     authFile(){
@@ -188,7 +204,7 @@ class TypeSave extends Component{
             message.error('未进行审核操作！');
             return ;
         }
-        videoApi.authVideoFile({
+        liveApi.authVideoFile({
             videoId:id,
             checkview:authStatus,
             remark:authString
@@ -202,9 +218,8 @@ class TypeSave extends Component{
     //添加或编辑文件
     addFile(){
         let {title,categoryValue,newsSource,newsOrigin,tpImg,signList,
-            signChecked,hot,videoDetail,videoUrl,id} = this.state;
-            console.log(id)
-        videoApi.addFile({
+            signChecked,hot,videoDetail,videoUrl,id,startTime,endTime} = this.state;
+        liveApi.addFile({
             videoId:id,
             videoTitle:title,
             videoSourceAdress:newsSource,
@@ -215,7 +230,8 @@ class TypeSave extends Component{
             isHot:hot?'1':'0',
             videoUrl,
             videoDesc:videoDetail,
-            categoryId:categoryValue
+            categoryId:categoryValue,
+            startTime,endTime
         }).then(res=>{
             message.success('保存文件成功！');
             this.props.history.goBack()
@@ -225,7 +241,8 @@ class TypeSave extends Component{
     }
     render(){
         let {category,tpImg,signList,signChecked,authStatus,authString,checked,
-            newsOrigin,hot,videoUrl,videoMin,videoSec,videoDetail,categoryValue} = this.state;
+            newsOrigin,hot,videoUrl,videoMin,videoSec,videoDetail,categoryValue,
+            startTime,endTime} = this.state;
         return (
             <div className='form-container'>
                 <div className='form-item'>
@@ -252,9 +269,9 @@ class TypeSave extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>视频标题*</Col>
+                        <Col span='4'>直播标题*</Col>
                         <Col offset='1' span='12'>
-                            <Input maxLength='30' value={this.state.title} onChange={(e)=>this.onInput(e)} name='title' placeholder='请输入不超过30个字的视频标题' />
+                            <Input maxLength='30' value={this.state.title} onChange={(e)=>this.onInput(e)} name='title' placeholder='请输入不超过30个字的直播标题' />
                         </Col>
                     </Row>
                 </div>
@@ -262,7 +279,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>直播来源*</Col>
                         <Col offset='1' span='12'>
-                            <Input maxLength='10' value={this.state.newsSource} onChange={(e)=>this.onInput(e)} name='newsSource' placeholder='请输入不超过10个字的视频来源' />
+                            <Input maxLength='10' value={this.state.newsSource} onChange={(e)=>this.onInput(e)} name='newsSource' placeholder='请输入不超过10个字的直播来源' />
                         </Col>
                         <Col offset='1' span='4'>
                             <Checkbox
@@ -276,7 +293,7 @@ class TypeSave extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>视频封面图*</Col>
+                        <Col span='4'>直播封面图*</Col>
                         <Col offset='1' span='12'>
                             <ImgUpload defaultImgUrl={widthImg} aspectRatio={690/380} imgWidth={230} imgUrl={tpImg?config.server + tpImg:''}  imgHeight={125} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
@@ -292,7 +309,7 @@ class TypeSave extends Component{
                 </div>
                 {/* <div className='form-item'>
                     <Row>
-                        <Col span='4'>视频缩略图*</Col>
+                        <Col span='4'>直播缩略图*</Col>
                         <Col offset='1' span='12'>
                             <ImgUpload  aspectRatio={240/310} imgWidth={160} imgUrl={thumbnail?config.server + thumbnail:''}  imgHeight={206} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl_2(data,index)} />
                         </Col>
@@ -308,12 +325,12 @@ class TypeSave extends Component{
                 </div> */}
                 {/* <div className='form-item'>
                     <Row>
-                        <Col span='4'>视频时长*</Col>
+                        <Col span='4'>直播时长*</Col>
                         <Col offset='1' span='6'>
-                            <Input addonAfter="分" maxLength='3' value={videoMin} onChange={(e)=>this.onInput(e)} name='videoMin' placeholder='请输入视频时长（分）' />
+                            <Input addonAfter="分" maxLength='3' value={videoMin} onChange={(e)=>this.onInput(e)} name='videoMin' placeholder='请输入直播时长（分）' />
                         </Col>
                         <Col offset='1' span='6'>
-                            <Input addonAfter="秒" maxLength='3' value={videoSec} onChange={(e)=>this.onInput(e)} name='videoSec' placeholder='请输入视频时长（秒）' />
+                            <Input addonAfter="秒" maxLength='3' value={videoSec} onChange={(e)=>this.onInput(e)} name='videoSec' placeholder='请输入直播时长（秒）' />
                         </Col>
                     </Row>
                 </div> */}
@@ -323,6 +340,19 @@ class TypeSave extends Component{
                     getList = {(list)=>this.getSignList(list)}
                     getStatus = {(val)=>this.getChecked(val)}
                 />
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>直播时间*</Col>
+                        <Col offset='1' span='12'>
+                            <RangePicker locale={locale} showTime={true} allowClear= {false}
+                            onChange = {(date,dateString)=>{this.selectTime(date,dateString)}} 
+                            format="YYYY-MM-DD HH:mm:ss"
+                            value = {[moment(`${startTime}`, 'YYYY-MM-DD HH:mm:ss'),moment(`${endTime}`, 'YYYY-MM-DD HH:mm:ss')]}
+                            />
+                            {/* <DatePicker defaultValue={moment('2015-01-01 12:12:12', 'YYYY-MM-DD HH:mm:ss')} format = 'YYYY-MM-DD HH:mm:ss'  /> */}
+                        </Col>
+                    </Row>
+                </div>
                 <div className='form-item'>
                     <Row>
                         <Col span='4'>热门推荐*</Col>
@@ -338,15 +368,15 @@ class TypeSave extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>上传视频文件*</Col>
+                        <Col span='4'>上传直播文件*</Col>
                         <Col offset='1' span='12'>
-                            <Input maxLength='100' value={videoUrl} onChange={(e)=>this.onInput(e)} name='videoUrl' placeholder='请输入视频连接URL地址 (建议先用浏览器测试该URL是否有效)' />
+                            <Input maxLength='100' value={videoUrl} onChange={(e)=>this.onInput(e)} name='videoUrl' placeholder='请输入直播连接URL地址 (建议先用浏览器测试该URL是否有效)' />
                         </Col>
                     </Row>
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>视频概要</Col>
+                        <Col span='4'>直播概要</Col>
                         <Col offset='1' span='12'>
                             <TextArea rows={5} value={videoDetail}  onChange={(e)=>this.setState({videoDetail:e.target.value})} /> 
                         </Col>

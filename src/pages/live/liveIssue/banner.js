@@ -1,11 +1,10 @@
 import React,{Component} from 'react';
 import NavTab from './common/nav.js';
 import TableList from 'components/global/tableList';
-import _mm from 'util/mm.js'
 import style from 'common/layout.scss';
-import {Select,Input,Button,message,Pagination,Modal,Checkbox} from 'antd';
+import { Select , Input , Button ,message,Pagination,Modal} from 'antd';
 import { withRouter } from 'react-router-dom'; 
-import newsEditApi from 'api/news/banner.js';
+import newsEditApi from 'api/news/banner';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
 import IssueButton from 'components/global/issueButton/index.js';
@@ -20,7 +19,6 @@ class Banner extends Component{
             selectValue:'3',
             //当前render的数据
             dataList:[],
-            issueList:[],
             //是否处于搜索状态
             isSearch:false,
             searchValue:'',
@@ -28,7 +26,7 @@ class Banner extends Component{
             originDataList:[],
             //原数据
             originData:[],
-            pageSize:6,
+            pageSize:3,
             total:10,
             pageNum:1
         }
@@ -43,7 +41,7 @@ class Banner extends Component{
             newsEditApi.issueSearch({
                 currPage:pageNum,
                 pageSize,
-                type:1,
+                type:4,
                 theissue :selectValue,
                 title:searchValue
              }).then(res=>{
@@ -59,7 +57,7 @@ class Banner extends Component{
                 currPage:pageNum,
                 theissue:selectValue,
                 pageSize,
-                type:1
+                type:4
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let lists = res[0].lists;
@@ -89,9 +87,8 @@ class Banner extends Component{
                 this.loadList()
             })
         }
-       
     }
-    //选择类型
+   //选择类型
     select(value){
         this.setState({
             selectValue:value,
@@ -116,35 +113,16 @@ class Banner extends Component{
             this.changePage(1)
         })
     }
-    //跳转到添加页面
-    goAddBanner(){
-        this.props.history.push('/service/serviceIssue/banner/detail/?bannerType=1');
-    }
     //点击查看图标
     clickCheck(id,name){
-        this.props.history.push(`/service/serviceIssue/banner/detail/${id}/?name=${name}&checked=0&bannerType=1`)
+        this.props.history.push(`/video/videoIssue/banner/detail/${id}/?name=${name}&checked=0`)
     }
-    //点击编辑图标
+    //点击编辑
     clickEdit(id,name){
-        this.props.history.push(`/service/serviceIssue/banner/detail/${id}/?name=${name}&checked=1&bannerType=1`)
+        this.props.history.push(`/video/videoIssue/banner/detail/${id}/?name=${name}&checked=1`)
     }
-    //点击删除图标
-    clickDel(id,fkId,resourcesType){
-        confirm({
-            title:'删除的内容无法恢复，确认删除？',
-            onOk:()=>{
-                newsEditApi.delBanner({id,fkId,resourcesType}).then(res=>{
-                    this.loadList();
-                }).catch(res=>{
-                    message.error(res);
-                })
-            },
-            okText:'确认',
-            cancelText:'取消'
-        })
-    }
-     //点击发布
-     clickOnline(item){
+    //点击发布
+    clickOnline(item){
         let { id , fkId ,baType } = item;
         let {selectValue} = this.state;
         newsEditApi.issueBanner({
@@ -169,8 +147,24 @@ class Banner extends Component{
             message.error(err);
         })
     }
-     //点击置顶
-     clickTop(item){
+    //点击删除图标
+    clickDel(id){
+        confirm({
+            title:'删除的内容无法恢复，确认删除？',
+            onOk:()=>{
+                newsEditApi.delBanner({id}).then(res=>{
+                    message.success('删除成功！')
+                    this.loadList();
+                }).catch(res=>{
+                    message.error(res);
+                })
+            },
+            okText:'确认',
+            cancelText:'取消'
+        })
+    }
+    //点击置顶
+    clickTop(item){
         let {id} = item;
         newsEditApi.bannerTop({
             id,placedstick:1
@@ -181,66 +175,8 @@ class Banner extends Component{
             message.error(err)
         })
     }
-    /**********支持多选代码 **********/
-    //选中当前项
-    checkbox(e){
-        let list = this.getIssueId();
-        let {issueList} = this.state;
-        let has = list.indexOf(e.target.id) == -1 ? false:true;
-        if(has){
-            issueList.forEach((item,index)=>{
-                if(e.target.id == item.id){
-                    issueList.splice(index,1);
-                    this.setState({
-                        issueList
-                    })
-                }
-            })
-        }else{
-           let item =  this.mapIdToItem(e.target.id);
-           issueList.push(item);
-           this.setState({
-                issueList
-           })
-        }
-    }
-    //选中所有的项
-    checkboxAll(){
-        let {dataList,issueList} = this.state;
-        if(issueList.length>0){
-            this.setState({
-                issueList:[]
-            })
-        }else{
-            this.setState({
-                issueList:JSON.parse(JSON.stringify(dataList))
-            })
-        }
-    }
-    //是否选中
-    isChecked(id){
-        let list = this.getIssueId();
-        return list.indexOf(id) == -1 ? false:true;
-    }
-    //获取已经选中的id
-    getIssueId(){
-        let {issueList} = this.state;
-        let list = issueList.map(item=>{
-            return item.id
-        })
-        return list;
-    }
-    //通过id在datalist里面获取item
-    mapIdToItem(id){
-        let {dataList} = this.state;
-        for(let i = 0 ; i<dataList.length;i++){
-            if(dataList[i].id == id){
-                return dataList[i] ;
-            }
-        }
-    }
     render(){
-        let {selectValue,pageNum} = this.state;
+        let {pageNum} = this.state;
         //待发布icon
         let handle_1 = (item) =>{
             return (
@@ -271,11 +207,13 @@ class Banner extends Component{
                 <div>
                     <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
                     <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
-                    <IconHandle type='4' id={item.id} iconClick={(id)=>{this.clickOnline(item,item.title)}}/>
+                    <IconHandle type='4' id={item.id} iconClick={(id)=>{this.clickOnline(id,item.title)}}/>
                     <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item.fkId,item.resourcesType)}}/>
                 </div>
             )
         }
+        
+        let { selectValue } = this.state;
         let handleList;
         // console.log(selectValue)
         if(selectValue == 3){
@@ -287,7 +225,7 @@ class Banner extends Component{
         }
         return (
             <div className={style.container}>
-                <NavTab />
+                <NavTab navList={this.navList} />
                 <div className={style.content}>
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>
@@ -300,9 +238,9 @@ class Banner extends Component{
                                 value = {selectValue}
                                 onChange={(value)=>{this.select(value)}}
                             >
-                               <Option value="3">待发布</Option>
-                               <Option value="4">已发布</Option>
-                               <Option value="5">已下线</Option>
+                                <Option value="3">待发布</Option>
+                                <Option value="4">已发布</Option>
+                                <Option value="5">已下线</Option>
                             </Select>
                         </div>
                         <div className='fr'>
@@ -311,25 +249,17 @@ class Banner extends Component{
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
-                            {selectValue != '4' ? <IssueButton callback={()=>{this.loadList();this.setState({issueList:[]})}} type={9} dataList ={this.state.issueList} />:null }
-                            {/* <IssueButton callback={()=>{this.loadList()}} type={9} dataList ={this.state.dataList} /> */}
-                            {/* <div style={{display:'inline-block',marginLeft:'10px'}}>
-                                <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
-                                    新增banner
-                                </Button>
-                            </div> */}
+                            <IssueButton callback={()=>{this.loadList()}} type={9} dataList ={this.state.dataList} />
                         </div>
                     </div>
                     {/* 操作栏结束 */}
                     <TableList
-                        thead={[{checked:()=>{this.checkboxAll()},isChecked:this.state.dataList.length == this.state.issueList.length},{width:'5%',name:' '},{width:'22%',name:'轮播图片'},{width:'25%',name:'标题'},{width:'8%',name:'类型'},{width:'20%',name:'创建时间'},{width:'15%',name:'操作'}]}
+                        thead={[{width:'5%',name:' '},{width:'15%',name:'轮播图片'},{width:'35%',name:'标题'},{width:'15%',name:'类型'},{width:'15%',name:'创建时间'},{width:'15%',name:'操作'}]}
                     >
                        {this.state.dataList.map((item,index)=>{
+                           console.log(item);
                            return (
                                <tr key={index}>
-                                    <td>
-                                       <Checkbox checked={this.isChecked(item.id)} id={item.id} onChange={(e)=>{this.checkbox(e)}} />
-                                   </td>
                                    <td>{index + 1}</td>
                                    <td>
                                        <img src={config.server+item.titleImg} width='150' height='70'/>
@@ -337,8 +267,8 @@ class Banner extends Component{
                                    <td>{item.title}</td>
                                    <td>{item.baType == '0' ? '外链':'内链'}</td>
                                    <td>{item.createTime}</td>
-                                   <td className='td-handle' >
-                                        {handleList(item,index)}
+                                   <td className='td-handle'>
+                                       {handleList(item,index)}
                                    </td>
                                </tr>
                            )

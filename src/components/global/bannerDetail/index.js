@@ -37,7 +37,7 @@ class BannerDetail extends Component{
             //关联素材的类型
             resourcesType:'',
             //审核
-            status:2,
+            status:-1,
             detail:''
         }
     }
@@ -176,11 +176,10 @@ class BannerDetail extends Component{
     }
     auditBanner(){
         let {id,status,detail} = this.state;
-        console.log({
-            checkview:status,
-            remark:detail,
-            id
-        })
+        if(status == -1){
+            message.error('未进行审核操作！');
+            return ;
+        }
         newsEditApi.auditBanner({
             checkview:status,
             remark:detail,
@@ -194,7 +193,6 @@ class BannerDetail extends Component{
     }
     relevanceCallback(selectedRowKeys,fn){
         let {newsId,resourcesName,resourcesType} = selectedRowKeys[0];
-        console.log(newsId)
         this.setState({
             bannerDetail:resourcesName,
             fkId:newsId,

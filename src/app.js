@@ -25,6 +25,8 @@ import SystemRouter from 'pages/system/router.js';
 import ServiceRouter from 'pages/service/router.js';
 //视频管理
 import VideoRouter from 'pages/video/router.js';
+//直播管理
+import LiveRouter from 'pages/live/router.js';
 //惠民购物
 import DiscountsRouter from 'pages/discounts/router.js';
 //搜索管理
@@ -46,6 +48,7 @@ class App extends Component{
 					<Route path='/system' component = {SystemRouter} />
 					<Route path='/service' component = {ServiceRouter} />
 					<Route path='/video' component = {VideoRouter} />
+					<Route path='/live' component = {LiveRouter} />
 					<Route path='/discounts' component = {DiscountsRouter} />
 					<Route path='/search' component = {SearchRouter} />
 					<Route path='/advertising' component = {AdvertisingRouter} />

@@ -139,6 +139,9 @@ class Banner extends Component{
     //点击发布
     clickOnline(item){
         let { id , fkId ,baType } = item;
+        console.log(item)
+        
+        console.log({id,fkId,baType})
         let {selectValue} = this.state;
         newsEditApi.issueBanner({
             id,fkId,baType,theissue:'4'
@@ -280,7 +283,7 @@ class Banner extends Component{
                 <div>
                     <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
                     <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
-                    <IconHandle type='4' id={item.id} iconClick={(id)=>{this.clickOnline(id,item.title)}}/>
+                    <IconHandle type='4' id={item.id} iconClick={(id)=>{this.clickOnline(item)}}/>
                     <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item.fkId,item.resourcesType)}}/>
                 </div>
             )

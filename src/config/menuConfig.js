@@ -42,6 +42,25 @@ const menuConfig = [
             }
         ]
     },
+    {
+        title:'直播管理',
+        key:'/live',
+        icon:'play-circle',
+        children:[
+            {
+                key:'/live/liveEdit/file',
+                title:'直播编辑'
+            },
+            {
+                key:'/live/liveAudit/file',
+                title:'直播审核'
+            },
+            {
+                key:'/live/liveIssue/file',
+                title:'直播发布'
+            }
+        ]
+    },
     // {
     //     title:'音乐管理',
     //     key:'/music',

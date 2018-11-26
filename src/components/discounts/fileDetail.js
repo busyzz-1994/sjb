@@ -48,7 +48,7 @@ class TypeSave extends Component{
             //选中的signList:
             signList:[''],
             signChecked:false,
-            authStatus:2,
+            authStatus:-1,
             authString:'',
             //富文本
             editDetail:'',
@@ -230,8 +230,6 @@ class TypeSave extends Component{
     getFileDetail(){
         let {categoryValue,title,tpImg,price,count,signList,
             fwImgList,editDetail,signChecked,endTime,startTime,isHot,isShowCount,salesNum,selectedName} = this.state;
-            console.log(_mm.processImgUrl(fwImgList));
-            return;
         let obj = {
             typeId:categoryValue,
             title,
@@ -274,6 +272,10 @@ class TypeSave extends Component{
     }
     auditFile(){
         let {id,authStatus,authString} = this.state;
+        if(status == -1){
+            message.error('未进行审核操作！');
+            return ;
+        }
         fileApi.auditFile({
             id,checkview:authStatus,remark:authString
         }).then(res=>{

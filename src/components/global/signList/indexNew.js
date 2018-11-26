@@ -14,7 +14,8 @@ class SignList extends Component{
         super(props)
         this.state = {
             signAllList:[],
-            dataSource:[]
+            dataSource:[],
+            maxLength:'6'
         }
     }
     componentDidMount(){
@@ -67,6 +68,9 @@ class SignList extends Component{
      //s输入第一个标签绑定
      changeSign(val){
         // let value = e.target.value;
+        if(val.length>=this.state.maxLength){
+            return;
+        }
         this.props.signList[0] = val;
         this.props.getList(this.props.signList);
     }

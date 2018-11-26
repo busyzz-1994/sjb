@@ -40,7 +40,7 @@ class startDetail extends Component{
             //关联素材的类型
             resourcesType:'',
             //审核
-            status:2,
+            status:-1,
             detail:''
         }
     }
@@ -167,6 +167,10 @@ class startDetail extends Component{
     }
     auditBanner(){
         let {id,status,detail} = this.state;
+        if(status == -1){
+            message.error('未进行审核操作！');
+            return ;
+        }
         advertisingApi.authDetail({
             checkview:status,
             remark:detail,

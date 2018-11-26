@@ -144,6 +144,8 @@ class Banner extends Component{
         }).then(res=>{
             message.success('发布成功！');
             this.loadList()
+        }).catch(err=>{
+            message.error(err);
         })
     }
     //下线
@@ -154,6 +156,8 @@ class Banner extends Component{
         }).then(res=>{
             message.success('下线成功！');
             this.loadList()
+        }).catch(err=>{
+            message.error(err);
         })
     }
     //置顶

@@ -28,7 +28,7 @@ class NewsDetail extends Component{
             //是否显示新闻来源
             originChecked:false,
             //审核状态 1->通过 2->不通过
-            auditStatus:2,
+            auditStatus:-1,
             //审核详情
             auditDetail:'',
             /**普通新闻的数据 */
@@ -158,6 +158,10 @@ class NewsDetail extends Component{
     //审核文件
     auditFile(){
         let {id,auditStatus,auditDetail,categoryId} = this.state;
+        if(auditStatus == -1){
+            message.error('未进行审核操作！');
+            return ;
+        }
         fileApi.authFile({id,checkview:auditStatus,remark:auditDetail,categoryId}).then(res=>{
             message.success('审核完成！');
             this.props.history.goBack()
