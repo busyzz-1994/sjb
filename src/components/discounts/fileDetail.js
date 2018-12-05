@@ -67,7 +67,9 @@ class TypeSave extends Component{
             //联想的商家名称
             businessName:[],
             //选中的商家名称
-            selectedName:''
+            selectedName:'',
+            //商品评分
+            score:''
         }
     }
     selectCategory(value){
@@ -131,7 +133,7 @@ class TypeSave extends Component{
         fileApi.getFileDetail({id}).then(res=>{
             var res = res[0];
             let {typeId,title,thumbnail,listPositive,price,inventory,
-                listag,introduce,reveal,isHot,startTime,endTime,inventoryShow,salesNum,businessId,bussinessName} = res;
+                listag,introduce,reveal,isHot,startTime,endTime,inventoryShow,salesNum,businessId,bussinessName,score} = res;
                 console.log(res)
             this.setState({
                 categoryValue:typeId,
@@ -150,7 +152,8 @@ class TypeSave extends Component{
                 isShowCount: inventoryShow =='1' ? true :false,
                 salesNum,
                 businessId,
-                selectedName:bussinessName
+                selectedName:bussinessName,
+                score
             })
             
         }).catch(err=>{
@@ -229,7 +232,7 @@ class TypeSave extends Component{
     }
     getFileDetail(){
         let {categoryValue,title,tpImg,price,count,signList,
-            fwImgList,editDetail,signChecked,endTime,startTime,isHot,isShowCount,salesNum,selectedName} = this.state;
+            fwImgList,editDetail,signChecked,endTime,startTime,isHot,isShowCount,salesNum,selectedName,score} = this.state;
         let obj = {
             typeId:categoryValue,
             title,
@@ -246,7 +249,8 @@ class TypeSave extends Component{
             isHot:isHot?'1':'0',
             inventoryShow:isShowCount?'1':'0',
             salesNum,
-            businessId:this.mapNameToId(selectedName)
+            businessId:this.mapNameToId(selectedName),
+            score
         }
         return obj;
     }
@@ -321,7 +325,7 @@ class TypeSave extends Component{
     }
     render(){
         let {category,tpImg,signList,signChecked,fwImgList,defaultDetail
-            ,authStatus,authString,checked,categoryValue,endTime,startTime,isHot,isShowCount,businessName,selectedName
+            ,authStatus,authString,checked,categoryValue,endTime,startTime,isHot,isShowCount,businessName,selectedName,score
         } = this.state;
         return (
             <div className='form-container'>
@@ -408,6 +412,14 @@ class TypeSave extends Component{
                         <Col span='4'>商品价格（元）*</Col>
                         <Col offset='1' span='12'>
                             <Input value={this.state.price} onChange={(e)=>this.onInput(e)} name='price' placeholder='请输入价格' />
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>商品评分（0-5）*</Col>
+                        <Col offset='1' span='12'>
+                            <Input value={this.state.score} onChange={(e)=>this.onInput(e)} name='score' placeholder='请输入评分' />
                         </Col>
                     </Row>
                 </div>

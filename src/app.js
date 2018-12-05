@@ -15,7 +15,7 @@ import store from 'store/store.js';
 // import BidRouter from 'pages/bid/router.js';
 import Login from 'pages/login';
 import Layout from 'components/layout';
-import Home  from 'pages/home';
+import Home  from 'pages/home/index.js';
 import FileDetail from 'components/global/fileDetail/fileDetail.js';
 //新闻管理
 import NewsRouter from 'pages/news/router.js';
@@ -29,6 +29,8 @@ import VideoRouter from 'pages/video/router.js';
 import LiveRouter from 'pages/live/router.js';
 //惠民购物
 import DiscountsRouter from 'pages/discounts/router.js';
+//投诉爆料
+import Issue from 'pages/issue/router.js';
 //搜索管理
 import SearchRouter from 'pages/search/router.js';
 //广告管理 
@@ -43,17 +45,18 @@ class App extends Component{
 			<Layout>
 				<CropperImg/>
 				<Switch>
-					<Route exact path='/' component = {Home} />
 					<Route path='/news' component = {NewsRouter} />
 					<Route path='/system' component = {SystemRouter} />
 					<Route path='/service' component = {ServiceRouter} />
 					<Route path='/video' component = {VideoRouter} />
 					<Route path='/live' component = {LiveRouter} />
 					<Route path='/discounts' component = {DiscountsRouter} />
+					<Route path='/issue' component = {Issue} />
 					<Route path='/search' component = {SearchRouter} />
 					<Route path='/advertising' component = {AdvertisingRouter} />
 					<Route path='/user' component = {UserRouter} />
 					<Route path='/FileDetail/:id?' component = {FileDetail} />
+					<Route path='/' component = {Home} />
 					{/* <Redirect exact from='/news' to='/news/newsEdit' /> */}
 				</Switch>
 			</Layout>

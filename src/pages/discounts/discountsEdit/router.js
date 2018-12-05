@@ -1,6 +1,8 @@
 import React,{Component} from 'react';
 import { Switch , Route } from 'react-router-dom';
 // import Banner from './banner.js';
+import Banner from './banner.js';
+import BannerDetail from './bannerDetail.js';
 import Type from './type.js';
 import TypeDetail from './typeDetail.js';
 import TypeList from './typeList.js';
@@ -14,6 +16,8 @@ class AuthRouter extends Component{
         return (
             <div>
                 <Switch>
+                    <Route exact path='/discounts/discountsEdit/banner' component={Banner}/>
+                    <Route path='/discounts/discountsEdit/banner/detail/:id?' component={BannerDetail}/>
                     <Route exact path='/discounts/discountsEdit/type' component={Type}/>
                     <Route path='/discounts/discountsEdit/type/typeList/:id' component={TypeList}/>
                     <Route path='/discounts/discountsEdit/type/typeDetail/:id?' component={TypeDetail}/>

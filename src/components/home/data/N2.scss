@@ -1,0 +1,13 @@
+.tabBar{
+    float: right;
+    z-index: 999;
+    margin-top: 10px;
+    li{
+        float: left;
+        padding-right: 10px;
+        cursor: pointer;
+        &.active{
+            color: #6BABF7;
+        }
+    }
+}

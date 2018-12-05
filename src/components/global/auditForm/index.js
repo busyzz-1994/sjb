@@ -3,7 +3,7 @@ import { Input , Button ,message,Row, Col,Checkbox,Icon,Radio } from 'antd';
 const RadioGroup = Radio.Group;
 const TextArea = Input.TextArea;
 //参数必须传入
-//1.status  boolean  0-> 通过 1 ->不通过
+//1.status  boolean  2-> 通过 1 ->不通过
 //2.getStatus -回调函数  获取status 值
 //3.detail  string  审核备注
 //4.getDetail -回调函数 获取detail值 

@@ -123,6 +123,11 @@ const menuConfig = [
         ]
     },
     {
+        title:'投诉爆料',
+        key:'/issue/list/1',
+        icon:'home'
+    },
+    {
         title:'搜索管理',
         key:'/search',
         icon:'search',

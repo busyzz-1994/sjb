@@ -253,6 +253,64 @@ const mm = {
             '3':'AR'
         }
         return map[type];
+    },
+    //将不同类型的时间格式  转换为  标砖的  2018-01-01 00：00:00
+    mapFormatToDateString(format,dateString){
+        var map = {
+            'YYYY': dateString + '-01-01 00:00:00',
+            'YYYY-MM': dateString + '-01 00:00:00',
+            'YYYY-MM-DD': dateString + ' 00:00:00'
+        }
+        return map[format];
+    },
+    //获取当天的年月日 ， 和 前一天  前一个月 前一年
+    getTimeAndFormat(type){
+        var map_1 = {
+            '0':'YYYY-MM-DD',
+            '1':'YYYY-MM',
+            '2':'YYYY'
+        },
+        format = map_1[type],
+        date = new Date(),
+        year = date.getFullYear(),
+        month = date.getMonth() + 1,
+        day = date.getDate(),
+        preYear = new Date(date.valueOf() + 1000*60*60 *24 * 365).getFullYear(),
+        preMonth = new Date(date.valueOf() + 1000*60*60 * 24 * 30).getMonth()+1,
+        preYear_1 = new Date(date.valueOf() + 1000*60*60 * 24 * 30).getFullYear(),
+        preDay = new Date(date.valueOf() + 1000*60*60 * 24 ).getDate(),
+        preMonth_2 = new Date(date.valueOf() + 1000*60*60 * 24 ).getMonth()+1,
+        preYear_2 = new Date(date.valueOf() + 1000*60*60 * 24 ).getFullYear();
+        var map_2 = {
+            '0':`${year}-${month}-${day}`,
+            '1':`${year}-${month}`,
+            '2':`${year}`
+        }
+        var map_3 = {
+            '0':`${preYear_2}-${preMonth_2}-${preDay}`,
+            '1':`${preYear_1}-${preMonth}`,
+            '2':`${preYear}`
+        }
+        return {
+            format,
+            startTime:map_2[type],
+            endTime:map_3[type]
+        }
+    },
+    //通过时间搓 返回 2018-06-04 格式日期
+    getDateByTime(time){
+        var date = new Date(time),
+            year = date.getFullYear(),
+            month = date.getMonth()+1,
+            day = date.getDate();
+        return year+'-'+month+'-'+day
+    },
+    getTomorrowDateByTime(time){
+        var date = new Date(time + 1000*60*60 * 24),
+            year = date.getFullYear(),
+            month = date.getMonth()+1,
+            day = date.getDate();
+        return year+'-'+month+'-'+day
     }
 }
 export default mm;

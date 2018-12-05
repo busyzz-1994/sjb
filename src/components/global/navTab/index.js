@@ -6,7 +6,6 @@ class navTab extends Component{
         super(props)
     }
     render(){
-        
         return (
             <div className={style.container}>
                 <ul className='clearfix'>
@@ -14,7 +13,7 @@ class navTab extends Component{
                         this.props.navList.map((item,index)=>{
                             return (
                                 <li key={index}>
-                                     <NavLink to={item.url} className={style.nav}  activeClassName={style.active}>{item.name}</NavLink>
+                                     <NavLink exact={this.props.exact} to={item.url} className={style.nav}  activeClassName={style.active}>{item.name}</NavLink>
                                 </li>
                             )
                         })
@@ -23,5 +22,8 @@ class navTab extends Component{
             </div>
         )
     }
+}
+navTab.defaultProps = {
+    exact:false
 }
 export default navTab;

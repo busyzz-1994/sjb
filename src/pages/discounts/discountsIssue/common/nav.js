@@ -5,6 +5,10 @@ class Nav extends Component{
         super(props)
         this.navList = [
             {
+                name:'banner管理',
+                url:'/discounts/discountsIssue/banner'
+            },
+            {
                 name:'商品类型',
                 url:'/discounts/discountsIssue/type'
             },

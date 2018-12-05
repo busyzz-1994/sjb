@@ -5,19 +5,19 @@ class Nav extends Component{
         super(props)
         this.navList = [
             {
-                name:'banner管理',
-                url:'/discounts/discountsAudit/banner'
+                name:'数据看板',
+                url:'/'
             },
             {
-                name:'商品列表',
-                url:'/discounts/discountsAudit/file'
+                name:'用户画像',
+                url:'/graph'
             }
         ]
     }
     render(){
         return (
             <div>
-                <NavTab navList = {this.navList} />
+                <NavTab exact = {true} navList = {this.navList} />
             </div>
         )
     }

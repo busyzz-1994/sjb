@@ -60,7 +60,7 @@ class BannerDetail extends Component{
                 bannerTitle:title,
                 imgUrl:titleImg,
                 fkId,
-                status:checkview === '0' ? 2 : +checkview,
+                // status:checkview === '0' ? 2 : +checkview,
                 detail:remark,
                 resourcesType,
                 bannerDetail:exclusive
@@ -204,6 +204,7 @@ class BannerDetail extends Component{
     }
     render(){
         let {type,bannerType,isAdd,status,detail,checked} = this.state;
+        console.log(status)
         return (
             <div className='form-container'>
                     <OtherNewsModal 

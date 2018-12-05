@@ -54,7 +54,7 @@ class General extends Component{
         let more = moreImg.map((item,index)=>{
             return (
                 <div key={index} style={{display:'inline-block',marginRight:'15px'}}>
-                    <ImgUpload aspectRatio={200/185} index={index} imgWidth={160} imgUrl={item?config.server+item:''}  imgHeight={145} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getMoreUrl(data,index)} />
+                    <ImgUpload aspectRatio={226/170} index={index} imgWidth={160} imgUrl={item?config.server+item:''}  imgHeight={121} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getMoreUrl(data,index)} />
                 </div>
             )
         })
