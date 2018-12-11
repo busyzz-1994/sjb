@@ -8,6 +8,7 @@ import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,Ch
 import { withRouter } from 'react-router-dom';
 import config from 'base/config.json';
 import Reply from './reply.js';
+import IssueApi from 'api/issue/index.js';
 const Option = Select.Option;
 const TextArea = Input.TextArea;
 // import NewsCategorySave from '../components/newsCategorySave';
@@ -26,56 +27,17 @@ class TypeSave extends Component{
         }
     }
     componentDidMount(){
-        // this.loadTypeList();
-    }
-    //添加类型选项
-    loadTypeList(){
-        commonApi.getIssueType({currPage:1,pageSize:9999,type:'4',theissue:'4'}).then(res=>{
-            let list = res[0].lists;
-            this.setState({
-                category:list
-            },()=>{
-                this.setState({
-                    categoryValue:list[0]?list[0].id:''
-                },()=>{
-                    let {id} = this.state;
-                    if(id){
-                        this.getDetail();
-                    }
-                })
-            })
-        })
+        this.getDetail()
     }
     getDetail(){
         let {id} = this.state;
-        videoApi.getVideoDetail({
-            videoId:id
-        }).then(res=>{
-            let {categoryId,videoTitle,videoSourceAdress,sourceIsShow,videoImage,tags,
-                tagsIsShow,isHot,videoUrl,videoDesc} = res[0];
-            this.setState({
-                categoryValue:categoryId,
-                title:videoTitle,
-                newsSource:videoSourceAdress,
-                newsOrigin:+sourceIsShow?true:false,
-                tpImg:videoImage,
-                signList:tags.length!=0?tags:[''],
-                signChecked:+tagsIsShow?true:false,
-                hot:+isHot?true:false,
-                videoUrl,
-                videoDetail:videoDesc
-            })    
+        IssueApi.getReply({id}).then(res=>{
+            console.log(res);
         }).catch(err=>{
             message.error(err);
         })
     }
-    onInput(e){
-        let name = e.target.name,
-        value = e.target.value;
-        this.setState({
-            [name]:value
-        })  
-    }
+    
     //点击保存
     save(){
         let {checked} = this.state;
@@ -90,58 +52,7 @@ class TypeSave extends Component{
             }
         }
     }
-    //验证表单信息
-    validate(){
-        let validate = new Validate();
-        let {title,newsSource,tpImg,signList,videoUrl} = this.state;
-        validate.add(title,'notEmpty','视频标题不能为空！');
-        // validate.add(newsSource,'notEmpty','新闻来源不能为空！');
-        validate.add(tpImg,'notEmpty','视频封面图不能为空！');
-        validate.add(videoUrl,'notEmpty','上传视频文件地址不能为空！');
-        return validate.start();
-    }
-    //审核文件
-    authFile(){
-        let {id,authStatus,authString} = this.state;
-        if(authStatus == -1){
-            message.error('未进行审核操作！');
-            return ;
-        }
-        videoApi.authVideoFile({
-            videoId:id,
-            checkview:authStatus,
-            remark:authString
-        }).then(res=>{
-            message.success('审核成功！');
-            this.props.history.goBack();
-        }).catch(err=>{
-            message.error(err)
-        })
-    }
-    //添加或编辑文件
-    addFile(){
-        let {title,categoryValue,newsSource,newsOrigin,tpImg,signList,
-            signChecked,hot,videoDetail,videoUrl,id} = this.state;
-            console.log(id)
-        videoApi.addFile({
-            videoId:id,
-            videoTitle:title,
-            videoSourceAdress:newsSource,
-            sourceIsShow:newsOrigin?'1':'0',
-            videoImage:tpImg,
-            tagsIsShow:signChecked?'1':'0',
-            tags:signList,
-            isHot:hot?'1':'0',
-            videoUrl,
-            videoDesc:videoDetail,
-            categoryId:categoryValue
-        }).then(res=>{
-            message.success('保存文件成功！');
-            this.props.history.goBack()
-        }).catch(err=>{
-            message.error(err);
-        })
-    }
+   
     render(){
         return (
             <div className='form-container'>

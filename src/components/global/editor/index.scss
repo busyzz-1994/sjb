@@ -1,3 +1,11 @@
 :global(.simditor-body){
     overflow: auto;
 }
+.editBox{
+    p{
+        font-size: 18px;
+        span{
+            font-size: 18px;
+        }
+    }
+}

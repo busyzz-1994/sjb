@@ -10,6 +10,7 @@ import 'echarts/lib/component/title';
 // import 'echarts/lib/component/legend';
 // import 'echarts/lib/component/markPoint';
 import style from '../common.scss';
+import self from './N6.scss';
 import moment from 'moment';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import 'moment/locale/zh-cn';
@@ -84,7 +85,10 @@ class N1 extends Component{
             newVisitorCount:0,
             jumpCount:0,
             format:'YYYY-MM-DD',
-            list:[]
+            arData:[],
+            indexData:[],
+            lifeData:[],
+            liveData:[]
         }
     }
     selectDataType(value){
@@ -113,20 +117,24 @@ class N1 extends Component{
         let {startTime,endTime,format,dateType} = this.state;
         startTime = mm.mapFormatToDateString(format,startTime);
         endTime = mm.mapFormatToDateString(format,endTime);
-        api.getN5({startTime,endTime}).then(res=>{
-            let arr = res[0];
-            this.setState({list:arr})
+        api.getN6({startTime,endTime}).then(res=>{
+            let {arData,indexData,lifeData,liveData} = res[0];
+            console.log(res[0])
+            this.setState({arData,indexData,lifeData,liveData})
+            // let {modelData} = res[0];
+            // console.log(modelData);
+            // this.setState({list:arr})
             // let {pv,uv,jumpCount,newVisitorCount} = res[0];
             // this.setState({pv,uv,jumpCount,newVisitorCount})
         })
     }
     render(){
-        let {dateType,startTime,endTime,pv,uv,jumpCount,newVisitorCount,format,list} = this.state;
-        let tableLength = list.length + 1;
+        let {dateType,startTime,endTime,format,arData,indexData,lifeData,liveData} = this.state;
+        // let tableLength = list.length + 1;
         return (
             <div className={style.panelItem}>
                 <div className={style.panelTitle}>
-                    热门标签
+                    模块报表数据
                     <div style={{display:'inline-block'}}>
                         <Select
                             showSearch
@@ -152,42 +160,94 @@ class N1 extends Component{
                 </div>
                 <div className={style.panelBody}>
                     <Row>
-                       <table className={style.mytable}>
+                       <table className={style.mytable+' ' + self.modelTable}>
                             <thead>
                                 <tr>
-                                    <td style={{width:`${100/tableLength}%`}}>排名</td>
-                                    {
-                                        list.map((item,index)=>{
-                                            return <td key={index} style={{width:`${100/tableLength}%`}}>{index+1}</td>
-                                        })
-                                    }
+                                    <td>一级模块</td>
+                                    <td>二级模块</td>
+                                    <td>浏览量</td>
+                                    <td>评论量</td>
+                                    <td>下线内容量</td>
+                                    <td>上线内容量</td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td style={{width:`${100/tableLength}%`}}>标签</td>
-                                    {
-                                        list.map((item,index)=>{
-                                            return <td key={index} style={{width:`${100/tableLength}%`}}>{item.name}</td>
-                                        })
-                                    }
+                                    <td  rowSpan={indexData.length?indexData.length+1:indexData.length+2} >首页</td>
                                 </tr>
+                                {   indexData.length?
+                                    indexData.map((item,index)=>{
+                                        return (
+                                            <tr key={index} >
+                                                <td>{item.name}</td>
+                                                <td>{item.pv}</td>
+                                                <td>{item.commentCount}</td>
+                                                <td>{item.outlineCount}</td>
+                                                <td>{item.onlineCount}</td>
+                                            </tr>
+                                        )
+                                    }):
+                                    <tr>
+                                        <td>暂无数据</td>
+                                    </tr>
+                                }
                                 <tr>
-                                    <td style={{width:`${100/tableLength}%`}}>选择量</td>
-                                    {
-                                        list.map((item,index)=>{
-                                            return <td key={index} style={{width:`${100/tableLength}%`}}>{item.register}</td>
-                                        })
-                                    }
+                                    <td  rowSpan={lifeData.length?lifeData.length+1:lifeData.length+2} >生活</td>
                                 </tr>
+                                {   lifeData.length?
+                                    lifeData.map((item,index)=>{
+                                        return (
+                                            <tr key={index} >
+                                                <td>{item.name}</td>
+                                                <td>{item.pv}</td>
+                                                <td>{item.commentCount}</td>
+                                                <td>{item.outlineCount}</td>
+                                                <td>{item.onlineCount}</td>
+                                            </tr>
+                                        )
+                                    }):
+                                    <tr>
+                                        <td>暂无数据</td>
+                                    </tr>
+                                }
                                 <tr>
-                                    <td style={{width:`${100/tableLength}%`}}>新增选择量</td>
-                                    {
-                                        list.map((item,index)=>{
-                                            return <td key={index} style={{width:`${100/tableLength}%`}}>{item.newRegister}</td>
-                                        })
-                                    }
+                                    <td  rowSpan={liveData.length?liveData.length+1:liveData.length+2} >媒体</td>
                                 </tr>
+                                {   liveData.length?
+                                    liveData.map((item,index)=>{
+                                        return (
+                                            <tr key={index} >
+                                                <td>{item.name}</td>
+                                                <td>{item.pv}</td>
+                                                <td>{item.commentCount}</td>
+                                                <td>{item.outlineCount}</td>
+                                                <td>{item.onlineCount}</td>
+                                            </tr>
+                                        )
+                                    }):
+                                    <tr>
+                                        <td>暂无数据</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td  rowSpan={arData.length?arData.length+1:arData.length+2} >AR</td>
+                                </tr>
+                                {   arData.length?
+                                    arData.map((item,index)=>{
+                                        return (
+                                            <tr key={index} >
+                                                <td>{item.name}</td>
+                                                <td>{item.pv}</td>
+                                                <td>{item.commentCount}</td>
+                                                <td>{item.outlineCount}</td>
+                                                <td>{item.onlineCount}</td>
+                                            </tr>
+                                        )
+                                    }):
+                                    <tr>
+                                        <td>暂无数据</td>
+                                    </tr>
+                                }
                             </tbody>
                        </table>
                     </Row>    

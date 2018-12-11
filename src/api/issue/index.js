@@ -13,6 +13,16 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //获取用户详情
+    getReply(data){
+        return _mm.POST({
+            url:'/admin/complaints/getComplaintsDetail',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
 }
 export default Api;

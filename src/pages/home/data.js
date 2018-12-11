@@ -8,6 +8,7 @@ import N2 from 'components/home/data/N2.js';
 import N3 from 'components/home/data/N3.js';
 import N4 from 'components/home/data/N4.js';
 import N5 from 'components/home/data/N5.js';
+import N6 from 'components/home/data/N6.js';
 class Data extends Component{
 	constructor(props){
 		super(props);
@@ -35,6 +36,9 @@ class Data extends Component{
                 </Row>
                 <div className={style.item}>
                     <N5/>
+                </div>
+                <div className={style.item}>
+                    <N6/>
                 </div>
             </div>
 		)

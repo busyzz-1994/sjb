@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import Editor from 'wangeditor';
 import config from 'base/config.json';
 import _mm from 'util/mm.js';
+import style from './index.scss';
 //使用该组件 还要定义一个 与 defaultDetail 相同的 原始值 用来接收修改后的detail
 //参数 1. defaultDetail 传入的html 值
 // 参数 2. getHtml 回调函数 获取html
@@ -33,8 +34,10 @@ class WangEditor extends Component{
             'table',  // 表格
             'video' // 插入视频
         ]
+        console.log(editor.customConfig)
         // console.log(this.props.editorHtml)
         // 使用 onchange 函数监听内容的变化，并实时更新到 state 中
+        editor.customConfig.pasteFilterStyle = false;
         editor.customConfig.onchange = (html) => {
             this.props.getHtml(html);
         }
@@ -116,7 +119,7 @@ class WangEditor extends Component{
     render(){
         return (
             <div>
-                <div  ref={ div => this._div = div}></div>
+                <div  className={style.editBox}  ref={ div => this._div = div}></div>
             </div>
         )
     }

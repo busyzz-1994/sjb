@@ -62,6 +62,15 @@ const Api = {
             }
         })
     },
+    getN6(data){
+        return _mm.POST({
+            url:'/admin/op/modelData',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
     getG1(){
         return _mm.POST({
             url:'/admin/op/sexData',
