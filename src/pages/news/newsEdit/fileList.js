@@ -39,7 +39,7 @@ class Banner extends Component{
             originDataList:[],
             //原数据
             originData:[],
-            pageSize:4,
+            pageSize:12,
             total:10,
             pageNum:1
         }
@@ -51,34 +51,65 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
         if(isSearch){
-            fileApi.searchAudit({
-                currPage:pageNum,
-                checkview:selectValue,
-                pageSize,
-                title:searchValue
-            }).then(res=>{
-                let totalCount = res[0].totalCount;
-                let lists = res[0].lists;
-                this.setState({
-                    dataList:lists,
-                    total:totalCount
+            if(selectValue>3){
+                fileApi.searchIssue({
+                    currPage:pageNum,
+                    theissue:selectValue,
+                    pageSize,
+                    title:searchValue
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let lists = res[0].lists;
+                    this.setState({
+                        dataList:lists,
+                        total:totalCount
+                    })
                 })
-            })
+            }else{
+                fileApi.searchAudit({
+                    currPage:pageNum,
+                    checkview:selectValue,
+                    pageSize,
+                    title:searchValue
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let lists = res[0].lists;
+                    this.setState({
+                        dataList:lists,
+                        total:totalCount
+                    })
+                })
+            }
+            
         }else{
-            console.log('pok')
-            fileApi.getFileList({
-                currPage:pageNum,
-                checkview:selectValue,
-                pageSize
-            }).then(res=>{
-                let totalCount = res[0].totalCount;
-                let lists = res[0].lists;
-                console.log(lists)
-                this.setState({
-                    dataList:lists,
-                    total:totalCount
+            if(selectValue>3){
+                fileApi.getAuthList({
+                    currPage:pageNum,
+                    theissue:selectValue,
+                    pageSize
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let lists = res[0].lists;
+                    this.setState({
+                        dataList:lists,
+                        total:totalCount
+                    })
                 })
-            })
+            }else{
+                fileApi.getFileList({
+                    currPage:pageNum,
+                    checkview:selectValue,
+                    pageSize
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let lists = res[0].lists;
+                    this.setState({
+                        dataList:lists,
+                        total:totalCount
+                    })
+                })
+            }
+            
         }
     }
     //点击分页
@@ -158,6 +189,23 @@ class Banner extends Component{
     }
     render(){
         let {selectValue} = this.state;
+        let handle_1 = (item)=>{
+            return (
+                <div>
+                    <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
+                    <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
+                    <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
+                </div>
+            )
+        }
+        let handle_2 = (item) =>{
+            return (
+                <div>
+                    <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
+                </div>
+            )
+        }
+        let handle = selectValue>3?handle_2:handle_1;
         return (
             <div className={style.container}>
                 <NavTab navList={this.navList} />
@@ -176,6 +224,8 @@ class Banner extends Component{
                                 <Option value="0">待审核</Option>
                                 <Option value="1">审核未通过</Option>
                                 <Option value="2">审核已通过</Option>
+                                <Option value="4">已发布</Option>
+                                <Option value="5">已下线</Option>
                             </Select>
                         </div>
                         <div className='fr'>
@@ -203,9 +253,7 @@ class Banner extends Component{
                                    <td>{item.newsCategory}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle'>
-                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
-                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
+                                       {handle(item)}
                                    </td>
                                </tr>
                            )

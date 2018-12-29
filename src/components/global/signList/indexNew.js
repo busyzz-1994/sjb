@@ -20,11 +20,14 @@ class SignList extends Component{
     }
     componentDidMount(){
         let {type} = this.props;
-        systemApi.getSignList({pageSize:9999,currPage:1,type}).then(res=>{
+        
+        // console.log(type+'pppp')
+        systemApi.getSignList({pageSize:9999,currPage:1,type:0}).then(res=>{
             let signList = res[0].lists;
             signList = signList.map(item=>{
                 return item.name
             })
+            // console.log(signList)
             this.setState({
                 dataSource:signList
             })

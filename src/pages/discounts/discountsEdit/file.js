@@ -37,33 +37,65 @@ class Banner extends Component{
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
         if(isSearch){
-            fileApi.searchFileAudit({
-                currPage:pageNum,
-                pageSize,
-                title:searchValue,
-                checkview:selectValue
-            }).then(res=>{
-                let totalCount = res[0].totalCount;
-                let list = res[0].lists ;
-                this.setState({
-                    dataList:list,
-                    total:totalCount
+            if(selectValue>3){
+                fileApi.searchFileIssue({
+                    currPage:pageNum,
+                    pageSize,
+                    title:searchValue,
+                    theissue:selectValue
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let list = res[0].lists ;
+                    this.setState({
+                        dataList:list,
+                        total:totalCount
+                    })
                 })
-            })
+            }else{
+                fileApi.searchFileAudit({
+                    currPage:pageNum,
+                    pageSize,
+                    title:searchValue,
+                    checkview:selectValue
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let list = res[0].lists ;
+                    this.setState({
+                        dataList:list,
+                        total:totalCount
+                    })
+                })
+            }
+           
         }else{
-            fileApi.getFileList({
-                currPage:pageNum,
-                pageSize,
-                checkview:selectValue
-            }).then(res=>{
-                let totalCount = res[0].totalCount;
-                let list = res[0].lists ;
-                console.log(list)
-                this.setState({
-                    dataList:list,
-                    total:totalCount
+            if(selectValue>3){
+                fileApi.getFileListIssue({
+                    currPage:pageNum,
+                    pageSize,
+                    theissue:selectValue
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let list = res[0].lists ;
+                    this.setState({
+                        dataList:list,
+                        total:totalCount
+                    })
                 })
-            })
+            }else{
+                fileApi.getFileList({
+                    currPage:pageNum,
+                    pageSize,
+                    checkview:selectValue
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let list = res[0].lists ;
+                    this.setState({
+                        dataList:list,
+                        total:totalCount
+                    })
+                })
+            }
+            
         }
         
     }
@@ -134,6 +166,24 @@ class Banner extends Component{
         })
     }
     render(){
+        let {selectValue} = this.state;
+        let handle_1 = (item) =>{
+            return (
+                <div>
+                    <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
+                    <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
+                    <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id)}}/>
+                </div>
+            )
+        }
+        let handle_2 = (item) =>{
+            return (
+                <div>
+                    <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
+                </div>
+            )
+        }
+        let handle = selectValue>3?handle_2:handle_1;
         return (
             <div className={style.container}>
                 <NavTab/>
@@ -153,6 +203,8 @@ class Banner extends Component{
                                 <Option value="0">待审核</Option>
                                 <Option value="1">审核未通过</Option>
                                 <Option value="2">审核已通过</Option>
+                                <Option value="4">已发布</Option>
+                                <Option value="5">已下线</Option>
                             </Select>
                         </div>
                         <div className='fr'>
@@ -181,9 +233,7 @@ class Banner extends Component{
                                    <td>{item.typename}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(id,item.title)}}/>
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(id,item.title)}}/>
-                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id)}}/>
+                                        {handle(item)}
                                    </td>
                                </tr>
                            )

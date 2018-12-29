@@ -65,7 +65,6 @@ const Api = {
     },
     //服务文件置顶
     topFile(data){
-        console.log(data);
         return _mm.POST({
             url:'/admin/business/placedstickBusiness',
             data:{
@@ -74,6 +73,16 @@ const Api = {
             }
         })
     },
+    //获取已发布的商家类型， 分为两类， 一.商家模式下的 二.内容模式下的
+    getServiceType(data){
+        return _mm.POST({
+            url:'/admin/search/getBussCaryByTheissue',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    }
 
 }
 export default Api;

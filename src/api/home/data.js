@@ -71,6 +71,15 @@ const Api = {
             }
         })
     },
+    exportExcel(data){
+        return _mm.POST({
+            url:'/admin/op/export',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
     getG1(){
         return _mm.POST({
             url:'/admin/op/sexData',

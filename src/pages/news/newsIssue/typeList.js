@@ -203,6 +203,7 @@ class Banner extends Component{
                         cancel={()=>{this.setState({modalVisible:false})}}
                         callback = {(selectedRowKeys,fn)=>this.relevanceCallback(selectedRowKeys,fn)}
                         canChange = {true}
+                        navList = {['新闻','','','直播','视频','','']}
                     />
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>

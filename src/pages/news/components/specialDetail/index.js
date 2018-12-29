@@ -5,9 +5,10 @@ import {withRouter} from 'react-router-dom';
 import config from 'base/config.json';
 import ImgUpload from 'components/global/uploadImg';
 import newsApi from 'api/news/category.js';
+import Validate from 'util/validate/index.js';
 // import style from './index.scss';
 // 上传图片文件
-import ImgUrl from 'images/upload.png';
+import ImgUrl from 'images/zs2.png';
 //引入选择标签组件
 // import SignListComponent from 'components/global/signList';
 import SignList from 'components/global/signList/indexNew.js';
@@ -22,7 +23,7 @@ class NewsCategorySave extends Component{
             imgUrl:'',
             textArea:'',
             signChecked:false,
-            signList:[],
+            signList:[''],
             specialId:this.props.match.params.id
         }
     }
@@ -73,7 +74,20 @@ class NewsCategorySave extends Component{
         })
     }
     save(){
-       this.addFile()
+        let msg = this.validate();
+        if(!msg){
+            this.addFile()
+        }else{
+            message.error(msg)
+        }
+    }
+    validate(){
+        let {name,imgUrl,textArea} = this.state;
+        let validate = new Validate();
+        validate.add(name,'notEmpty','专题名称不能为空！');
+        validate.add(imgUrl,'notEmpty','上传图片不能为空！');
+        validate.add(textArea,'notEmpty','专题导读不能为空！');
+        return validate.start();
     }
     addFile(){
         let {name,imgUrl,textArea,signChecked,signList,id,specialId} = this.state;
@@ -100,9 +114,9 @@ class NewsCategorySave extends Component{
     }
    //获取signList
    getSignList(arr){
-    this.setState({
-        signList:arr
-    })
+        this.setState({
+            signList:arr
+        })
     }
     //获取选中状态
     getChecked(value){

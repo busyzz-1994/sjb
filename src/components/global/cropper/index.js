@@ -31,13 +31,6 @@ class UploadImg extends Component{
                     initBase64:data,
                     imgBase64:data
                 })
-                // commonApi.uploadImg({
-                //     data:data
-                // }).then(res=>{
-                //     _this.props.getUrl(res,_this.props.index);
-                // }).catch(err=>{
-                //     message.error(err);
-                // })
             });
         }
     }

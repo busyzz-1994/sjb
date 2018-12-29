@@ -102,11 +102,13 @@ class BannerDetail extends Component{
     }
     //验证表单
     validate(){
-        let {bannerTitle,bannerDetail,imgUrl} = this.state;
+        let {bannerTitle,bannerDetail,imgUrl,type} = this.state;
         let validate = new Validate();
         validate.add(bannerTitle,'notEmpty','banner标题不能为空！')
         validate.add(imgUrl,'notEmpty','轮播图不能为空！')
-        // validate.add(bannerDetail,'notEmpty','banner详情不能为空！')
+        if(type=='1'){
+            validate.add(bannerDetail,'notEmpty','banner详情不能为空！')
+        }
         let msg = validate.start();
         return msg;
     }
@@ -146,17 +148,6 @@ class BannerDetail extends Component{
     }
     updateBanner(){
         let {id,type,fkId,linkUrl,bannerTitle,imgUrl,bannerType,resourcesType,bannerDetail} = this.state;
-        console.log({
-            baType:type,
-            fkId,
-            reUrl:linkUrl,
-            title:bannerTitle,
-            titleImg:imgUrl,
-            type:bannerType,
-            resourcesType,
-            id,
-            exclusive: bannerDetail
-        })
         newsEditApi.updateBanner({
             baType:type,
             fkId,

@@ -76,7 +76,7 @@ const mm = {
                         data = JSON.parse(data);
                     }
                     if(data.statusCode == 7700 || data.statusCode == 200){
-                        resolve(data.data,data.message)
+                        resolve(data.data)
                     }else if(data.statusCode ===7701 || data.statusCode == 407 ){
                         _this.doLogin();
                     }else{
@@ -311,6 +311,11 @@ const mm = {
             month = date.getMonth()+1,
             day = date.getDate();
         return year+'-'+month+'-'+day
+    },
+    //替换span标签的红色标记
+    replaceSpan(string){
+        var reg = /\<span\s{1}style='background-color:red'>/img;
+        return string.replace(reg,'<span>');
     }
 }
 export default mm;

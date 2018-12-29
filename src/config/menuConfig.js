@@ -142,7 +142,7 @@ const menuConfig = [
             },
             {
                 key:'/search/searchIssue/recommend/7',
-                title:'搜素发布'
+                title:'搜索发布'
             }
         ]
     },

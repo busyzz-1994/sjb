@@ -9,6 +9,7 @@ import SignList from 'components/global/signList/indexNew.js';
 import ImgList from 'components/global/imgList'
 import Editor from 'components/global/editor';
 import AuditForm from 'components/global/auditForm';
+import FilterWord from 'components/global/filterWord/index.js';
 // import self from './bannerAdd.scss';
 import {Link} from 'react-router-dom';
 import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,DatePicker,Checkbox,AutoComplete} from 'antd';
@@ -93,14 +94,14 @@ class TypeSave extends Component{
         serviceApi.getFileList({
             currPage:1,
             pageSize:99999,
-            theissue:4
+            theissue:4,
+            bussinessType:0
         }).then(res=>{
             let totalCount = res[0].total;
             let list = res[0].list,
                 listName = list.map(item=>{
                     return item.title
                 })
-                console.log(listName)
             this.setState({
                 businessList:list,
                 businessName:listName
@@ -215,6 +216,7 @@ class TypeSave extends Component{
     }
     //保存save
     save(){
+        let {editDetail} = this.state;
         let msg = this.validate();
         // let msg = false;
         if(msg){
@@ -222,11 +224,11 @@ class TypeSave extends Component{
         }else{
             let {checked} = this.state;
             if(checked === null){
-                this.addFile();
+                this.filerWord.checkWord(editDetail,(str)=>{this.setState({editDetail:str},()=>{this.addFile()})},(str)=>{this.setState({editDetail:str,defaultDetail:str})})
             }else if(checked == '2'){
                 this.auditFile()
             }else{
-                this.updateFile()
+                this.filerWord.checkWord(editDetail,(str)=>{this.setState({editDetail:str},()=>{this.updateFile()})},(str)=>{this.setState({editDetail:str,defaultDetail:str})})
             }
         }
     }
@@ -242,7 +244,7 @@ class TypeSave extends Component{
             tagIds:signList,
             tags:signList,
             positiveImg:_mm.processImgUrl(fwImgList),
-            introduce:editDetail,
+            introduce:_mm.replaceSpan(editDetail),
             reveal:signChecked?1:0,
             endTime,
             startTime,
@@ -275,19 +277,28 @@ class TypeSave extends Component{
         })
     }
     auditFile(){
-        let {id,authStatus,authString} = this.state;
-        if(status == -1){
+        let {id,authStatus,authString,editDetail} = this.state;
+        if(authStatus == -1){
             message.error('未进行审核操作！');
             return ;
         }
-        fileApi.auditFile({
-            id,checkview:authStatus,remark:authString
-        }).then(res=>{
-            message.success('审核完成！');
-            this.props.history.goBack();
-        }).catch(err=>{
-            message.error(err)
-        })
+        let auth = ()=>{
+            fileApi.auditFile({
+                id,checkview:authStatus,remark:authString
+            }).then(res=>{
+                message.success('审核完成！');
+                this.props.history.goBack();
+            }).catch(err=>{
+                message.error(err)
+            })
+        }
+        // console.log(authStatus)
+        if(authStatus ==2){
+            this.filerWord.checkWord(editDetail,(str)=>{this.setState({editDetail:str},()=>{auth()})},(str)=>{this.setState({editDetail:str,defaultDetail:str})})
+        }else{
+            auth()
+        }
+        
     }
     selectTime(date,dateString){
         let startTime = dateString[0],
@@ -511,6 +522,7 @@ class TypeSave extends Component{
                         </Row>
                     </div>
                 }
+                <FilterWord ref={target=>{this.filerWord = target}} />
             </div>
         )
     }

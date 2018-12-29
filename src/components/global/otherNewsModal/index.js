@@ -167,7 +167,7 @@ class OtherNewsModal extends Component{
         }
     }
     render(){
-        let typeArr = ['新闻','商家','商品','直播','视频','音乐','广告'];
+        let typeArr = this.props.navList?this.props.navList: ['新闻','商家','商品','直播','视频','音乐','广告'];
         let {list,selectedRowKeys} = this.state;
         let columns = this.columns;
         let rowSelection = {
@@ -232,7 +232,8 @@ OtherNewsModal.defaultProps = {
     type:'checkbox',
     activeType:0,
     canChange:true,
-    flag:0
+    flag:0,
+    navList:''
 }
 
 export default withRouter(OtherNewsModal) ;

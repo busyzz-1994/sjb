@@ -104,7 +104,8 @@ module.exports = {
 			 port:8098,
 			 historyApiFallback:{
 				index:'/dist/index.html'
-			}
+			},
+			host:'192.168.0.37'
   },
 	plugins: [
 		new HtmlWebpackPlugin({

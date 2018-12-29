@@ -39,6 +39,7 @@ class Banner extends Component{
     //加载数据
     loadList(){
         let {pageSize,pageNum,selectValue,isSearch,searchValue} = this.state;
+        console.log(selectValue)
         if(isSearch){
             newsEditApi.issueSearch({
                 currPage:pageNum,

@@ -16,7 +16,7 @@ class Banner extends Component{
         super(props)
         this.state={
             //当前的状态
-            selectValue:'0',
+            selectValue:'3',
             //当前render的数据
             dataList:[],
             //当前的原数据
@@ -43,7 +43,7 @@ class Banner extends Component{
                 pageSize,
                 type:4,
                 name:searchValue,
-                theissue:'3'
+                theissue:selectValue
             }).then(res=>{
                 let totalCount = res[0].total;
                 let list = res[0].list ;
@@ -57,7 +57,7 @@ class Banner extends Component{
                 currPage:pageNum,
                 pageSize,
                 type:4,
-                theissue:'3'
+                theissue:selectValue
             }).then(res=>{
                 let totalCount = res[0].total;
                 let list = res[0].list ;
@@ -136,13 +136,14 @@ class Banner extends Component{
         })
     }
     render(){
+        let { selectValue } = this.state;
         return (
             <div className={style.container}>
                 <NavTab/>
                 <div className={style.content}>
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>
-                        {/* <div className='fl'>
+                        <div className='fl'>
                             <Select
                                 showSearch
                                 style={{ width: 200 }}
@@ -152,11 +153,10 @@ class Banner extends Component{
                                 value = {this.state.selectValue}
                                 onChange={(value)=>{this.select(value)}}
                             >
-                                <Option value="0">待审核</Option>
-                                <Option value="1">审核未通过</Option>
-                                <Option value="2">审核已通过</Option>
+                                <Option value="3">待发布</Option>
+                                <Option value="4">已发布</Option>
                             </Select>
-                        </div> */}
+                        </div>
                         <div className='fr'>
                             <Search
                                 placeholder="输入关键字进行搜索"
@@ -182,14 +182,24 @@ class Banner extends Component{
                                    <td>{item.name}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
-                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
+                                        {
+                                            selectValue == '3' ? 
+                                            <div>
+                                                <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
+                                                <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
+                                            </div>:'-'
+                                        }
                                    </td>
                                    <td>
-                                        <Link className='gl-link' to={`/video/videoEdit/type/list/${item.id}/?name=${item.name}`} >
-                                        <Icon type="link" />
-                                        关联文件
-                                        </Link>
+                                       {
+                                           selectValue == '3' ? 
+                                           <div>
+                                                <Link className='gl-link' to={`/video/videoEdit/type/list/${item.id}/?name=${item.name}`} >
+                                                <Icon type="link" />
+                                                关联文件
+                                                </Link>
+                                           </div>:'-'
+                                       }
                                    </td>
                                </tr>
                            )

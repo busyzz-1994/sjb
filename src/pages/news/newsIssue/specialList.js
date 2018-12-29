@@ -222,7 +222,7 @@ class Banner extends Component{
                                 style={{ width: 350 }}
                             />
                             <div style={{display:'inline-block',marginLeft:'10px'}}>
-                                <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="link" >
+                                <Button onClick={()=>{this.goAddBanner()}} type="primary" icon="plus" >
                                     新增专题
                                 </Button>
                             </div>

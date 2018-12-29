@@ -112,17 +112,17 @@ class Banner extends Component{
     }
     //点击查看图标
     clickCheck(item){
-        this.props.history.push(`/service/serviceAudit/file/detail/${item.id}/?checked=0&name=${item.title}`)
+        this.props.history.push(`/service/serviceAudit/file/detail/${item.id}/?checked=0&name=${item.title}&bussinessType=${item.bussinessType}`)
     }
     //点击编辑图标
     clickEdit(item){
         this.props.history.push({
-            pathname:`/service/serviceEdit/file/detail/${item.id}/?checked=1&name=${item.title}`
+            pathname:`/service/serviceEdit/file/detail/${item.id}/?checked=1&name=${item.title}&bussinessType=${item.bussinessType}`
         })
     }
     //点击审核
     clickAuth(item){
-        this.props.history.push(`/service/serviceAudit/file/detail/${item.id}/?checked=2&name=${item.title}`)
+        this.props.history.push(`/service/serviceAudit/file/detail/${item.id}/?checked=2&name=${item.title}&bussinessType=${item.bussinessType}`)
     }
     //点击删除图标
     clickDel(item){

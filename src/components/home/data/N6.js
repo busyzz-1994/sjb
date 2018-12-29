@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { Card ,Select,DatePicker,Col,Row} from 'antd'
+import { Card ,Select,DatePicker,Col,Row,Button,message} from 'antd'
 import ReactEcharts from 'echarts-for-react';
 import api from 'api/home/data.js';
 import mm from 'util/mm.js';
@@ -9,6 +9,7 @@ import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/title';
 // import 'echarts/lib/component/legend';
 // import 'echarts/lib/component/markPoint';
+import config from 'base/config.json';
 import style from '../common.scss';
 import self from './N6.scss';
 import moment from 'moment';
@@ -128,6 +129,20 @@ class N1 extends Component{
             // this.setState({pv,uv,jumpCount,newVisitorCount})
         })
     }
+    //导出表格
+    exportExcel(){
+        let {startTime,endTime,format,dateType} = this.state;
+        startTime = mm.mapFormatToDateString(format,startTime);
+        endTime = mm.mapFormatToDateString(format,endTime);
+        api.exportExcel({startTime,endTime}).then(res=>{
+            let uri = config.server+res[0];
+            let a = document.createElement('a');
+            a.href = uri;
+            a.click();
+        }).catch(err=>{
+            message.error(err);
+        })
+    }
     render(){
         let {dateType,startTime,endTime,format,arData,indexData,lifeData,liveData} = this.state;
         // let tableLength = list.length + 1;
@@ -156,6 +171,7 @@ class N1 extends Component{
                             format={format}
                             value = {[moment(`${startTime}`, format),moment(`${endTime}`, format)]}
                             />
+                        <Button onClick={()=>{this.exportExcel()}} type='primary'>导出表格</Button>    
                     </div>
                 </div>
                 <div className={style.panelBody}>

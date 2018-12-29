@@ -101,6 +101,16 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //验证关键字
+    authKeyWord(data){
+        return _mm.POST({
+            url:'/admin/common/keyword',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
 }
 export default Api;

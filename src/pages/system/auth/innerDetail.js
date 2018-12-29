@@ -56,6 +56,7 @@ class OuterDetail extends Component{
     //加载数据
     loadData(){
         let {id,options} = this.state;
+        console.log(options)
         systemApi.getOuterDetail({id}).then(res=>{
             let resulte = res[0];
             let {area,name,nickname,email,initialPassword,isStop,sjbPermissions} = resulte;
@@ -145,6 +146,7 @@ class OuterDetail extends Component{
     save(){
         let msg = this.validate();
         let {checked} = this.state;
+        
         if(msg){
             message.error(msg);
         }else{

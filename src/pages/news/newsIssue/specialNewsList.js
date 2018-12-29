@@ -207,6 +207,7 @@ class Banner extends Component{
                         callback = {(selectedRowKeys,fn)=>this.relevanceCallback(selectedRowKeys,fn)}
                         canChange = {true}
                         flag = '1'
+                        navList = {['新闻','','','直播','视频','','']}
                     />
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>

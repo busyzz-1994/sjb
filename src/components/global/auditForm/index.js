@@ -40,6 +40,6 @@ class AuditForm extends Component{
 }
 AuditForm.defaultProps = {
     status:2,
-    detail:''
+    detail:'',
 }
 export default AuditForm;

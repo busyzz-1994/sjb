@@ -40,36 +40,68 @@ class Banner extends Component{
         let {pageSize,pageNum,selectValue,isSearch,searchValue,type} = this.state;
 
         if(isSearch){
-            recommendApi.searchWord({
-                currPage:pageNum,
-                pageSize,
-                keyword:searchValue,
-                checkview:selectValue,
-                type
-            }).then(res=>{
-                let totalCount = res[0].totalCount;
-                let list = res[0].lists ;
-                this.setState({
-                    dataList:list,
-                    total:totalCount
+            if(selectValue>3){
+                recommendApi.getListByIssue({
+                    currPage:pageNum,
+                    pageSize,
+                    keyword:searchValue,
+                    theissue:selectValue,
+                    type
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let list = res[0].lists ;
+                    this.setState({
+                        dataList:list,
+                        total:totalCount
+                    })
                 })
-            })
+            }else{  
+                recommendApi.searchWord({
+                    currPage:pageNum,
+                    pageSize,
+                    keyword:searchValue,
+                    checkview:selectValue,
+                    type
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let list = res[0].lists ;
+                    this.setState({
+                        dataList:list,
+                        total:totalCount
+                    })
+                })
+            }
+           
         }else{
-            console.log(type)
-            recommendApi.getList({
-                currPage:pageNum,
-                pageSize,
-                checkview:selectValue,
-                type
-            }).then(res=>{
-                let totalCount = res[0].totalCount;
-                let list = res[0].lists ;
-                console.log(list)
-                this.setState({
-                    dataList:list,
-                    total:totalCount
+            if(selectValue>3){
+                recommendApi.getListByIssue({
+                    currPage:pageNum,
+                    pageSize,
+                    theissue:selectValue,
+                    type
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let list = res[0].lists ;
+                    this.setState({
+                        dataList:list,
+                        total:totalCount
+                    })
                 })
-            })
+            }else{
+                recommendApi.getList({
+                    currPage:pageNum,
+                    pageSize,
+                    checkview:selectValue,
+                    type
+                }).then(res=>{
+                    let totalCount = res[0].totalCount;
+                    let list = res[0].lists ;
+                    this.setState({
+                        dataList:list,
+                        total:totalCount
+                    })
+                })
+            }
         }
         
     }
@@ -142,7 +174,7 @@ class Banner extends Component{
         })
     }
     render(){
-        let {type} = this.state;
+        let {type,selectValue} = this.state;
         return (
             <div className={style.container}>
                 <NavTab/>
@@ -162,6 +194,8 @@ class Banner extends Component{
                                 <Option value="0">待审核</Option>
                                 <Option value="1">审核未通过</Option>
                                 <Option value="2">审核已通过</Option>
+                                <Option value="4">已发布</Option>
+                                <Option value="5">已下线</Option>
                             </Select>
                         </div>
                         <div className='fr'>
@@ -189,14 +223,24 @@ class Banner extends Component{
                                    <td>{item.name}</td>
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
-                                        <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
+                                        {
+                                            selectValue > 3 ? '-':
+                                            <div>
+                                                <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
+                                                <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(item)}}/>
+                                            </div>
+                                        }
                                    </td>
                                    <td>
-                                        <Link className='gl-link' to={`/search/searchEdit/recommend/${type}/fileList/${item.id}/?name=${item.name}`} >
-                                        <Icon type="link" />
-                                        关联文件
-                                        </Link>
+                                       {
+                                           selectValue > 3? '-':
+                                           <div>
+                                               <Link className='gl-link' to={`/search/searchEdit/recommend/${type}/fileList/${item.id}/?name=${item.name}`} >
+                                                <Icon type="link" />
+                                                关联文件
+                                                </Link>
+                                           </div>
+                                       }
                                    </td>
                                </tr>
                            )

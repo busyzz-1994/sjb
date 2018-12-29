@@ -1,22 +1,22 @@
 export default 
     [
-        // {
-        //     name:'首页',
-        //     value:'1',
-        //     options:[
-        //         {
-        //             label:'查看',
-        //             value:'101'
-        //         },
-        //         {
-        //             label:'导出报表',
-        //             value:'102'
-        //         }
-        //     ],
-        //     selectOptions:[],
-        //     checkAll:false,
-        //     indeterminate:true
-        // },
+        {
+            name:'首页',
+            value:'1',
+            options:[
+                {
+                    label:'查看',
+                    value:'101'
+                },
+                // {
+                //     label:'导出报表',
+                //     value:'102'
+                // }
+            ],
+            selectOptions:[],
+            checkAll:false,
+            indeterminate:true
+        },
         {
             name:'新闻管理',
             value:'2',
@@ -57,6 +57,7 @@ export default
             checkAll:false,
             indeterminate:true
         },
+        
         {
             name:'商家管理',
             value:'4',
@@ -120,23 +121,26 @@ export default
             checkAll:false,
             indeterminate:true
         },
-        // {
-        //     name:'投诉爆料',
-        //     value:'7',
-        //     options:[
-        //         {
-        //             label:'查看',
-        //             value:'701'
-        //         },
-        //         {
-        //             label:'导出报表',
-        //             value:'702'
-        //         }
-        //     ],
-        //     selectOptions:[],
-        //     checkAll:false,
-        //     indeterminate:true
-        // },
+        {
+            name:'直播管理',
+            value:'7',
+            options:[
+                {
+                    label:'编辑',
+                    value:'701'
+                },
+                {
+                    label:'审核',
+                    value:'702'
+                },{
+                    label:'发布',
+                    value:'703'
+                }
+            ],
+            selectOptions:[],
+            checkAll:false,
+            indeterminate:true
+        },
         {
             name:'广告管理',
             value:'8',
@@ -185,6 +189,19 @@ export default
                 {
                     label:'评论管理',
                     value:'1002'
+                }
+            ],
+            selectOptions:[],
+            checkAll:false,
+            indeterminate:true
+        },
+        {
+            name:'投诉爆料',
+            value:'11',
+            options:[
+                {
+                    label:'查看',
+                    value:'1101'
                 }
             ],
             selectOptions:[],

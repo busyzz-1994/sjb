@@ -64,7 +64,6 @@ class Banner extends Component{
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
-                console.log(list)
                 this.setState({
                     dataList:list,
                     total:totalCount

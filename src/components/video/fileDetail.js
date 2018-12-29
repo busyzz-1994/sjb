@@ -14,6 +14,7 @@ import {Link} from 'react-router-dom';
 import { Select , Input , Button ,message,Pagination,Breadcrumb,Row, Col,Icon,Checkbox } from 'antd';
 import { withRouter } from 'react-router-dom';
 import config from 'base/config.json';
+import FilterWord from 'components/global/filterWord/index.js';
 const Option = Select.Option;
 const TextArea = Input.TextArea;
 // import NewsCategorySave from '../components/newsCategorySave';
@@ -188,16 +189,27 @@ class TypeSave extends Component{
             message.error('未进行审核操作！');
             return ;
         }
-        videoApi.authVideoFile({
-            videoId:id,
-            checkview:authStatus,
-            remark:authString
-        }).then(res=>{
-            message.success('审核成功！');
-            this.props.history.goBack();
-        }).catch(err=>{
-            message.error(err)
-        })
+        let auth = ()=>{
+            videoApi.authVideoFile({
+                videoId:id,
+                checkview:authStatus,
+                remark:authString
+            }).then(res=>{
+                message.success('审核成功！');
+                this.props.history.goBack();
+            }).catch(err=>{
+                message.error(err)
+            })
+        }
+        auth();
+        // if(authStatus == 2){
+        //     let map = {
+        //         '0':()=>{this.filerWord.checkWord(ptDetail,()=>{auth()})},
+        //         '1':()=>{this.filerWord.checkWord(wbDetail,()=>{auth()})}
+        //     }
+        //     map[type]();
+        // }
+        
     }
     //添加或编辑文件
     addFile(){
@@ -317,6 +329,7 @@ class TypeSave extends Component{
                     </Row>
                 </div> */}
                 <SignList
+                    type={1}
                     signList = {signList}
                     checked = {signChecked}
                     getList = {(list)=>this.getSignList(list)}
@@ -374,6 +387,7 @@ class TypeSave extends Component{
                         </div>
                     )
                 }
+                <FilterWord ref={target=>{this.filerWord = target}} />
             </div>
         )
     }

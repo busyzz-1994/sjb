@@ -56,7 +56,6 @@ class Banner extends Component{
                 pageSize,
                 theissue:selectValue
             }).then(res=>{
-                console.log(res);
                 let totalCount = res[0].total;
                 let list = res[0].list ;
                 this.setState({

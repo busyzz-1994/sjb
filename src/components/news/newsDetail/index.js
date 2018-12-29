@@ -8,6 +8,7 @@ import AuditForm from 'components/global/auditForm'
 import fileApi from 'api/news/file.js';
 import _mm from 'util/mm.js';
 import commonApi from 'api/common.js';
+import FilterWord from 'components/global/filterWord/index.js';
 const Option = Select.Option;
 class NewsDetail extends Component{
     constructor(props){
@@ -58,7 +59,8 @@ class NewsDetail extends Component{
             wbSignChecked:false,
             wbHotChecked:false,
             wbDefaultDetail:'',
-            wbDetail:''
+            wbDetail:'',
+            filterWordStatus:false
         }
     }
     componentDidMount(){
@@ -75,7 +77,6 @@ class NewsDetail extends Component{
                     category:list[0]?list[0].id:''
                 },()=>{
                     let {id} = this.state;
-                    console.log(id)
                     if(id){
                         this.getDetail();
                     }
@@ -123,19 +124,28 @@ class NewsDetail extends Component{
     }
     //点击保存
     save(){
-       let {checked} = this.state;
+       let {checked,wbDetail,ptDetail,type} = this.state;
        if(checked ===null){
-           this.addFile()
+            let map = {
+                '0':()=>{this.filerWord.checkWord(ptDetail,(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string},()=>{this.addFile()})},(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string})})},
+                '1':()=>{this.filerWord.checkWord(wbDetail,(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string},()=>{this.addFile()})},(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string})})},
+                '2':()=>{this.addFile()}
+            }
+            map[type]()
        }else if(checked == '2'){
            this.auditFile()
        }else{
-           this.updateFile()
+            let map = {
+                '0':()=>{this.filerWord.checkWord(ptDetail,(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string},()=>{this.updateFile()})},(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string})})},
+                '1':()=>{this.filerWord.checkWord(wbDetail,(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string},()=>{this.updateFile()})},(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string})})},
+                '2':()=>{this.addFile()}
+            }
+            map[type]()
        }
     }
     //添加新闻
     addFile(){
         let obj = this.getFormData();
-        console.log(obj);
         fileApi.addFile(obj).then(res=>{
             message.success('添加成功！');
             this.props.history.goBack()
@@ -157,17 +167,29 @@ class NewsDetail extends Component{
     }
     //审核文件
     auditFile(){
-        let {id,auditStatus,auditDetail,categoryId} = this.state;
+        let {id,auditStatus,auditDetail,categoryId,type,ptDetail,wbDetail} = this.state;
         if(auditStatus == -1){
             message.error('未进行审核操作！');
             return ;
         }
-        fileApi.authFile({id,checkview:auditStatus,remark:auditDetail,categoryId}).then(res=>{
-            message.success('审核完成！');
-            this.props.history.goBack()
-        }).catch(err=>{
-            message.error(err);
-        })
+        let auth = ()=>{
+            fileApi.authFile({id,checkview:auditStatus,remark:auditDetail,categoryId}).then(res=>{
+                message.success('审核完成！');
+                this.props.history.goBack()
+            }).catch(err=>{
+                message.error(err);
+            })
+        }
+        if(auditStatus==2){
+            let map = {
+                '0':()=>{this.filerWord.checkWord(ptDetail,(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string},()=>{auth()})},(string)=>this.setState({ptDefaultDetail:string,ptDetail:string}))},
+                '1':()=>{this.filerWord.checkWord(wbDetail,(string)=>{this.setState({wbDefaultDetail:string,ptDetail:string},()=>{auth()})},(string)=>this.setState({wbDefaultDetail:string,ptDetail:string}))},
+                '2':()=>{auth()}
+            }
+            map[type]();
+        }else{
+            auth();
+        }
     }
     getDetail(){
         let {id} = this.state;
@@ -251,7 +273,7 @@ class NewsDetail extends Component{
                         tagsisShow:ptSignChecked?'1':'0'
                     },
                     isHot:ptHotChecked?'1':'0',
-                    content:ptDetail
+                    content:_mm.replaceSpan(ptDetail)
                 }
             break;
             case "1":
@@ -277,7 +299,7 @@ class NewsDetail extends Component{
                         tagsisShow:wbSignChecked?'1':'0'
                     },
                     isHot:wbHotChecked?'1':'0',
-                    content:wbDetail
+                    content: _mm.replaceSpan(wbDetail)
                 }
             break;
             default:
@@ -288,6 +310,7 @@ class NewsDetail extends Component{
     }
     render(){
         let {category,categoryList,type} = this.state;
+        console.log(category)
         //普通新闻的数据
         let {ptImg,ptSingleImg,ptMoreImg,ptSignList,ptSignChecked,ptHotChecked,ptDefaultDetail,ptDetail} = this.state;
         //图片新闻的数据
@@ -421,6 +444,7 @@ class NewsDetail extends Component{
                         </Row>
                     </div>
                 }
+                <FilterWord ref={target=>{this.filerWord = target}} status = {this.state.filterWordStatus} />
             </div>
         )
     }

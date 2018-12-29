@@ -3,7 +3,7 @@ import {withRouter} from 'react-router-dom';
 import { Menu, Icon,Dropdown,Modal,Row, Col ,Input,message} from 'antd';
 import {Link} from 'react-router-dom';
 import _mm from 'util/mm.js';
-import Logo from 'images/logo.png';
+import Logo from 'images/nlogo.png';
 import Validate from 'util/validate';
 import userApi from 'api/user/index.js'
 // import { connect } from 'react-redux';
@@ -49,6 +49,9 @@ class Header extends Component {
       okText:'确认',
       cancelText:'取消'
   })
+  }
+  componentDidMount(){
+    console.log(this.props.match)
   }
   logout(){
     _mm.removeStorage('token');
@@ -152,7 +155,7 @@ class Header extends Component {
           </div>
         </Modal>
         <div className={style.headLogo}>
-           <img src={Logo} width='140px' height="49px"/>
+           <img src={Logo} width='140px' height="45px"/>
         </div>
         <div className={style.headHandle + ' fr'}>
         <Dropdown overlay={menu}>
