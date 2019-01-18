@@ -178,6 +178,7 @@ class TypeSave extends Component{
         let {title,newsSource,tpImg,signList,videoUrl} = this.state;
         validate.add(title,'notEmpty','视频标题不能为空！');
         // validate.add(newsSource,'notEmpty','新闻来源不能为空！');
+        validate.add(signList,'checkSignList','标签不能为空！');
         validate.add(tpImg,'notEmpty','视频封面图不能为空！');
         validate.add(videoUrl,'notEmpty','上传视频文件地址不能为空！');
         return validate.start();
@@ -271,7 +272,7 @@ class TypeSave extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>直播来源*</Col>
+                        <Col span='4'>直播来源</Col>
                         <Col offset='1' span='12'>
                             <Input maxLength='10' value={this.state.newsSource} onChange={(e)=>this.onInput(e)} name='newsSource' placeholder='请输入不超过10个字的视频来源' />
                         </Col>
@@ -337,7 +338,7 @@ class TypeSave extends Component{
                 />
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>热门推荐*</Col>
+                        <Col span='4'>热门推荐</Col>
                         <Col offset='1' span='12'>
                             <Checkbox
                                 checked={hot}

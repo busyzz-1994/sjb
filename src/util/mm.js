@@ -314,8 +314,19 @@ const mm = {
     },
     //替换span标签的红色标记
     replaceSpan(string){
-        var reg = /\<span\s{1}style='background-color:red'>/img;
-        return string.replace(reg,'<span>');
+        var reg = /\<span\s{1}style=['"]background-color:red['"]>/img;
+        console.log(string)
+        return string.replace(reg,'').replace(/\<a><\/a><\/span>/img,'');
+    },
+    getFullDate(time){
+        var date = new Date(time),
+            year = date.getFullYear(),
+            month = date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1 ,
+            day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+            hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours(),
+            min = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes(),
+            sec = date.getSeconds()< 10 ? '0' + date.getSeconds() : date.getSeconds();
+        return  `${year}-${month}-${day} ${hours}:${min}:${sec}`; 
     }
 }
 export default mm;

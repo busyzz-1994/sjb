@@ -49,7 +49,7 @@ class BannerAdd extends Component{
                         check = {name}
                         edit = {name}
                     />
-                    <BannerDetail acticeType={0} canChange={true}/>
+                    <BannerDetail activeType={0} canChange={true} />
                 </div>
             </div>
         )

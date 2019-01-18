@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import {withRouter} from 'react-router-dom';
-import {Col,Row,Input,Select,Checkbox,Button,message} from 'antd';
+import {Col,Row,Input,Select,Checkbox,Button,message,DatePicker} from 'antd';
+import Validate from 'util/validate/index.js';
 import General from './general.js';
 import Picture from './picture';
 import Text from './text';
@@ -10,6 +11,10 @@ import _mm from 'util/mm.js';
 import commonApi from 'api/common.js';
 import FilterWord from 'components/global/filterWord/index.js';
 const Option = Select.Option;
+import locale from 'antd/lib/date-picker/locale/zh_CN';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 class NewsDetail extends Component{
     constructor(props){
         super(props)
@@ -60,7 +65,11 @@ class NewsDetail extends Component{
             wbHotChecked:false,
             wbDefaultDetail:'',
             wbDetail:'',
-            filterWordStatus:false
+            filterWordStatus:false,
+            // 创建时间
+            createTime:_mm.getFullDate(new Date().getTime()),
+            //是否显示默认时间
+            defaultTime:false
         }
     }
     componentDidMount(){
@@ -68,8 +77,9 @@ class NewsDetail extends Component{
     }
     //添加类型选项
     loadTypeList(){
-        commonApi.getIssueType({currPage:1,pageSize:9999,type:'0',theissue:'4'}).then(res=>{
+        fileApi.getCategoryList({currPage:1,pageSize:9999,type:'0',theissue:'4'}).then(res=>{
             let list = res[0].lists;
+            console.log(list)
             this.setState({
                 categoryList:list
             },()=>{
@@ -124,24 +134,57 @@ class NewsDetail extends Component{
     }
     //点击保存
     save(){
-       let {checked,wbDetail,ptDetail,type} = this.state;
-       if(checked ===null){
-            let map = {
-                '0':()=>{this.filerWord.checkWord(ptDetail,(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string},()=>{this.addFile()})},(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string})})},
-                '1':()=>{this.filerWord.checkWord(wbDetail,(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string},()=>{this.addFile()})},(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string})})},
-                '2':()=>{this.addFile()}
-            }
-            map[type]()
-       }else if(checked == '2'){
-           this.auditFile()
+       let msg = this.validate();
+       console.log(msg)
+       if(msg){
+           message.error(msg)
        }else{
-            let map = {
-                '0':()=>{this.filerWord.checkWord(ptDetail,(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string},()=>{this.updateFile()})},(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string})})},
-                '1':()=>{this.filerWord.checkWord(wbDetail,(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string},()=>{this.updateFile()})},(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string})})},
-                '2':()=>{this.addFile()}
+            let {checked,wbDetail,ptDetail,type} = this.state;
+            if(checked ===null){
+                let map = {
+                    '0':()=>{this.filerWord.checkWord(ptDetail,(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string},()=>{this.addFile()})},(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string})})},
+                    '2':()=>{this.filerWord.checkWord(wbDetail,(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string},()=>{this.addFile()})},(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string})})},
+                    '1':()=>{this.addFile()}
+                }
+                map[type]()
+            }else if(checked == '2'){
+                this.auditFile()
+            }else{
+                let map = {
+                    '0':()=>{this.filerWord.checkWord(ptDetail,(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string},()=>{this.updateFile()})},(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string})})},
+                    '2':()=>{this.filerWord.checkWord(wbDetail,(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string},()=>{this.updateFile()})},(string)=>{this.setState({wbDefaultDetail:string,wbDetail:string})})},
+                    '1':()=>{this.addFile()}
+                }
+                map[type]()
             }
-            map[type]()
        }
+    }
+    //验证
+    validate(){
+        let validate =  new Validate();
+        let {newsTitle,type,ptSingleImg,ptMoreImg,ptImg,ptSignList,ptDetail,
+            tpImg,tpSignList,tpImgList,
+            wbSignList,wbDetail
+        } = this.state;
+        validate.add(newsTitle,'notEmpty','新闻标题不能为空');
+        let map = {
+            '0':()=>{
+                ptImg === 1 ? validate.add(ptSingleImg,'notEmptyArrayWithItem','新闻缩略图不能为空') : validate.add(ptMoreImg,'notEmptyArrayWithItem','新闻缩略图不能为空');
+                validate.add(ptSignList,'checkSignList','标签绑定不能为空');
+                validate.add(ptDetail,'notEmpty','内容编辑不能为空');
+            },
+            '1':()=>{
+                validate.add(tpImg,'notEmpty','封面图不能为空');
+                validate.add(tpSignList,'checkSignList','标签绑定不能为空');
+                validate.add(tpImgList,'checkPicDecs','图片及描述不能为空');
+            },
+            '2':()=>{
+                validate.add(wbSignList,'checkSignList','标签绑定不能为空');
+                validate.add(wbDetail,'notEmpty','内容编辑不能为空');
+            }
+        }
+        map[type]();
+        return validate.start();
     }
     //添加新闻
     addFile(){
@@ -156,6 +199,7 @@ class NewsDetail extends Component{
     //修改文件
     updateFile(){
         let obj = this.getFormData();
+        console.log(obj.content)
         let {id} = this.state; 
         obj = {...obj,newsId:id}
         fileApi.updateFile(obj).then(res=>{
@@ -183,8 +227,8 @@ class NewsDetail extends Component{
         if(auditStatus==2){
             let map = {
                 '0':()=>{this.filerWord.checkWord(ptDetail,(string)=>{this.setState({ptDefaultDetail:string,ptDetail:string},()=>{auth()})},(string)=>this.setState({ptDefaultDetail:string,ptDetail:string}))},
-                '1':()=>{this.filerWord.checkWord(wbDetail,(string)=>{this.setState({wbDefaultDetail:string,ptDetail:string},()=>{auth()})},(string)=>this.setState({wbDefaultDetail:string,ptDetail:string}))},
-                '2':()=>{auth()}
+                '2':()=>{this.filerWord.checkWord(wbDetail,(string)=>{this.setState({wbDefaultDetail:string,ptDetail:string},()=>{auth()})},(string)=>this.setState({wbDefaultDetail:string,ptDetail:string}))},
+                '1':()=>{auth()}
             }
             map[type]();
         }else{
@@ -248,7 +292,7 @@ class NewsDetail extends Component{
     }
     //getFormData
     getFormData(){
-        let {type,category,newsTitle,newsOrigin,originChecked} = this.state;
+        let {type,category,newsTitle,newsOrigin,originChecked,createTime} = this.state;
         //普通新闻
         let {ptImg,ptSingleImg,ptMoreImg,ptSignList,ptSignChecked,ptHotChecked,ptDetail} = this.state;
         //图片新闻
@@ -258,6 +302,7 @@ class NewsDetail extends Component{
         let obj = {
             title:newsTitle,
             newsType:type,
+            createTime,
             categoryId:category,
             sourceAdress:{
                 sourceAdressName:newsOrigin,
@@ -308,9 +353,24 @@ class NewsDetail extends Component{
         return obj;
 
     }
+    selectTime(date,dateString){
+        console.log(dateString)
+        this.setState({
+            createTime:dateString
+        })
+        // let startTime = dateString[0],
+        //     endTime = dateString[1];
+        // this.setState({
+        //     startTime,endTime
+        // })
+    }
+    changeDefaultTime(e){
+        this.setState({
+            defaultTime:e.target.value
+        })
+    }
     render(){
-        let {category,categoryList,type} = this.state;
-        console.log(category)
+        let {category,categoryList,type,createTime} = this.state;
         //普通新闻的数据
         let {ptImg,ptSingleImg,ptMoreImg,ptSignList,ptSignChecked,ptHotChecked,ptDefaultDetail,ptDetail} = this.state;
         //图片新闻的数据
@@ -318,6 +378,7 @@ class NewsDetail extends Component{
         //文本新闻的数据
         let {wbSignList,wbHotChecked,wbDefaultDetail,wbDetail,wbSignChecked} = this.state;
         let newsType = this.state.type;
+        console.log(createTime)
         return (
             <div>
                <div className='form-item'>
@@ -371,7 +432,7 @@ class NewsDetail extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>新闻来源*</Col>
+                        <Col span='4'>新闻来源</Col>
                         <Col offset='1' span='12'>
                             <Input value={this.state.newsOrigin} onChange={(e)=>this.onInput(e)} name='newsOrigin' placeholder='请输入不超过10个字的新闻来源' />
                         </Col>
@@ -379,6 +440,18 @@ class NewsDetail extends Component{
                             <Checkbox checked={this.state.originChecked} onChange={(e)=>{this.changeOriginState(e)}} >
                                 显示来源
                             </Checkbox>
+                        </Col>
+                    </Row>
+                </div>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>创建时间</Col>
+                        <Col offset='1' span='6'>
+                            <DatePicker locale={locale} showTime={true} allowClear= {false}
+                             format="YYYY-MM-DD HH:mm:ss"
+                             onChange={(date,dateString)=>{this.selectTime(date,dateString)}}
+                             value={moment(`${createTime}`, 'YYYY-MM-DD HH:mm:ss')}
+                            />
                         </Col>
                     </Row>
                 </div>

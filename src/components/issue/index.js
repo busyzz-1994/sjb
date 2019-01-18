@@ -9,6 +9,8 @@ import { withRouter } from 'react-router-dom';
 import config from 'base/config.json';
 import Reply from './reply.js';
 import IssueApi from 'api/issue/index.js';
+import self from './index.scss';
+import api from 'api/issue/index.js';
 const Option = Select.Option;
 const TextArea = Input.TextArea;
 // import NewsCategorySave from '../components/newsCategorySave';
@@ -24,6 +26,10 @@ class TypeSave extends Component{
             name:'',
             phone:'',
             img:[],
+            content:'',
+            createTime:'',
+            reply:'',
+            list:[]
         }
     }
     componentDidMount(){
@@ -32,35 +38,71 @@ class TypeSave extends Component{
     getDetail(){
         let {id} = this.state;
         IssueApi.getReply({id}).then(res=>{
-            console.log(res);
+           let {userName,title,phone,name,img,content,createTime,list} = res[0];
+           content = createTime + '\n' + content;
+           img = img.split(',');
+           this.setState({
+                userName,
+                name,
+                title,
+                phone,
+                content,
+                img,
+                list
+           })
         }).catch(err=>{
             message.error(err);
         })
     }
-    
+    validate(){
+        let {reply} = this.state;
+        let validate = new Validate();
+        validate.add(reply,'notEmpty','回复内容不能为空！');
+        return validate.start();
+    }
+    onInput(e){
+        let val = e.target.value,
+            name = e.target.name;
+        this.setState({
+            [name]:val
+        })
+    }
     //点击保存
     save(){
-        let {checked} = this.state;
-        if(checked == '2' || checked == '4'){
-            this.authFile();
+        let msg = this.validate();
+        let {id,reply} = this.state;
+        if(msg){
+            message.error(msg)
         }else{
-            let msg = this.validate();
-            if(msg){
-                message.error(msg);
-            }else{
-                this.addFile();
-            }
+            api.submitReply({complaintsId:id,content:reply}).then(res=>{
+                message.success('回复成功')
+                this.getDetail()
+            }).catch(err=>{
+                message.error(err)
+            })
         }
+        // let {checked} = this.state;
+        // if(checked == '2' || checked == '4'){
+        //     this.authFile();
+        // }else{
+        //     let msg = this.validate();
+        //     if(msg){
+        //         message.error(msg);
+        //     }else{
+        //         this.addFile();
+        //     }
+        // }
     }
    
     render(){
+        let {img,content,list} = this.state;
         return (
             <div className='form-container'>
                 <div className='form-item'>
                     <Row>
                         <Col span='4'>用户名*</Col>
                         <Col offset='1' span='12'>
-                            <Input disabled={true} maxLength='30' value={this.state.title} onChange={(e)=>this.onInput(e)} name='userName' />
+                            <Input disabled={true} maxLength='30' value={this.state.userName} onChange={(e)=>this.onInput(e)} name='userName' />
                         </Col>
                     </Row>
                 </div>
@@ -92,11 +134,36 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>图片*</Col>
                         <Col offset='1' span='12'>
-                            <img src={config.server} style={{maxWidth:'200px',maxHeight:'200px'}}/>
+                            {
+                                img.map((item,index)=>{
+                                   return  <img className={self.img} src={config.server + item} key={index} style={{maxWidth:'200px',maxHeight:'200px'}}/>
+                                })
+                            }
                         </Col>
                     </Row>
                 </div>
-                <Reply/>
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>内容</Col>
+                        <Col offset='1' span='12'>
+                            <TextArea rows={4} disabled value={content}/>
+                        </Col>
+                    </Row>
+                </div>
+                {
+                    list.map((item,index)=>{
+                        console.log(item.replyType)
+                        return <Reply fn={()=>{this.getDetail()}} id={item.id} type={item.replyType} isShow={item.isShow} content={`${item.createTime}\n${item.content}`} key={index}/>
+                    })
+                }
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>回复*</Col>
+                        <Col offset='1' span='12'>
+                            <TextArea rows={4} placeholder='回复内容不超过500字' onChange={(e)=>this.onInput(e)} name='reply'/>
+                        </Col>
+                    </Row>
+                </div>
                 {
                     (this.state.checked == 0 || this.state.checked ==4 )? 
                     null

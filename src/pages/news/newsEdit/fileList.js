@@ -205,7 +205,18 @@ class Banner extends Component{
                 </div>
             )
         }
+        let handle_3 = (item)=>{
+            return (
+                <div>
+                    <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
+                    <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
+                </div>
+            )
+        }
         let handle = selectValue>3?handle_2:handle_1;
+        if(selectValue == 5){
+            handle = handle_3
+        }
         return (
             <div className={style.container}>
                 <NavTab navList={this.navList} />

@@ -112,15 +112,17 @@ class N1 extends Component{
         startTime = mm.mapFormatToDateString(format,startTime);
         endTime = mm.mapFormatToDateString(format,endTime);
         api.getN4({startTime,endTime}).then(res=>{
+            console.log('*********************')
+            console.log(res)
             let list = res[0].specialData;
             let data = list.map((item)=>{
                 let obj = {};
                 obj.value = item.pv;
-                obj.name = item.name.length>3?item.name.substring(0,2):item.name;
+                obj.name = item.name.length>4?item.name.substring(0,2):item.name;
                 return obj;
             })
             let legendData = list.map(item=>{
-                return item.name.length>3?item.name.substring(0,2):item.name;
+                return item.name.length>4?item.name.substring(0,2):item.name;
             })
             this.setState({legendData,data})
             // let {pv,uv,jumpCount,newVisitorCount} = res[0];

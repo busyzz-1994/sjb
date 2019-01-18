@@ -53,7 +53,6 @@ class TypeSave extends Component {
             signList: [''],
             signChecked: false,
             defaultDetail: '',
-            detail: '',
             authStatus: -1,
             authString: '',
             isHot: false,
@@ -102,7 +101,6 @@ class TypeSave extends Component {
     //添加类型选项
     loadTypeList() {
         let {merchant} = this.state;
-        console.log(merchant)
         serviceApi.getServiceType({ bussinessType:merchant, type: '1', theissue: '4' }).then(res => {
             let list = res[0];
             this.setState({
@@ -198,7 +196,7 @@ class TypeSave extends Component {
     }
     //点击保存
     save() {
-        let { checked } = this.state;
+        let { checked,detail } = this.state;
         if (checked == '2' || checked == '4') {
             this.authFile();
         } else {
@@ -206,14 +204,14 @@ class TypeSave extends Component {
             if (msg) {
                 message.error(msg);
             } else {
-                this.addFile();
+                this.filerWord.checkWord(detail,(str)=>{this.setState({detail:str},()=>{this.addFile()})},(str)=>{this.setState({detail:str,defaultDetail:str})})
             }
         }
     }
     //验证表单信息
     validate() {
         let validate = new Validate();
-        let { title, tpImg, score, count, address, startPrice ,merchant,selectedName} = this.state;
+        let { title, tpImg, score, count, address, startPrice ,merchant,selectedName,signList} = this.state;
             validate.add(title, 'notEmpty', '商家标题不能为空！');
             validate.add(tpImg, 'notEmpty', '商家缩略图不能为空！');
         if(merchant=='0'){
@@ -224,6 +222,7 @@ class TypeSave extends Component {
                 return this.mapNameToId(selectedName)?'':'输入的商家不存在！'
             });
         }
+        validate.add(signList,'checkSignList','标签不能为空！');
         // validate.add(count,'notMinus','消费次数为整数！');
         // validate.add(startPrice,'notFloatMinus','起始价格必须为数字！');
         return validate.start();
@@ -263,7 +262,7 @@ class TypeSave extends Component {
             spectacular: signChecked ? '1' : '0',
             coverimg: fwImgList.join(','),
             categoryId: categoryValue,
-            content: detail,
+            content: _mm.replaceSpan(detail),
             isHot: isHot ? '1' : '0',
             phone,
             bussinessType: merchant,
@@ -488,7 +487,7 @@ class TypeSave extends Component {
                 />
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>热门推荐*</Col>
+                        <Col span='4'>热门推荐</Col>
                         <Col offset='1' span='16'>
                             <Checkbox onChange={(e) => this.setHotChecked(e)} checked={isHot} >
                                 加入热门推荐

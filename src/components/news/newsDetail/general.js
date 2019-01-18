@@ -108,7 +108,7 @@ class General extends Component{
                 /> */}
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>热门推荐*</Col>
+                        <Col span='4'>热门推荐</Col>
                         <Col offset='1' span='16'>
                            <Checkbox onChange={(e)=>this.setHotChecked(e)} checked = {hotChecked} >
                                 加入热门推荐

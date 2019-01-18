@@ -209,7 +209,7 @@ class TypeSave extends Component{
         validate.add(tpImg,'notEmpty','商品缩略图不能为空！');
         validate.add(price,'notFloatMinus','商品价格只能为正数！');
         validate.add(count,'notMinus','库存只能为整数！');
-        // validate.add(signList,'notEmptyArray','标签绑定不能为空！');
+        validate.add(signList,'checkSignList','标签不能为空！');
         validate.add(fwImgList,'notEmptyArrayWithItem','服务主图不能为空！');
         validate.add(editDetail,'notEmpty','内容编辑不能为空！');
         return validate.start();
@@ -335,6 +335,7 @@ class TypeSave extends Component{
         return null;
     }
     render(){
+        console.log(moment(`2018-06-01 12:00:00`, 'YYYY-MM-DD HH:mm:ss'))
         let {category,tpImg,signList,signChecked,fwImgList,defaultDetail
             ,authStatus,authString,checked,categoryValue,endTime,startTime,isHot,isShowCount,businessName,selectedName,score
         } = this.state;
@@ -483,7 +484,7 @@ class TypeSave extends Component{
                 </div>
                 <div className='form-item'>
                     <Row>
-                        <Col span='4'>热门推荐*</Col>
+                        <Col span='4'>热门推荐</Col>
                         <Col offset='1' span='16'>
                            <Checkbox onChange={(e)=>this.setHotChecked(e)} checked = {isHot} >
                                 加入热门推荐

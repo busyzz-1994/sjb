@@ -51,6 +51,7 @@ class Banner extends Component{
             //当前的状态
             selectValue:'0',
             id:this.props.match.params.id,
+            specialName:_mm.getParam('specialName'),
             //当前render的数据
             dataList:[],
             //当前的原数据
@@ -77,7 +78,8 @@ class Banner extends Component{
             newsApi.getCategoryFlieList({
                 currPage:pageNum,
                 pageSize,
-                resourcesName:searchValue
+                resourcesName:searchValue,
+                specialId:id
             }).then(res=>{
                 let totalCount = res[0].total;
                 let list = res[0].list ;
@@ -89,7 +91,8 @@ class Banner extends Component{
         }else{
             newsApi.getCategoryFlieList({
                 currPage:pageNum,
-                pageSize
+                pageSize,
+                specialId:id
             }).then(res=>{
                 console.log(res);
                 let totalCount = res[0].total;

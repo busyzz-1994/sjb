@@ -124,6 +124,28 @@ var rule = {
 		if(!reg.test(value)){
 			return msg;
 		}
+	},
+	//检测标签内容是否为空
+	checkSignList:function(arr,msg){
+		if(arr.length == 0){
+			return msg;
+		}
+		for(var i = 0 ; i<arr.length;i++){
+			if(arr[i] == ''){
+				return msg;
+			}
+		}
+	},
+	//验证图片以及描述
+	checkPicDecs:function(arr,msg){
+		if(arr.length == 0){
+			return msg;
+		}
+		for(var i = 0 ; i < arr.length;i++){
+			if ((arr[i].imgUrl == '') || (arr[i].desc == '')){
+				return msg;
+			}
+		}
 	}
 }
 class Validate{

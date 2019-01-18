@@ -8,7 +8,7 @@ module.exports = {
 	entry: './src/app.js',
 	output: {
 		path: path.resolve(__dirname, 'dist'),
-		filename: 'js/app.js',
+		filename: 'js/[name].[chunkHash:5].js',
 		publicPath:WEBPACK_ENV==='dev'? '/dist/': ''
 	},
 	resolve:{
@@ -79,7 +79,7 @@ module.exports = {
 		            loader: 'url-loader',
 		            options: {
 		              limit: 8192,
-		              name:'resource/[name].[ext]'
+		              name:'resource/[name]-[hash:base64:5].[ext]'
 		            }
 		          }
 		        ]
@@ -105,18 +105,18 @@ module.exports = {
 			 historyApiFallback:{
 				index:'/dist/index.html'
 			},
-			host:'192.168.0.37'
+			host:'192.168.0.43'
   },
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: './src/index.html',
 			favicon:'./favicon.ico'
 		}),
-		new ExtractTextPlugin("css/[name].css"),
+		new ExtractTextPlugin("css/[name].[chunkHash:5].css"),
 		//提出公共模块
 		new webpack.optimize.CommonsChunkPlugin({
 			name:'common',
-			filename:'js/base.js'
+			filename:'js/base.[chunkHash:5].js'
 		})
 	]
 };

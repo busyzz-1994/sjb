@@ -82,11 +82,12 @@ class NewsCategorySave extends Component{
         }
     }
     validate(){
-        let {name,imgUrl,textArea} = this.state;
+        let {name,imgUrl,textArea,signList} = this.state;
         let validate = new Validate();
         validate.add(name,'notEmpty','专题名称不能为空！');
         validate.add(imgUrl,'notEmpty','上传图片不能为空！');
         validate.add(textArea,'notEmpty','专题导读不能为空！');
+        validate.add(signList,'checkSignList','标签不能为空！');
         return validate.start();
     }
     addFile(){

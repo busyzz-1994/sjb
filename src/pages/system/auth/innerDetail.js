@@ -263,6 +263,7 @@ class OuterDetail extends Component{
                                 <Col span='4'>所在城市*</Col>
                                 <Col offset='1' span='8'>
                                     <Select
+                                        disabled
                                         showSearch
                                         style={{ width: 200 }}
                                         optionFilterProp="children"

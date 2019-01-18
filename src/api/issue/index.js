@@ -23,6 +23,26 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //提交回复内容
+    submitReply(data){
+        return _mm.POST({
+            url:'/admin/complaints/replyComplaints',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
+    },
+    //撤销回复
+    repeal(data){
+        return _mm.POST({
+            url:'/admin/complaints/deleteComplaints',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
 }
 export default Api;

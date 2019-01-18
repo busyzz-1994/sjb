@@ -109,14 +109,14 @@ class Banner extends Component{
     //点击查看图标
     clickCheck(item){
         let {type} = this.state;
-        this.props.history.push(`/issue/list/${type}/${item.id}/?checked=0&name=${item.name}`)
+        this.props.history.push(`/issue/list/${type}/${item.id}/?checked=0&name=${item.userName}`)
     }
     //点击编辑图标
     clickEdit(item){
         let {type} = this.state;
         console.log(item)
         this.props.history.push({
-            pathname:`/issue/list/${type}/${item.id}/?checked=1&name=${item.name}`
+            pathname:`/issue/list/${type}/${item.id}/?checked=1&name=${item.userName}`
         })
     }
     //点击删除图标
@@ -190,7 +190,7 @@ class Banner extends Component{
                            return (
                                <tr key={index}>
                                    <td>{index + 1}</td>
-                                   <td>{item.name}</td>
+                                   <td>{item.userName}</td>
                                    <td>
                                         <Tooltip placement="bottomLeft" title={item.title}>
                                             {item.title}

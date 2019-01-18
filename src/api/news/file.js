@@ -112,6 +112,16 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //获取除开党政参考 专题报道的 的 新闻类型
+    getCategoryList(data){
+        return _mm.POST({
+            url:'/admin/search/getNewsCaryRemoveSpecil',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
     
 }
