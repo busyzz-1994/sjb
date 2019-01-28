@@ -6,8 +6,10 @@ import { Select , Input , Button ,message,Pagination,Modal,Checkbox} from 'antd'
 import { withRouter } from 'react-router-dom'; 
 import fileApi from 'api/news/file';
 import config from 'base/config.json';
+import commonApi from 'api/common.js';
 import IssueButton from 'components/global/issueButton/index.js';
 import IconHandle from 'components/global/icon';
+import _mm from 'util/mm.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
@@ -28,6 +30,13 @@ class Banner extends Component{
                 url:'/news/newsIssue/file'
             }
         ]
+        var nav_o = [
+            {
+                name:'新闻列表',
+                url:'/news/newsIssue/file'
+            }
+        ]
+        this.navList = _mm.isOuter() ? nav_o : this.navList;
         this.state={
             //当前的状态
             selectValue:'3',
@@ -168,6 +177,17 @@ class Banner extends Component{
             cancelText:'取消'
         })
     }
+    //点击置顶
+    clickTop(item){
+        let {id,placedstick} = item;
+        placedstick = placedstick == '1' ? '0' :'1';
+        commonApi.topAndCancel({id,placedstick,type:'0'}).then(res=>{
+            message.success('操作完成')
+            this.loadList()
+        }).catch(err=>{
+            message.error(err);
+        })
+    }
     /**********支持多选代码 **********/
     //选中当前项
     checkbox(e){
@@ -227,6 +247,7 @@ class Banner extends Component{
         }
     }
     render(){
+        let {dataList} = this.state;
          //待发布icon
          let handle_1 = (item) =>{
             return (
@@ -241,10 +262,15 @@ class Banner extends Component{
         //已发布时候的icon列表
         let handle_2 = (item,index) =>{
             let hide = (index == 0) && (pageNum == 1) ;
+            let {placedstick} = item;
             return (
                 <div>
                     <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
                     <IconHandle type='6' id={item.id} iconClick={(id)=>{this.clickUnline(item)}}/>
+                    {
+                        placedstick == '1' ? <IconHandle type='9' id={item.id} iconClick={(id)=>{this.clickTop(item)}}/>:
+                        <IconHandle type='5' id={item.id} iconClick={(id)=>{this.clickTop(item)}}/>
+                    }
                 </div>
             )
         }
@@ -302,9 +328,9 @@ class Banner extends Component{
                     <TableList
                         thead={[{checked:()=>{this.checkboxAll()},isChecked:this.state.dataList.length == this.state.issueList.length},{width:'5%',name:' '},{width:'30%',name:'新闻标题'},{width:'15%',name:'类型'},{width:'25%',name:'创建时间'},{width:'20%',name:'操作'}]}
                     >
-                       {this.state.dataList.map((item,index)=>{
+                       {dataList.map((item,index)=>{
                            return (
-                               <tr key={index}>
+                               <tr key={item.id+item.placedstick}>
                                    <td>
                                        <Checkbox checked={this.isChecked(item.id)} id={item.id} onChange={(e)=>{this.checkbox(e)}} />
                                    </td>

@@ -20,6 +20,8 @@ import showFont from 'images/icons/show-font.png';
 import showIcon from 'images/icons/show-icon.png';
 import hideFont from 'images/icons/hide-font.png';
 import hideIcon from 'images/icons/hide-icon.png';
+import unpinIcon from 'images/icons/unpin-icon.png';
+import unpinFont from 'images/icons/unpin-font.png';
 // 0：审核；
 // 1：查看;
 // 2:删除；
@@ -29,6 +31,7 @@ import hideIcon from 'images/icons/hide-icon.png';
 // 6：下线；
 // 7: 显示评论
 // 8：隐藏评论
+// 9: 取消置顶
 
 // 参数传入
 // 1.type 图标的类型
@@ -76,6 +79,10 @@ class Icon extends Component{
                 {
                     font:hideFont,
                     icon:hideIcon
+                },
+                {
+                    font:unpinFont,
+                    icon:unpinIcon
                 }
 
             ]

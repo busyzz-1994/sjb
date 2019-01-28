@@ -45,7 +45,7 @@ class Banner extends Component{
         ]
         this.state={
             //当前的状态
-            selectValue:'0',
+            selectValue:'3',
             name:_mm.getParam('name'),
             id:this.props.match.params.id,
             //当前render的数据
@@ -75,7 +75,8 @@ class Banner extends Component{
                 id,
                 currPage:pageNum,
                 pageSize,
-                title:searchValue
+                title:searchValue,
+                theissue:selectValue
             }).then(res=>{
                 let totalCount = res[0].total;
                 let list = res[0].list ;
@@ -88,7 +89,8 @@ class Banner extends Component{
             newsApi.getCategoryList({
                 id,
                 currPage:pageNum,
-                pageSize
+                pageSize,
+                theissue:selectValue
             }).then(res=>{
                 console.log(res);
                 let totalCount = res[0].total;
@@ -126,8 +128,7 @@ class Banner extends Component{
     //选择类型
     select(value){
         this.setState({
-            selectValue:value,
-            pageNum:1
+            selectValue:value
         },()=>{
             this.loadList();
         })
@@ -160,7 +161,6 @@ class Banner extends Component{
     }
     //点击删除图标
     clickDel(item){
-        console.log(item)
         confirm({
             title:'删除的内容无法恢复，确认删除？',
             onOk:()=>{
@@ -173,6 +173,18 @@ class Banner extends Component{
             },
             okText:'确认',
             cancelText:'取消'
+        })
+    }
+    //点击发布
+    clickPublish(item){
+        let {specialId} = item;
+        let {selectValue} = this.state;
+        let theissue = selectValue == '4' ? '5' :'4'; 
+        newsApi.addCategory({specialId,theissue}).then(res=>{
+            message.success('操作成功！')
+            this.loadList()
+        }).catch(err=>{
+            message.error(err)
         })
     }
     //关联后的回调
@@ -195,7 +207,45 @@ class Banner extends Component{
         })
     }
     render(){
-        let {pageNum,name} = this.state;
+        let {pageNum,name,selectValue} = this.state;
+        let handle_1 = (item)=>{
+            return (
+                <div>
+                    <IconHandle type='1'  iconClick={()=>{this.clickCheck(item)}}/>
+                    <IconHandle type='3'  iconClick={()=>{this.clickEdit(item)}}/>
+                    <IconHandle type='4'  iconClick={()=>{this.clickPublish(item)}}/>
+                    <IconHandle type='2'  iconClick={()=>{this.clickDel(item)}}/>
+                </div>
+            )
+        }
+        let handle_2 = (item)=>{
+            return (
+                <div>
+                    <IconHandle type='1'  iconClick={()=>{this.clickCheck(item)}}/>
+                    {/* <IconHandle type='3'  iconClick={()=>{this.clickEdit(item)}}/> */}
+                    <IconHandle type='6'  iconClick={()=>{this.clickPublish(item)}}/>
+                    {/* <IconHandle type='2'  iconClick={()=>{this.clickDel(item)}}/> */}
+                </div>
+            )
+        }
+        let handle_3 = (item)=>{
+            return (
+                <div>
+                    <IconHandle type='1'  iconClick={()=>{this.clickCheck(item)}}/>
+                    <IconHandle type='3'  iconClick={()=>{this.clickEdit(item)}}/>
+                    <IconHandle type='4'  iconClick={()=>{this.clickPublish(item)}}/>
+                    <IconHandle type='2'  iconClick={()=>{this.clickDel(item)}}/>
+                </div>
+            )
+        }
+        let handleList;
+        if(selectValue == 3){
+            handleList = handle_1;
+        }else if(selectValue == 4){
+            handleList = handle_2;  
+        }else{
+            handleList = handle_3;
+        }
         return (
             <div className={style.container}>
                 <NavTab navList={this.navList}/>
@@ -211,9 +261,25 @@ class Banner extends Component{
                     {/* 操作栏开始 */}
                     <div className={style.handle + ' clearfix'}>
                         <div className='fl'>
-                            <Bread
-                                breadList = {this.breadList}
-                            />
+                            <div className='fl' style={{marginRight:'10px'}}>
+                                <Bread
+                                    breadList = {this.breadList}
+                                />
+                            </div>
+                            <div className='fl'>
+                                <Select
+                                    showSearch
+                                    style={{ width: 140 }}
+                                    optionFilterProp="children"
+                                    // defaultValue = {this.state.selectValue}
+                                    value = {selectValue}
+                                    onChange={(value)=>{this.select(value)}}
+                                >
+                                    <Option value="3">待发布</Option>
+                                    <Option value="4">已发布</Option>
+                                    <Option value="5">已下线</Option>
+                                </Select>
+                            </div>
                         </div>
                         <div className='fr'>
                             <Search
@@ -238,13 +304,9 @@ class Banner extends Component{
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>{item.specialName}</td>
-                                   {/* <td>{item.resourcesType}</td> */}
-                                   {/* <td>{item.resourcesType}</td> */}
                                    <td>{item.createTime}</td>
                                    <td className='td-handle' >
-                                        <IconHandle type='1'  iconClick={()=>{this.clickCheck(item)}}/>
-                                        <IconHandle type='3'  iconClick={()=>{this.clickEdit(item)}}/>
-                                        <IconHandle type='2'  iconClick={()=>{this.clickDel(item)}}/>
+                                       {handleList(item)}
                                    </td>
                                    <td>
                                         <Link className='gl-link' to={`/news/newsIssue/type/specialNewsList/${item.specialId}/?categoryId=${item.categoryId}&name=${name}&specialName=${item.specialName}`} ><Icon type="link" />

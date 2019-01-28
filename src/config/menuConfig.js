@@ -20,6 +20,10 @@ const menuConfig = [
             {
                 key:'/news/newsIssue/file',
                 title:'新闻发布'
+            },
+            {
+                key:'/news/newsIssue/type/specialList/12345/?name=专题报道',
+                title:'专题管理'
             }
         ]
     },

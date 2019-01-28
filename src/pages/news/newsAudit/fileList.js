@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import fileApi from 'api/news/file';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import _mm from 'util/mm.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
@@ -23,6 +24,13 @@ class Banner extends Component{
                 url:'/news/newsAudit/file'
             }
         ]
+        var nav_o = [
+            {
+                name:'新闻列表',
+                url:'/news/newsAudit/file'
+            }
+        ]
+        this.navList = _mm.isOuter() ? nav_o : this.navList;
         this.state={
             //当前的状态
             selectValue:'0',

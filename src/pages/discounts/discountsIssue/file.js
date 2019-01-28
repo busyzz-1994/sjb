@@ -8,6 +8,7 @@ import fileApi from 'api/discounts/file.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
 import IssueButton from 'components/global/issueButton/index.js';
+import commonApi from 'api/common.js';
 const Option = Select.Option;
 const Search = Input.Search;
 const confirm = Modal.confirm;
@@ -156,14 +157,14 @@ class Banner extends Component{
     }
     //置顶
     clickTop(item){
-        fileApi.topFile({
-            id:item.id,
-            placedstick:'1'
-        }).then(res =>{
-            message.success('置顶成功！');
-            this.loadList();
+        let {id,placedstick} = item;
+        placedstick = placedstick == '1' ? '0' :'1';
+        console.log(placedstick)
+        commonApi.topAndCancel({id,placedstick,type:'2'}).then(res=>{
+            message.success('操作完成')
+            this.loadList()
         }).catch(err=>{
-            message.error(err)
+            message.error(err);
         })
     }
     /**********支持多选代码 **********/
@@ -239,13 +240,14 @@ class Banner extends Component{
         //已发布
         let handle_2 = (item,index) => {
             let {pageNum} = this.state;
+            let {placedstick} = item;
             return (
                 <div>
                     <IconHandle type='1'  iconClick={()=>{this.clickCheck(item)}}/>
                     <IconHandle type='6'  iconClick={()=>{this.clickUnline(item)}}/>
                     {
-                        (pageNum == 1 && index==0 ) ? null :
-                        <IconHandle type='5'  iconClick={()=>{this.clickTop(item)}}/>
+                        placedstick == '1' ? <IconHandle type='9' id={item.id} iconClick={(id)=>{this.clickTop(item)}}/>:
+                        <IconHandle type='5' id={item.id} iconClick={(id)=>{this.clickTop(item)}}/>
                     }
                 </div>
             )
@@ -313,7 +315,7 @@ class Banner extends Component{
                     >
                        {this.state.dataList.map((item,index)=>{
                            return (
-                               <tr key={index}>
+                               <tr key={item.id+item.placedstick}>
                                     <td>
                                        <Checkbox checked={this.isChecked(item.id)} id={item.id} onChange={(e)=>{this.checkbox(e)}} />
                                    </td>

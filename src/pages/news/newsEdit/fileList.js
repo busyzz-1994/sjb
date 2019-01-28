@@ -2,6 +2,7 @@ import React,{Component} from 'react';
 import NavTab from 'components/global/navTab';
 import TableList from 'components/global/tableList';
 import style from '../common/banner.scss';
+import _mm from 'util/mm.js';
 import { Select , Input , Button ,message,Pagination,Modal} from 'antd';
 import { withRouter } from 'react-router-dom'; 
 import fileApi from 'api/news/file';
@@ -27,6 +28,14 @@ class Banner extends Component{
                 url:'/news/newsEdit/file'
             }
         ]
+        var nav_o = [
+            {
+                name:'新闻列表',
+                url:'/news/newsEdit/file'
+            }
+        ]
+        this.navList = _mm.isOuter() ? nav_o : this.navList;
+
         this.state={
             //当前的状态
             selectValue:'0',

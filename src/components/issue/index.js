@@ -39,6 +39,7 @@ class TypeSave extends Component{
         let {id} = this.state;
         IssueApi.getReply({id}).then(res=>{
            let {userName,title,phone,name,img,content,createTime,list} = res[0];
+           img = img === null ? '' : img;
            content = createTime + '\n' + content;
            img = img.split(',');
            this.setState({
@@ -96,6 +97,7 @@ class TypeSave extends Component{
    
     render(){
         let {img,content,list} = this.state;
+        let flag = img.length == 0 || (img.length == 1 && img[0] == '') ? false : true
         return (
             <div className='form-container'>
                 <div className='form-item'>
@@ -135,9 +137,9 @@ class TypeSave extends Component{
                         <Col span='4'>图片*</Col>
                         <Col offset='1' span='12'>
                             {
-                                img.map((item,index)=>{
-                                   return  <img className={self.img} src={config.server + item} key={index} style={{maxWidth:'200px',maxHeight:'200px'}}/>
-                                })
+                                flag? img.map((item,index)=>{
+                                    return  <img className={self.img} src={config.server + item} key={index} style={{maxWidth:'200px',maxHeight:'200px'}}/>
+                                 }):'暂无上传图片'
                             }
                         </Col>
                     </Row>

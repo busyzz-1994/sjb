@@ -32,6 +32,7 @@ class Nav extends Component {
     }
     //菜单渲染
     renderMenu(menuCon){
+        console.log(menuCon)
         return menuCon.map((item)=>{
             if(item.children){
                 return (<SubMenu onTitleClick = {(e)=>{this.subClick(e)}}  key={item.key} title={<span><Icon type={item.icon} /><span>{item.title}</span></span>} >
@@ -52,6 +53,7 @@ class Nav extends Component {
     }
     getMenuConfig(){
         let userInfo = _mm.getStorage('userInfo');
+        console.log(userInfo)
         if(!userInfo){
             return menuCon;
         }else{

@@ -105,7 +105,7 @@ module.exports = {
 			 historyApiFallback:{
 				index:'/dist/index.html'
 			},
-			host:'192.168.0.43'
+			host:'192.168.0.34'
   },
 	plugins: [
 		new HtmlWebpackPlugin({

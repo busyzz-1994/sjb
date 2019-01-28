@@ -71,7 +71,6 @@ const mm = {
                 },
                 data:obj.data?JSON.stringify(obj.data):'',
                 success:function(data){
-                    console.log(data);
                     if(typeof data =='string'){
                         data = JSON.parse(data);
                     }
@@ -327,6 +326,21 @@ const mm = {
             min = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes(),
             sec = date.getSeconds()< 10 ? '0' + date.getSeconds() : date.getSeconds();
         return  `${year}-${month}-${day} ${hours}:${min}:${sec}`; 
+    },
+    //判断是否为外地用户
+    isOuter(){
+        var userInfo = this.getStorage('userInfo');
+        userInfo && ( userInfo = JSON.parse(userInfo));
+        if(!userInfo){
+            return ''
+        }
+        let {isAdmin,isInternal} = userInfo;
+        if(isAdmin == '1' && isInternal=='1'){
+            return true;
+        }else{
+            return false;
+        }
     }
+
 }
 export default mm;

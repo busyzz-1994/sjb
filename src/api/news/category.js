@@ -15,7 +15,6 @@ const Api = {
     },
     //专题开始***************
     addCategory(data){
-        console.log(data);
         return _mm.POST({
             url:'/admin/topic/editTopIc',
             data:{

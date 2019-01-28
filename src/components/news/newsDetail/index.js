@@ -135,7 +135,6 @@ class NewsDetail extends Component{
     //点击保存
     save(){
        let msg = this.validate();
-       console.log(msg)
        if(msg){
            message.error(msg)
        }else{
@@ -240,13 +239,14 @@ class NewsDetail extends Component{
         fileApi.getNewsDetail({id}).then(res=>{
             let result = res[0];
             let {newsType,categoryId,title,sourceAdress,sourceAdressState,
-                tagsName,tagsState,isHot,content,thumbnails,images
+                tagsName,tagsState,isHot,content,thumbnails,images,createTime
             } = result;
             this.setState({
                 category:categoryId,
                 type:newsType,
                 newsTitle:title,
                 newsOrigin:sourceAdress,
+                createTime,
                 originChecked:sourceAdressState == '0' ?false:true
             })
             switch(newsType){

@@ -111,6 +111,16 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //置顶或取消置顶
+    topAndCancel(data){
+        return _mm.POST({
+            url:'/admin/common/topRelease',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
 }
 export default Api;

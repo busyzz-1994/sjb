@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {Route,Switch} from 'react-router-dom';
+import {Route,Switch,withRouter} from 'react-router-dom';
 import _mm  from 'util/mm.js';
 import NavBar from './nav.js';
 import Data from './data.js';
@@ -7,6 +7,14 @@ import Graph from './graph.js';
 class Home extends Component{
 	constructor(props){
 		super(props);
+	}
+	componentWillMount(){
+		var flag = _mm.isOuter()
+		console.log('1111');
+		console.log(flag)
+		if(flag){
+			this.props.history.push('/news/newsEdit/file');
+		}
 	}
 	render(){
 		return(
@@ -21,4 +29,4 @@ class Home extends Component{
 		)
 	}
 }
-export default Home;
+export default withRouter(Home);

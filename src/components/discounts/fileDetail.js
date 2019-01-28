@@ -70,7 +70,8 @@ class TypeSave extends Component{
             //选中的商家名称
             selectedName:'',
             //商品评分
-            score:''
+            score:'',
+            createTime:_mm.getFullDate(new Date().getTime())
         }
     }
     selectCategory(value){
@@ -133,9 +134,8 @@ class TypeSave extends Component{
         let {id} = this.state;
         fileApi.getFileDetail({id}).then(res=>{
             var res = res[0];
-            let {typeId,title,thumbnail,listPositive,price,inventory,
+            let {typeId,title,thumbnail,listPositive,price,inventory,createTime,
                 listag,introduce,reveal,isHot,startTime,endTime,inventoryShow,salesNum,businessId,bussinessName,score} = res;
-                console.log(res)
             this.setState({
                 categoryValue:typeId,
                 title,
@@ -154,7 +154,8 @@ class TypeSave extends Component{
                 salesNum,
                 businessId,
                 selectedName:bussinessName,
-                score
+                score,
+                createTime
             })
             
         }).catch(err=>{
@@ -233,7 +234,7 @@ class TypeSave extends Component{
         }
     }
     getFileDetail(){
-        let {categoryValue,title,tpImg,price,count,signList,
+        let {categoryValue,title,tpImg,price,count,signList,createTime,
             fwImgList,editDetail,signChecked,endTime,startTime,isHot,isShowCount,salesNum,selectedName,score} = this.state;
         let obj = {
             typeId:categoryValue,
@@ -252,7 +253,8 @@ class TypeSave extends Component{
             inventoryShow:isShowCount?'1':'0',
             salesNum,
             businessId:this.mapNameToId(selectedName),
-            score
+            score,
+            createTime
         }
         return obj;
     }
@@ -334,10 +336,14 @@ class TypeSave extends Component{
         }
         return null;
     }
+    selectCreateTime(date,dateString){
+        this.setState({
+            createTime:dateString
+        })
+    }
     render(){
-        console.log(moment(`2018-06-01 12:00:00`, 'YYYY-MM-DD HH:mm:ss'))
         let {category,tpImg,signList,signChecked,fwImgList,defaultDetail
-            ,authStatus,authString,checked,categoryValue,endTime,startTime,isHot,isShowCount,businessName,selectedName,score
+            ,authStatus,authString,checked,categoryValue,createTime,endTime,startTime,isHot,isShowCount,businessName,selectedName,score
         } = this.state;
         return (
             <div className='form-container'>
@@ -389,7 +395,18 @@ class TypeSave extends Component{
                         </Col>
                     </Row>
                 </div>
-                
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>创建时间</Col>
+                        <Col offset='1' span='6'>
+                            <DatePicker locale={locale} showTime={true} allowClear= {false}
+                             format="YYYY-MM-DD HH:mm:ss"
+                             onChange={(date,dateString)=>{this.selectCreateTime(date,dateString)}}
+                             value={moment(`${createTime}`, 'YYYY-MM-DD HH:mm:ss')}
+                            />
+                        </Col>
+                    </Row>
+                </div>
                 <div className='form-item'>
                     <Row>
                         <Col span='4'>商品缩略图*</Col>

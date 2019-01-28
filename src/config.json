@@ -1,8 +1,8 @@
 {
-	"server":"http://192.168.0.14:8080/sjb",
+	"server":"http://120.76.236.64:8080/sjb2",
 	"mock":"https://www.easy-mock.com/mock/5b7cd864231aa5427239b368/sjb",
 	"online":"http://116.62.130.5:80/sjb",
 	"picUrl":"http://120.76.236.64:8080/sjb/admin",
 	"server1":"http://120.76.236.64:8080/sjb2",
-	"mcf":"http://192.168.0.14:8080/sjb"
+	"mcf":"http://192.168.0.9:8080/sjb"
 }

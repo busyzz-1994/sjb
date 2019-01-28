@@ -29,6 +29,13 @@ class TypeSave extends Component{
                 url:'/news/newsIssue/file'
             }
         ]
+        var nav_o = [
+            {
+                name:'新闻列表',
+                url:'/news/newsIssue/file'
+            }
+        ]
+        this.navList = _mm.isOuter() ? nav_o : this.navList;
         this.state = {
             breadList:[
                 {

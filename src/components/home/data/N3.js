@@ -169,7 +169,7 @@ class N1 extends Component{
         return (
             <div className={style.panelItem}>
                 <div className={style.panelTitle}>
-                    注册用户
+                    编审发统计
                     <div style={{display:'inline-block'}}>
                         <Select
                             showSearch

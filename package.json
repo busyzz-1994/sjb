@@ -5,7 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node_modules/.bin/webpack-dev-server --host 192.168.0.43",
+    "dev": "node_modules/.bin/webpack-dev-server --host 192.168.0.34",
     "build": "node_modules/.bin/webpack",
     "build_product": "node_modules/.bin/webpack -p",
     "online": "set WEBPACK_ENV=online && npm run build_product"

@@ -12,13 +12,17 @@ import AuditForm from 'components/global/auditForm';
 import Validate from 'util/validate';
 // import self from './bannerAdd.scss';
 import { Link } from 'react-router-dom';
-import { Select, Input, Button, message, Pagination, Breadcrumb, Row, Col, Icon, Checkbox ,AutoComplete} from 'antd';
+import { Select, Input, Button, message, Pagination, Breadcrumb, Row, Col, Icon, Checkbox ,AutoComplete,DatePicker} from 'antd';
 import { withRouter } from 'react-router-dom';
 import newsEditApi from 'api/news/banner';
 import commonApi from 'api/common.js';
 import serviceApi from 'api/service/index.js';
 import config from 'base/config.json';
 import FilterWord from 'components/global/filterWord/index.js';
+import locale from 'antd/lib/date-picker/locale/zh_CN';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 const Option = Select.Option;
 // import NewsCategorySave from '../components/newsCategorySave';
 class TypeSave extends Component {
@@ -65,7 +69,8 @@ class TypeSave extends Component {
             //联想的商家名称
             businessName:[],
             //选中的商家名称
-            selectedName:''
+            selectedName:'',
+            createTime:_mm.getFullDate(new Date().getTime())
         }
     }
     selectCategory(value) {
@@ -124,7 +129,7 @@ class TypeSave extends Component {
         }).then(res => {
             let { categoryId, title, thumbnail, score, degree, address, detailed, price,
                 content, listag, coverimg, spectacular, isHot, phone, bussinessType ,
-                businessId,originalName
+                businessId,originalName,createTime
             } = res[0];
             this.setState({
                 categoryValue: categoryId,
@@ -144,7 +149,8 @@ class TypeSave extends Component {
                 isHot: isHot == '1' ? true : false,
                 merchant: bussinessType,
                 businessId,
-                selectedName:originalName
+                selectedName:originalName,
+                createTime
             })
         }).catch(err => {
             message.error(err);
@@ -248,7 +254,7 @@ class TypeSave extends Component {
     //添加或编辑文件
     addFile() {
         let { title, categoryValue, score, count, tpImg, signList, address, startPrice,
-            signChecked, id, exactAddress, fwImgList, detail, isHot, phone, merchant,selectedName } = this.state;
+            signChecked, id, exactAddress, fwImgList, detail, isHot, phone, merchant,selectedName,createTime } = this.state;
         serviceApi.addFile({
             id,
             title,
@@ -266,7 +272,8 @@ class TypeSave extends Component {
             isHot: isHot ? '1' : '0',
             phone,
             bussinessType: merchant,
-            bussinessId:this.mapNameToId(selectedName) === true ? '' : this.mapNameToId(selectedName)
+            bussinessId:this.mapNameToId(selectedName) === true ? '' : this.mapNameToId(selectedName),
+            createTime
         }).then(res => {
             message.success('保存文件成功！');
             this.props.history.goBack()
@@ -311,10 +318,15 @@ class TypeSave extends Component {
         }
         return null;
     }
+    selectCreateTime(date,dateString){
+        this.setState({
+            createTime:dateString
+        })
+    }
     render() {
         let { category, categoryValue, tpImg, signList, signChecked, fwImgList,
             defaultDetail, authStatus, authString, checked, isHot, phone, merchant,
-            businessName,selectedName
+            businessName,selectedName,createTime
         } = this.state;
         let dis = merchant == '1' ? true : false;
         return (
@@ -388,6 +400,18 @@ class TypeSave extends Component {
                         </Row>
                     </div>
                 }
+                <div className='form-item'>
+                    <Row>
+                        <Col span='4'>创建时间</Col>
+                        <Col offset='1' span='6'>
+                            <DatePicker locale={locale} showTime={true} allowClear= {false}
+                             format="YYYY-MM-DD HH:mm:ss"
+                             onChange={(date,dateString)=>{this.selectCreateTime(date,dateString)}}
+                             value={moment(`${createTime}`, 'YYYY-MM-DD HH:mm:ss')}
+                            />
+                        </Col>
+                    </Row>
+                </div>
                 <div className='form-item'>
                     <Row>
                         <Col span='4'>商家缩略图*</Col>

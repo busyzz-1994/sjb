@@ -19,7 +19,7 @@ class NewsCategorySave extends Component{
         this.state = {
             id:_mm.getParam('id'),
             name:'',
-            isChecked:false,
+            isChecked:_mm.getParam('checked'),
             imgUrl:'',
             textArea:'',
             signChecked:false,
@@ -38,6 +38,7 @@ class NewsCategorySave extends Component{
         let {specialId} = this.state;
         newsApi.getCategoryDetail({specialId}).then(res=>{
             let {specialName,specialImage,specialDesc,tagList,isShow} = res[0];
+            console.log(res[0])
             this.setState({
                 name:specialName,
                 imgUrl:specialImage,
@@ -51,19 +52,21 @@ class NewsCategorySave extends Component{
     }
     //判断是添加、查看、还是修改；
     checkHandle(){
-        let categoryId = this.props.match.params.id ;
-        if(categoryId === undefined ){
-            //该状态为添加
-        }else{
-            let checked = _mm.getParam('checked');
-            if(checked){
+        let checked = _mm.getParam('checked');
+            console.log(checked)
+            if(checked == 0){
                 //该状态为查看
                 this.setState({
                     isChecked:true
                 })
             }
-            //发送请求
-        }
+        // let categoryId = this.props.match.params.id ;
+        // if(categoryId === undefined ){
+        //     //该状态为添加
+        // }else{
+            
+        //     //发送请求
+        // }
     }
     
     Input(e){
@@ -134,7 +137,7 @@ class NewsCategorySave extends Component{
                     <Row>
                         <Col span='4'>专题名称*</Col>
                         <Col offset='1' span='12'>
-                        <Input maxLength='10' name='name' onChange = {(e) => this.Input(e)} value={this.state.name}   placeholder ='请输入2~10个字的专题名称' />
+                        <Input  name='name' onChange = {(e) => this.Input(e)} value={this.state.name}   placeholder ='请输入专题名称' />
                         </Col>
                     </Row>
                 </div>
@@ -168,7 +171,7 @@ class NewsCategorySave extends Component{
                     getStatus = {(val)=>this.getChecked(val)}
                 />
                 {
-                    this.state.isChecked ? 
+                    this.state.isChecked ==='0' ? 
                     null :
                     <div className='form-item btn-item'>
                         <Row>
