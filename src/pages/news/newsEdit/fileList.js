@@ -171,7 +171,9 @@ class Banner extends Component{
     }
     //点击查看图标
     clickCheck(item){
-        this.props.history.push(`/news/newsEdit/file/fileDetail/${item.id}/?name=${item.title}&checked=0`);
+        let {selectValue} = this.state;
+        selectValue = selectValue == '1' ? '4' : '0'
+        this.props.history.push(`/news/newsEdit/file/fileDetail/${item.id}/?name=${item.title}&checked=${selectValue}`);
     }
     //点击编辑图标
     clickEdit(item){

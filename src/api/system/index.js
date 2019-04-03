@@ -111,6 +111,16 @@ const Api = {
                 token:getToken()
             }
         })
+    },
+    //账户禁用/启动
+    updateManagerUser(data){
+        return _mm.POST({
+            url:'/admin/managers/updateManagerUser',
+            data:{
+                ...data,
+                token:getToken()
+            }
+        })
     }
 }
 export default Api;

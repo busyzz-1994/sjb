@@ -56,7 +56,7 @@ class startDetail extends Component{
         advertisingApi.getDetail({advId:id})
         .then(res=>{
             console.log(res[0])
-            let {advImage,advTitle,advType,reUrl,fkId,resourcesType,advDesc} = res[0]
+            let {advImage,advTitle,advType,reUrl,fkId,resourcesType,advDesc,checkview,remark} = res[0]
             // let {baType,type,reUrl,title,titleImg,fkId,remark,checkview} = res[0];
             this.setState({
                 type:advType,
@@ -65,7 +65,9 @@ class startDetail extends Component{
                 imgUrl:advImage,
                 fkId,
                 resourcesType,
-                bannerDetail:advDesc
+                bannerDetail:advDesc,
+                status:checkview?+checkview:-1,
+                detail:remark
             })
         })
     }

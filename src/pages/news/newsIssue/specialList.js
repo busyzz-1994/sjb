@@ -31,16 +31,8 @@ class Banner extends Component{
         ]
         this.navList = [
             {
-                name:'banner管理',
-                url:'/news/newsIssue/banner'
-            },
-            {
-                name:'新闻类型',
-                url:'/news/newsIssue/type'
-            },
-            {
-                name:'新闻列表',
-                url:'/news/newsIssue/file'
+                name:'专题列表',
+                url:'/news/newsIssue/type/specialList/12345/?name=专题报道'
             }
         ]
         this.state={

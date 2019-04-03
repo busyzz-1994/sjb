@@ -62,7 +62,8 @@ class startDetail extends Component{
         advertisingApi.getDetail({advId:id})
         .then(res=>{
             console.log(res[0])
-            let {advImage,advTitle,advType,reUrl,fkId,resourcesType,advDesc,advStatus,displayFrequency} = res[0]
+            let {advImage,advTitle,advType,reUrl,fkId,resourcesType,advDesc,
+                advStatus,displayFrequency,checkview,remark} = res[0]
             // let {baType,type,reUrl,title,titleImg,fkId,remark,checkview} = res[0];
             this.setState({
                 type:advType,
@@ -73,7 +74,9 @@ class startDetail extends Component{
                 resourcesType,
                 bannerDetail:advDesc,
                 advStatus:+advStatus,
-                displayFrequency:+displayFrequency
+                displayFrequency:+displayFrequency,
+                status:checkview?+checkview:-1,
+                detail:remark
             })
         })
     }

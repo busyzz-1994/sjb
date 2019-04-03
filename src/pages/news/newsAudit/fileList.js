@@ -43,7 +43,7 @@ class Banner extends Component{
             originDataList:[],
             //原数据
             originData:[],
-            pageSize:4,
+            pageSize:12,
             total:10,
             pageNum:1
         }
@@ -134,7 +134,9 @@ class Banner extends Component{
     }
     //点击查看图标
     clickCheck(item){
-        this.props.history.push(`/news/newsAudit/file/fileDetail/${item.id}/?name=${item.title}&checked=0`);
+        let {selectValue} = this.state;
+        selectValue = selectValue == '1' ? '4' : '0'
+        this.props.history.push(`/news/newsAudit/file/fileDetail/${item.id}/?name=${item.title}&checked=${selectValue}`);
     }
     //点击审核图标
     clickAudit(item){

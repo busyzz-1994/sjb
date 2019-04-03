@@ -22,7 +22,7 @@ class NewsCategorySave extends Component{
             isChecked:_mm.getParam('checked'),
             imgUrl:'',
             textArea:'',
-            signChecked:false,
+            signChecked:true,
             signList:[''],
             specialId:this.props.match.params.id
         }

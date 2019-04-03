@@ -204,8 +204,16 @@ class OuterDetail extends Component{
     //切换status
     switch(e){
         let status = e ? '1' : '0';
-        this.setState({
-            status
+        let {id} = this.state;
+        systemApi.updateManagerUser({
+            id,isStop:status
+        }).then(res=>{
+            message.success('修改成功！')
+            this.setState({
+                status
+            })
+        }).catch(err=>{
+            message.error(err)
         })
     }
     //加载地区列表
@@ -321,10 +329,10 @@ class OuterDetail extends Component{
                                     <Row>
                                         <Col span='4'>账号状态*</Col>
                                         <Col offset='1' span='19'>
-                                            <Switch checkedChildren="启用" unCheckedChildren="停用" 
-                                                checked = {status == '1' ? true : false}
-                                                onChange = {(e)=>this.switch(e)}
-                                            />
+                                                <Switch checkedChildren="启用" unCheckedChildren="停用" 
+                                                        checked = {status == '1' ? true : false}
+                                                        onChange = {(e)=>this.switch(e)}
+                                                    /><span style={{color:'#FF0000',marginLeft:'15px'}}>已停用账号启用后将恢复初始密码</span>
                                         </Col>
                                     </Row>
                                 </div>

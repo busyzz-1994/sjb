@@ -45,7 +45,7 @@ class TypeSave extends Component{
             videoDetail:'',
             //选中的signList:
             signList:[''],
-            signChecked:false,
+            signChecked:true,
             authStatus:-1,
             authString:''
         }
@@ -77,7 +77,7 @@ class TypeSave extends Component{
             videoId:id
         }).then(res=>{
             let {categoryId,videoTitle,videoSourceAdress,sourceIsShow,videoImage,tags,
-                tagsIsShow,isHot,videoUrl,videoDesc} = res[0];
+                tagsIsShow,isHot,videoUrl,videoDesc,checkview,remark} = res[0];
             this.setState({
                 categoryValue:categoryId,
                 title:videoTitle,
@@ -88,7 +88,9 @@ class TypeSave extends Component{
                 signChecked:+tagsIsShow?true:false,
                 hot:+isHot?true:false,
                 videoUrl,
-                videoDetail:videoDesc
+                videoDetail:videoDesc,
+                authStatus:checkview?+checkview:-1,
+                authString:remark
             })    
         }).catch(err=>{
             message.error(err);
@@ -365,7 +367,7 @@ class TypeSave extends Component{
                         </Col>
                     </Row>
                 </div>
-                {    checked == 2 ?
+                {    (checked == 2 || checked == 4)? 
                         <AuditForm
                         status = {authStatus}
                         detail = {authString}

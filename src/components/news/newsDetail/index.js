@@ -47,7 +47,7 @@ class NewsDetail extends Component{
             //标签列表
             ptSignList:[''],
             //标签是否选中
-            ptSignChecked:false,
+            ptSignChecked:true,
             //热门是否可选
             ptHotChecked:false,
             //默认的detail
@@ -58,10 +58,10 @@ class NewsDetail extends Component{
             tpImg:'',
             tpSignList:[''],
             tpImgList:[{imgUrl:'',desc:''},{imgUrl:'',desc:''}],
-            tpSignChecked:false,
+            tpSignChecked:true,
             /*文本新闻的数据*/
             wbSignList:[''],
-            wbSignChecked:false,
+            wbSignChecked:true,
             wbHotChecked:false,
             wbDefaultDetail:'',
             wbDetail:'',
@@ -239,7 +239,7 @@ class NewsDetail extends Component{
         fileApi.getNewsDetail({id}).then(res=>{
             let result = res[0];
             let {newsType,categoryId,title,sourceAdress,sourceAdressState,
-                tagsName,tagsState,isHot,content,thumbnails,images,createTime
+                tagsName,tagsState,isHot,content,thumbnails,images,createTime,checkview,remark
             } = result;
             this.setState({
                 category:categoryId,
@@ -247,7 +247,9 @@ class NewsDetail extends Component{
                 newsTitle:title,
                 newsOrigin:sourceAdress,
                 createTime,
-                originChecked:sourceAdressState == '0' ?false:true
+                originChecked:sourceAdressState == '0' ?false:true,
+                auditDetail:remark,
+                auditStatus:checkview?+checkview:-1
             })
             switch(newsType){
                 case '0':
@@ -497,7 +499,7 @@ class NewsDetail extends Component{
                     />
                 }
                 {
-                    (this.state.checked == 2 )? 
+                    (this.state.checked == 2 || this.state.checked ==4)? 
                     <AuditForm status={this.state.auditStatus} 
                         detail={this.state.auditDetail}
                         getStatus = {(val)=>this.getAudtiStatus(val)}

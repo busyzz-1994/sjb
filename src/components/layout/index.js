@@ -1,7 +1,6 @@
 import React,{Component} from 'react';
 import Head from 'components/header';
 import Nav    from 'components/nav';
-
 import style from  './index.scss';
 class Wrapper extends Component{
     constructor(props){

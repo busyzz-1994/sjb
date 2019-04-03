@@ -50,6 +50,7 @@ class Sign extends Component{
             }).then(res=>{
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
+                console.log(list)
                 this.setState({
                     dataList:list,
                     total:totalCount
@@ -141,13 +142,18 @@ class Sign extends Component{
                         tdHeight = '58px'
                     >
                         {dataList.map((item,index)=>{
+                            let color;
+                            color = item.isStop == '1' ? '#666666':'#FF0000';
+                            let style = {
+                                color
+                            }
                             return (
-                                <tr key={index}>
-                                    <td>{index+1}</td>
-                                    <td>{item.name}</td>
-                                    <td>{item.email}</td>
-                                    <td>{item.nickname}</td>
-                                    <td>{item.creatTime}</td>
+                                <tr key={index} >
+                                    <td style={style}>{index+1}</td>
+                                    <td style={style}>{item.name}</td>
+                                    <td style={style}>{item.email}</td>
+                                    <td style={style}>{item.nickname}</td>
+                                    <td style={style}>{item.creatTime}</td>
                                     <td className='td-handle'>
                                         <IconHandle type='3' id={item.id} iconClick={(id)=>this.clickEidt(id,item.name)} />
                                     </td>

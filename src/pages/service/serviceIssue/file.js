@@ -166,7 +166,7 @@ class Banner extends Component{
         let {id,placedstick} = item;
         placedstick = placedstick == '1' ? '0' :'1';
         console.log(placedstick)
-        commonApi.topAndCancel({id,placedstick,type:'2'}).then(res=>{
+        commonApi.topAndCancel({id,placedstick,type:'1'}).then(res=>{
             message.success('操作完成')
             this.loadList()
         }).catch(err=>{

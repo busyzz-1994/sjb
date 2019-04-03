@@ -37,6 +37,8 @@ class G4 extends Component{
     }
     render(){
         let {data,xAxisData} = this.state;
+        console.log('*****************')
+        console.log(data);
         var option = {
             tooltip : {
                 formatter: "{a} <br/>{b} : {c}人",

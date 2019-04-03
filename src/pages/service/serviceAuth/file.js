@@ -112,7 +112,9 @@ class Banner extends Component{
     }
     //点击查看图标
     clickCheck(item){
-        this.props.history.push(`/service/serviceAudit/file/detail/${item.id}/?checked=0&name=${item.title}&bussinessType=${item.bussinessType}`)
+        let {selectValue} = this.state;
+        selectValue = selectValue == '1' ? '4' : '0';
+        this.props.history.push(`/service/serviceAudit/file/detail/${item.id}/?checked=${selectValue}&name=${item.title}&bussinessType=${item.bussinessType}`)
     }
     //点击编辑图标
     clickEdit(item){

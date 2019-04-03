@@ -106,7 +106,9 @@ class Banner extends Component{
    
     //点击查看图标
     clickCheck(id,title){
-        this.props.history.push(`/discounts/discountsAudit/file/fileDetail/${id}/?checked=0&name=${title}`);
+        let {selectValue} = this.state;
+        selectValue = selectValue == '1' ? '4' : '0'
+        this.props.history.push(`/discounts/discountsAudit/file/fileDetail/${id}/?checked=${selectValue}&name=${title}`);
     }
     
     //点击去审核

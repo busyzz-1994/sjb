@@ -314,7 +314,6 @@ const mm = {
     //替换span标签的红色标记
     replaceSpan(string){
         var reg = /\<span\s{1}style=['"]background-color:red['"]>/img;
-        console.log(string)
         return string.replace(reg,'').replace(/\<a><\/a><\/span>/img,'');
     },
     getFullDate(time){

@@ -40,9 +40,8 @@ class Banner extends Component{
             orderApi.search({
                 currPage:pageNum,
                 pageSize,
-                orderNumber:searchValue
+                userNumber:searchValue
             }).then(res=>{
-                console.log(res)
                 let totalCount = res[0].totalCount;
                 let list = res[0].lists ;
                 this.setState({
@@ -103,7 +102,7 @@ class Banner extends Component{
                     <div className={style.handle + ' clearfix'}>
                         <div className='fr'>
                             <Search
-                                placeholder="输入订单号进行搜索"
+                                placeholder="输入手机号进行搜索"
                                 onSearch={value => {this.searchTitle(value)}}
                                 style={{ width: 350 }}
                             />
@@ -122,8 +121,8 @@ class Banner extends Component{
                                    <td>{item.orderAmount/100}</td>
                                    <td>{item.buyCounts}</td>
                                    <td>{item.userNumber}</td>
-                                   <td>{item.orderNumber}</td>
-                                   <td>{item.paidTime}</td>
+                                   <td>{item.id}</td>
+                                   <td>{item.creatTime}</td>
                                </tr>
                            )
                        })}

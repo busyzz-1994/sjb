@@ -140,7 +140,9 @@ class Banner extends Component{
     }
     //点击查看图标
     clickCheck(item){
-        this.props.history.push(`/live/liveEdit/file/detail/${item.videoId}/?checked=0&name=${item.videoTitle}`)
+        let {selectValue} = this.state;
+        selectValue = selectValue == '1' ? '4' : '0'
+        this.props.history.push(`/live/liveEdit/file/detail/${item.videoId}/?checked=${selectValue}&name=${item.videoTitle}`)
     }
     //点击编辑图标
     clickEdit(item){

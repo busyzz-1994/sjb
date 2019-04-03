@@ -60,7 +60,7 @@ class BannerDetail extends Component{
                 bannerTitle:title,
                 imgUrl:titleImg,
                 fkId,
-                // status:checkview === '0' ? 2 : +checkview,
+                status:checkview?+checkview:-1,
                 detail:remark,
                 resourcesType,
                 bannerDetail:exclusive

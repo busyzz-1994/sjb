@@ -41,21 +41,21 @@ class TypeSave extends Component{
             //商品价格
             price:'',
             //商品库存
-            count:'',
+            count:-1,
             //服务主图
             fwImgList:[''],
             //新闻内容detail
             detail:'',
             //选中的signList:
             signList:[''],
-            signChecked:false,
+            signChecked:true,
             authStatus:-1,
             authString:'',
             //富文本
             editDetail:'',
             defaultDetail:'',
-            startTime:'2018-06-01 12:00:00',
-            endTime:'2018-06-12 12:00:00',
+            startTime:_mm.getFullDate(new Date().getTime()),
+            endTime:_mm.getFullDate(new Date().getTime()),
             isHot:false,
             //是否显示库存
             isShowCount:true,
@@ -71,7 +71,8 @@ class TypeSave extends Component{
             selectedName:'',
             //商品评分
             score:'',
-            createTime:_mm.getFullDate(new Date().getTime())
+            createTime:_mm.getFullDate(new Date().getTime()),
+            countDis:false
         }
     }
     selectCategory(value){
@@ -135,14 +136,15 @@ class TypeSave extends Component{
         fileApi.getFileDetail({id}).then(res=>{
             var res = res[0];
             let {typeId,title,thumbnail,listPositive,price,inventory,createTime,
-                listag,introduce,reveal,isHot,startTime,endTime,inventoryShow,salesNum,businessId,bussinessName,score} = res;
+                listag,introduce,reveal,isHot,startTime,endTime,inventoryShow,salesNum,
+                businessId,bussinessName,score,checkview,remark} = res;
             this.setState({
                 categoryValue:typeId,
                 title,
                 tpImg:thumbnail,
                 fwImgList:listPositive,
                 price,
-                count:inventory,
+                count:inventoryShow =='1'? inventory:'无限',
                 signList:listag.length!=0?listag:[''],
                 defaultDetail:introduce,
                 editDetail:introduce,
@@ -151,11 +153,14 @@ class TypeSave extends Component{
                 startTime,
                 endTime,
                 isShowCount: inventoryShow =='1' ? true :false,
+                countDis:inventoryShow =='1' ? false:true,
                 salesNum,
                 businessId,
                 selectedName:bussinessName,
                 score,
-                createTime
+                createTime,
+                authStatus : checkview?+checkview:-1,
+                authString:remark
             })
             
         }).catch(err=>{
@@ -209,9 +214,11 @@ class TypeSave extends Component{
         });
         validate.add(tpImg,'notEmpty','商品缩略图不能为空！');
         validate.add(price,'notFloatMinus','商品价格只能为正数！');
-        validate.add(count,'notMinus','库存只能为整数！');
+        if(count!=='无限'){
+            validate.add(count,'notMinus','库存只能为整数！');
+        }
         validate.add(signList,'checkSignList','标签不能为空！');
-        validate.add(fwImgList,'notEmptyArrayWithItem','服务主图不能为空！');
+        validate.add(fwImgList,'notEmptyArrayWithItem','商品主图不能为空！');
         validate.add(editDetail,'notEmpty','内容编辑不能为空！');
         return validate.start();
     }
@@ -241,7 +248,7 @@ class TypeSave extends Component{
             title,
             thumbnail: _mm.processImgUrl(tpImg),
             price,
-            inventory:count,
+            inventory:count ==='无限' ? 10000000 :count,
             tagIds:signList,
             tags:signList,
             positiveImg:_mm.processImgUrl(fwImgList),
@@ -315,8 +322,12 @@ class TypeSave extends Component{
         })
     }
     setCountChecked(e){
+        let count = e.target.checked?-1:'无限',
+            countDis = e.target.checked?false:true;
         this.setState({
-            isShowCount:e.target.checked 
+            isShowCount:e.target.checked,
+            countDis,
+            count
         })
     }
     onSelect(val){
@@ -343,7 +354,7 @@ class TypeSave extends Component{
     }
     render(){
         let {category,tpImg,signList,signChecked,fwImgList,defaultDetail
-            ,authStatus,authString,checked,categoryValue,createTime,endTime,startTime,isHot,isShowCount,businessName,selectedName,score
+            ,authStatus,authString,checked,categoryValue,createTime,endTime,startTime,isHot,isShowCount,businessName,selectedName,score,countDis
         } = this.state;
         return (
             <div className='form-container'>
@@ -456,7 +467,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>商品库存*</Col>
                         <Col offset='1' span='9'>
-                            <Input value={this.state.count} onChange={(e)=>this.onInput(e)} name='count' placeholder='请输入0-100000的整数' />
+                            <Input disabled={countDis} value={this.state.count} onChange={(e)=>this.onInput(e)} name='count' placeholder='请输入0-100000的整数' />
                         </Col>
                         <Col span='3' offset='1'>
                             <Checkbox onChange={(e)=>this.setCountChecked(e)} checked = {isShowCount} >
@@ -519,7 +530,7 @@ class TypeSave extends Component{
                         </Col>
                     </Row>
                 </div>
-                {    checked == 2 ?
+                {    (checked == 2 || checked == 4)?
                         <AuditForm
                         status = {authStatus}
                         detail = {authString}

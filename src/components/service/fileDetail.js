@@ -55,7 +55,7 @@ class TypeSave extends Component {
             detail: '',
             //选中的signList:
             signList: [''],
-            signChecked: false,
+            signChecked: true,
             defaultDetail: '',
             authStatus: -1,
             authString: '',
@@ -129,7 +129,7 @@ class TypeSave extends Component {
         }).then(res => {
             let { categoryId, title, thumbnail, score, degree, address, detailed, price,
                 content, listag, coverimg, spectacular, isHot, phone, bussinessType ,
-                businessId,originalName,createTime
+                businessId,originalName,createTime,checkview,remark
             } = res[0];
             this.setState({
                 categoryValue: categoryId,
@@ -150,7 +150,9 @@ class TypeSave extends Component {
                 merchant: bussinessType,
                 businessId,
                 selectedName:originalName,
-                createTime
+                createTime,
+                authStatus:checkview?+checkview:-1,
+                authString:remark
             })
         }).catch(err => {
             message.error(err);
@@ -449,9 +451,9 @@ class TypeSave extends Component {
                     </div>
                     <div className='form-item'>
                         <Row>
-                            <Col span='4'>消费次数</Col>
+                            <Col span='4'>人气</Col>
                             <Col offset='1' span='12'>
-                                <Input disabled={dis} value={this.state.count} onChange={(e) => this.onInput(e)} name='count' placeholder='请输入消费次数' />
+                                <Input disabled={dis} value={this.state.count} onChange={(e) => this.onInput(e)} name='count' placeholder='请输入人气值' />
                             </Col>
                         </Row>
                     </div>
@@ -465,13 +467,13 @@ class TypeSave extends Component {
                     </div>
                     <div className='form-item'>
                         <Row>
-                            <Col span='4'>起始价格*</Col>
+                            <Col span='4'>人均消费*</Col>
                             <Col offset='1' span='12'>
-                                <Input disabled={dis} value={this.state.startPrice} onChange={(e) => this.onInput(e)} name='startPrice' placeholder='请输入起始价格' />
+                                <Input disabled={dis} value={this.state.startPrice} onChange={(e) => this.onInput(e)} name='startPrice' placeholder='请输入人均消费价格' />
                             </Col>
                         </Row>
                     </div>
-
+{/* 
                     <div className='form-item'>
                         <Row>
                             <Col span='4'>精确地理位置*</Col>
@@ -479,7 +481,7 @@ class TypeSave extends Component {
                                 <Input value={this.state.exactAddress} onChange={(e) => this.onInput(e)} name='exactAddress' placeholder='请输入商家精确地理位置' />
                             </Col>
                         </Row>
-                    </div>
+                    </div> */}
                     <div className='form-item'>
                         <Row>
                             <Col span='4'>商家主图*</Col>
@@ -529,7 +531,7 @@ class TypeSave extends Component {
                         </Col>
                     </Row>
                 </div>
-                {checked == 2 ?
+                { (checked == 2 || checked == 4)?
                     <AuditForm
                         status={authStatus}
                         detail={authString}
@@ -538,14 +540,19 @@ class TypeSave extends Component {
                     /> :
                     null
                 }
-                <div className='form-item btn-item'>
-                    <Row>
-                        <Col offset='5' span='10'>
-                            <Button onClick={() => { this.save() }} type='primary' size='large'>保存</Button>
-                            <Button onClick={() => { this.props.history.goBack() }} size='large'>取消</Button>
-                        </Col>
-                    </Row>
-                </div>
+                {
+                    (this.state.checked == 0 || this.state.checked ==4 )? 
+                    null
+                    :<div className='form-item btn-item'>
+                        <Row>
+                            <Col offset='5' span='10'>
+                                <Button onClick={() => { this.save() }} type='primary' size='large'>保存</Button>
+                                <Button onClick={() => { this.props.history.goBack() }} size='large'>取消</Button>
+                            </Col>
+                        </Row>
+                    </div>
+                }
+                
                 <FilterWord ref={target => { this.filerWord = target }} />
             </div>
         )

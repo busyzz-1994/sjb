@@ -140,7 +140,9 @@ class Banner extends Component{
     }
     //点击查看图标
     clickCheck(item){
-        this.props.history.push(`/service/serviceEdit/file/detail/${item.id}/?checked=0&name=${item.title}&bussinessType=${item.bussinessType}`)
+        let {selectValue} = this.state;
+        selectValue = selectValue == '1' ? '4' : '0'
+        this.props.history.push(`/service/serviceEdit/file/detail/${item.id}/?checked=${selectValue}&name=${item.title}&bussinessType=${item.bussinessType}`)
     }
     //点击编辑图标
     clickEdit(item){
@@ -182,7 +184,18 @@ class Banner extends Component{
                 </div>
             )
         }
+        let handle_3 = (item)=>{
+            return (
+                <div>
+                    <IconHandle type='1' id={item.id} iconClick={(id)=>{this.clickCheck(item)}}/>
+                    <IconHandle type='3' id={item.id} iconClick={(id)=>{this.clickEdit(item)}}/>
+                </div>
+            )
+        }
         let handle = selectValue > 3 ? handle_2 : handle_1;
+        if(selectValue ==5){
+            handle = handle_3
+        }
         return (
             <div className={style.container}>
                 <NavTab/>
