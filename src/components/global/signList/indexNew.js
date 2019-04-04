@@ -22,7 +22,7 @@ class SignList extends Component{
         let {type} = this.props;
         
         // console.log(type+'pppp')
-        systemApi.getSignList({pageSize:9999,currPage:1,type:0}).then(res=>{
+        systemApi.getSignList({pageSize:9999,currPage:1,type}).then(res=>{
             let signList = res[0].lists;
             signList = signList.map(item=>{
                 return item.name
