@@ -54,6 +54,7 @@ var rule = {
 	},
 	//数字范围
 	numberRange:function(value,min,max,msg){
+		if(value === '') return msg;
 		let val = +value;
 		if(!val && val!=0){
 			return msg;

@@ -219,11 +219,12 @@ class TypeSave extends Component {
     //验证表单信息
     validate() {
         let validate = new Validate();
-        let { title, tpImg, score, count, address, startPrice ,merchant,selectedName,signList} = this.state;
+        let { title, tpImg, score, count, address, startPrice ,merchant,selectedName,signList,phone} = this.state;
             validate.add(title, 'notEmpty', '商家标题不能为空！');
             validate.add(tpImg, 'notEmpty', '商家缩略图不能为空！');
-        if(merchant=='0'){
+        if(merchant==='0'){
             validate.add(address, 'notEmpty', '地址不能为空！');
+            validate.add(phone, 'notEmpty', '电话号码不能为空！');
             validate.add(score,'numberRange:0:5','评分只能为0-5的数字！');
         }else{
             validate.addFn(()=>{
