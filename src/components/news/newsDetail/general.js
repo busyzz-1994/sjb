@@ -5,6 +5,7 @@ import ImgUpload from 'components/global/uploadImg';
 import config from 'base/config.json';
 import SignList from 'components/global/signList/indexNew.js';
 import Editor from 'components/global/editor';
+import _mm from 'util/mm.js';
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 class General extends Component{
@@ -54,18 +55,19 @@ class General extends Component{
         let more = moreImg.map((item,index)=>{
             return (
                 <div key={index} style={{display:'inline-block',marginRight:'15px'}}>
-                    <ImgUpload aspectRatio={226/170} index={index} imgWidth={160} imgUrl={item?config.server+item:''}  imgHeight={121} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getMoreUrl(data,index)} />
+                    <ImgUpload aspectRatio={226/170} index={index} imgWidth={160} imgUrl={_mm.processImageUrl(item)}  imgHeight={121} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getMoreUrl(data,index)} />
                 </div>
             )
         })
         let single = singleImg.map((item,index)=>{
             return (
                 <div key={index} style={{display:'inline-block',marginRight:'15px'}}>
-                    <ImgUpload  aspectRatio={275/185} imgWidth={160} imgUrl={item ?config.server+item:'' }  imgHeight={108} defaultImgUrl={defaultImg} getUrl = {(data)=>this.getSingleUrl(data)} />
+                    <ImgUpload  aspectRatio={275/185} imgWidth={160} imgUrl={_mm.processImageUrl(item) }  imgHeight={108} defaultImgUrl={defaultImg} getUrl = {(data)=>this.getSingleUrl(data)} />
                 </div>
             )
         })
         let imgList = img == 1 ? single : more;
+        console.log(imgList)
         return (
             <div>
                 <div className='form-item'>

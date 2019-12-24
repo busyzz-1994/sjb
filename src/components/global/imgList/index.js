@@ -5,6 +5,7 @@ import upload_2 from 'images/upload_2.png';
 import addImg from 'images/add.png';
 import ImgUpload from 'components/global/uploadImg';
 import config from 'base/config.json';
+import _mm from 'util/mm.js';
 //参数必须传入
 //1.fwImgList 数组 ['','']  元素为img 地址
 //2.getImgList 回调函数 获取新的数组
@@ -42,7 +43,7 @@ class imgList extends Component{
                 {fwImgList.map((item,index)=>{
                     return (
                         <div key={index} style={{display:'inline-block',marginRight:'10px',position:'relative'}}>
-                            <ImgUpload aspectRatio={750/320}  index={index} imgWidth={200} imgUrl={item?config.server + item:''}  imgHeight={85} defaultImgUrl={upload_2} getUrl = {(data,index)=>this.getFwUrl(data,index)} />
+                            <ImgUpload aspectRatio={750/320}  index={index} imgWidth={200} imgUrl={_mm.processImageUrl(item)}  imgHeight={85} defaultImgUrl={upload_2} getUrl = {(data,index)=>this.getFwUrl(data,index)} />
                             <Icon type="close-circle" onClick={()=>this.delImgList(index)} style={{position:'absolute',right:'-8px',top:'-5px',cursor:'pointer'}} />
                         </div>
                     )

@@ -42,7 +42,7 @@ const Api = {
     //获取地级市列表
     getAreaList(){
         return _mm.POST({
-            url:'/portal/index/getCityList',
+            url:'/admin/managers/getCityList',
             data:{}
         })
     },

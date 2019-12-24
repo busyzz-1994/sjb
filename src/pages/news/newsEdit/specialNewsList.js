@@ -6,6 +6,7 @@ import { Select , Input , Button ,message,Pagination,Breadcrumb} from 'antd';
 import { withRouter ,Link } from 'react-router-dom'; 
 import newsTypeApi from 'api/news/category.js';
 import config from 'base/config.json';
+import _mm from 'util/mm.js'
 import IconHandle from 'components/global/icon';
 const Option = Select.Option;
 const Search = Input.Search;
@@ -173,7 +174,7 @@ class SpecialNewsList extends Component{
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>
-                                       <img src={config.server+item.titleImg} width='80%' height='80%'/>
+                                       <img src={_mm.processImageUrl(item.titleImg) } width='80%' height='80%'/>
                                    </td>
                                    <td>{item.title}</td>
                                    <td>{item.type == '0' ? '外链':'内链'}</td>

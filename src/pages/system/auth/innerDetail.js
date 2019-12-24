@@ -32,7 +32,7 @@ class OuterDetail extends Component{
            username:'',
            email:'',
            name:'',
-           password:'123456',
+           password:'asdfg@98765',
            auth:[],
            //地区列表
            areaList:[],
@@ -119,7 +119,7 @@ class OuterDetail extends Component{
         validate.add(username,'notEmpty','用户名不能为空！');
         validate.add(email,'isEmail','请输入正确的邮箱格式！');
         validate.add(name,'notEmpty','姓名不能为空！');
-        validate.add(password,'isUserPassword','请输入正确的初始密码格式！');
+        // validate.add(password,'isUserPassword','请输入正确的初始密码格式！');
         let msg = validate.start();
         return msg;
     }

@@ -1,197 +1,215 @@
-import React,{Component} from 'react';
-import { withRouter ,Link} from 'react-router-dom'; 
+import React, { Component } from 'react';
+import { withRouter, Link } from 'react-router-dom';
 import style from 'common/layout.scss';
 import NavTab from 'components/global/navTab';
 import TableList from 'components/global/tableList';
 import IconHandle from 'components/global/icon';
-import {Pagination,Button,Input,message,Select,Modal,Tooltip} from 'antd';
+import { Pagination, Button, Input, message, Select, Modal, Tooltip } from 'antd';
 import userApi from 'api/user/index.js';
 const Search = Input.Search;
 const Option = Select.Option;
 const confirm = Modal.confirm;
-class Sign extends Component{
-    constructor(props){
+class Sign extends Component {
+    constructor(props) {
         super(props)
         this.navList = [
             {
-                name:'评论管理',
-                url:'/user/comment/1'
+                name: '评论管理',
+                url: '/user/comment/1'
             }
         ]
         this.state = {
-            selectValue:'1',
-            pageNum : 1,
-            total : 1,
-            pageSize : 12,
-            dataList:[],
+            selectValue: '1',
+            pageNum: 1,
+            total: 1,
+            pageSize: 12,
+            dataList: [],
             //是否处于搜索状态
-            isSearch:false,
-            searchValue:'',
+            isSearch: false,
+            searchValue: '',
+            visible: false,
+            content: ''
         }
     }
-    componentDidMount(){
+    componentDidMount() {
         this.loadList()
     }
-     //加载数据
-     loadList(){
-        let {pageSize,pageNum,isSearch,searchValue,selectValue} = this.state;
-        if(isSearch){
+    //加载数据
+    loadList() {
+        let { pageSize, pageNum, isSearch, searchValue, selectValue } = this.state;
+        if (isSearch) {
             userApi.searchComment({
-                currPage:pageNum,
+                currPage: pageNum,
                 pageSize,
-                keyword:searchValue,
-                isShow:selectValue
-            }).then(res=>{
+                keyword: searchValue,
+                isShow: selectValue
+            }).then(res => {
                 let totalCount = res[0].totalCount;
-                let list = res[0].lists ;
+                let list = res[0].lists;
                 this.setState({
-                    dataList:list,
-                    total:totalCount
+                    dataList: list,
+                    total: totalCount
                 })
             })
-        }else{
+        } else {
             userApi.getCommentList({
-                currPage:pageNum,
+                currPage: pageNum,
                 pageSize,
-                isShow:selectValue
-            }).then(res=>{
+                isShow: selectValue
+            }).then(res => {
                 let totalCount = res[0].totalCount;
-                let list = res[0].lists ;
+                let list = res[0].lists;
                 this.setState({
-                    dataList:list,
-                    total:totalCount
+                    dataList: list,
+                    total: totalCount
                 })
             })
         }
-        
+
     }
-    goAdd(){
+    goAdd() {
         this.props.history.push('/system/auth/inner/detail');
     }
     //选择类型
-    select(value){
+    select(value) {
         this.setState({
-            selectValue:value,
-            pageNum:1
-        },()=>{
+            selectValue: value,
+            pageNum: 1
+        }, () => {
             this.loadList();
         })
     }
-    searchTitle(value){
-        if(!value){
+    searchTitle(value) {
+        if (!value) {
             this.setState({
-                searchValue:'',
-                pageNum:1,
-                isSearch:false
-            },()=>{
+                searchValue: '',
+                pageNum: 1,
+                isSearch: false
+            }, () => {
                 this.loadList()
             })
-        }else{
+        } else {
             this.setState({
-                searchValue:value,
-                pageNum:1,
-                isSearch:true
-            },()=>{
+                searchValue: value,
+                pageNum: 1,
+                isSearch: true
+            }, () => {
                 this.loadList()
             })
         }
-        
+
     }
-    clickAudit(id,item){
+    clickAudit(id, item) {
         confirm({
-            title:'审核结果确认',
-            content:'这条评论是否审核通过',
-            onOk:()=>{
-                userApi.auditComment({id,isShow:0}).then(res=>{
+            title: '审核结果确认',
+            content: '这条评论是否审核通过',
+            onOk: () => {
+                userApi.auditComment({ id, isShow: 0 }).then(res => {
                     message.success('审核完成！')
                     this.loadList();
-                }).catch(res=>{
+                }).catch(res => {
                     message.error(res);
                 })
             },
-            onCancel:()=>{
-                userApi.auditComment({id,isShow:2}).then(res=>{
+            onCancel: () => {
+                userApi.auditComment({ id, isShow: 2 }).then(res => {
                     message.success('审核完成！')
                     this.loadList();
-                }).catch(res=>{
+                }).catch(res => {
                     message.error(res);
                 })
             },
-            okText:'通过',
-            cancelText:'不通过'
+            okText: '通过',
+            cancelText: '不通过'
         })
     }
-    clickDel(id){
+    clickDel(id) {
         confirm({
-            title:'删除的内容无法恢复，确认删除？',
-            onOk:()=>{
-                userApi.delComment({id}).then(res=>{
+            title: '删除的内容无法恢复，确认删除？',
+            onOk: () => {
+                userApi.delComment({ id }).then(res => {
                     message.success('删除成功！')
                     this.loadList();
-                }).catch(res=>{
+                }).catch(res => {
                     message.error(res);
                 })
             },
-            okText:'确认',
-            cancelText:'取消'
+            okText: '确认',
+            cancelText: '取消'
         })
     }
     //显示评论
-    clickShow(item){
+    clickShow(item) {
         console.log(item)
     }
     //影藏评论
-    clickHide(item){
+    clickHide(item) {
         console.log(item)
     }
-    changePage(pageNum){
+    changePage(pageNum) {
         this.setState({
             pageNum
-        },()=>{
+        }, () => {
             this.loadList()
         })
     }
-    render(){
-        let {dataList,selectValue}  = this.state; 
+    showModal(content) {
+        this.setState({
+            content,
+            visible: true
+        })
+    }
+    render() {
+        let { dataList, selectValue, visible, content } = this.state;
         //未审核
-        let handle_1 = (item) =>{
+        let handle_1 = (item) => {
             return (
                 <div>
-                    <IconHandle type='0' id={item.id} iconClick={(id)=>{this.clickAudit(id,item)}}/>
-                    <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item)}}/>
+                    <IconHandle type='0' id={item.id} iconClick={(id) => { this.clickAudit(id, item) }} />
+                    <IconHandle type='2' id={item.id} iconClick={(id) => { this.clickDel(id, item) }} />
                 </div>
             )
         }
         //审核通过
-        let handle_2 = (item) =>{
+        let handle_2 = (item) => {
             return (
                 <div>
                     {/* <IconHandle type='7' id={item.id} iconClick={(id)=>{this.clickShow(item)}}/>
                     <IconHandle type='8' id={item.id} iconClick={(id)=>{this.clickHide(item)}}/> */}
-                    <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item)}}/>
+                    <IconHandle type='2' id={item.id} iconClick={(id) => { this.clickDel(id, item) }} />
                 </div>
             )
         }
         //审核未通过
-        let handle_3 = (item) =>{
+        let handle_3 = (item) => {
             return (
                 <div>
-                    <IconHandle type='2' id={item.id} iconClick={(id)=>{this.clickDel(id,item)}}/>
+                    <IconHandle type='2' id={item.id} iconClick={(id) => { this.clickDel(id, item) }} />
                 </div>
             )
         }
         let handleList;
         // console.log(selectValue)
-        if(selectValue == 1){
+        if (selectValue == 1) {
             handleList = handle_1;
-        }else if(selectValue == 0){
+        } else if (selectValue == 0) {
             handleList = handle_2;
-        }else{
+        } else {
             handleList = handle_3;
         }
         return (
             <div className={style.container}>
-                <NavTab navList={this.navList}/>
+                <NavTab navList={this.navList} />
+                <Modal
+                    title="评论内容"
+                    visible={visible}
+                    onOk={() => this.setState({ visible: false })}
+                    onCancel={() => this.setState({ visible: false })}
+                    okText='确认'
+                    cancelText='取消'
+                >
+                    <p>{content+'uhiuiduas'}</p>
+                </Modal>
                 <div className={style.content}>
                     {/* 操作开始 */}
                     <div className={style.handle + ' clearfix'}>
@@ -201,8 +219,8 @@ class Sign extends Component{
                                 style={{ width: 200 }}
                                 optionFilterProp="children"
                                 // defaultValue = {this.state.selectValue}
-                                value = {selectValue}
-                                onChange={(value)=>{this.select(value)}}
+                                value={selectValue}
+                                onChange={(value) => { this.select(value) }}
                             >
                                 <Option value="1">待审核</Option>
                                 <Option value="2">审核未通过</Option>
@@ -212,25 +230,27 @@ class Sign extends Component{
                         <div className='fr'>
                             <Search
                                 placeholder="输入用户名关键字进行搜索"
-                                onSearch={value => {this.searchTitle(value)}}
+                                onSearch={value => { this.searchTitle(value) }}
                                 style={{ width: 350 }}
                             />
                         </div>
                     </div>
-                     {/* 操作结束 */}
-                     <TableList
-                        thead={[{width:'5%',name:' '},{width:'20%',name:'用户名'},{width:'20%',name:'评论内容'},{width:'15%',name:'来源'},{width:'25%',name:'评论时间'},{width:'15%',name:'操作'}]}
-                        tdHeight = '58px'
+                    {/* 操作结束 */}
+                    <TableList
+                        thead={[{ width: '5%', name: ' ' }, { width: '20%', name: '用户名' }, { width: '20%', name: '评论内容' }, { width: '15%', name: '来源' }, { width: '25%', name: '评论时间' }, { width: '15%', name: '操作' }]}
+                        tdHeight='58px'
                     >
-                        {dataList.map((item,index)=>{
+                        {dataList.map((item, index) => {
                             return (
                                 <tr key={index}>
-                                    <td>{index+1}</td>
+                                    <td>{index + 1}</td>
                                     <td>{item.userName}</td>
                                     <td>
-                                        <Tooltip placement="bottomLeft" title={item.content}>
-                                            {item.content}
-                                        </Tooltip>
+                                        <div onClick={() => this.showModal(item.content)}>
+                                            <Tooltip placement="bottomLeft" title={item.content}>
+                                                {item.content}
+                                            </Tooltip>
+                                        </div>
                                     </td>
                                     <td>
                                         <Tooltip placement="bottomLeft" title={item.title}>
@@ -247,9 +267,9 @@ class Sign extends Component{
                     </TableList>
                     <div className='clearfix'>
                         <div className='fr'>
-                            <Pagination onChange={(page,pageSize) =>{this.changePage(page,pageSize)}} hideOnSinglePage={false}
-                            current={this.state.pageNum} pageSize={this.state.pageSize} defaultCurrent={1} 
-                            total={this.state.total} />
+                            <Pagination onChange={(page, pageSize) => { this.changePage(page, pageSize) }} hideOnSinglePage={false}
+                                current={this.state.pageNum} pageSize={this.state.pageSize} defaultCurrent={1}
+                                total={this.state.total} />
                         </div>
                     </div>
                 </div>

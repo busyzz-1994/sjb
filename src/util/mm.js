@@ -339,6 +339,17 @@ const mm = {
         }else{
             return false;
         }
+    },
+    //processImageUrl
+    processImageUrl(string){
+        if(!string) return '';
+        let reg = /(http|https):\/\/([\w.]+\/?)\S*/;
+        let result = reg.test(string);
+        if(result){
+            return string
+        }else{
+            return config.server + string;
+        }
     }
 
 }

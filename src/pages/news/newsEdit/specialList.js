@@ -7,6 +7,7 @@ import { withRouter ,Link } from 'react-router-dom';
 import newsTypeApi from 'api/news/category.js';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import _mm from 'util/mm.js'
 const Option = Select.Option;
 const Search = Input.Search;
 class specialList extends Component{
@@ -187,7 +188,7 @@ class specialList extends Component{
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>
-                                       <img src={config.server+item.titleImg} width='80%' height='80%'/>
+                                       <img src={_mm.processImageUrl(item.titleImg) } width='80%' height='80%'/>
                                    </td>
                                    <td>{item.title}</td>
                                    <td>{item.type == '0' ? '外链':'内链'}</td>

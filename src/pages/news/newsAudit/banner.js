@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import newsEditApi from 'api/news/banner';
 import config from 'base/config.json';
 import IconHandle from 'components/global/icon';
+import _mm from 'util/mm.js'
 const Option = Select.Option;
 const Search = Input.Search;
 class Banner extends Component{
@@ -195,7 +196,7 @@ class Banner extends Component{
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>
-                                       <img src={config.server+item.titleImg} width='150' height='70'/>
+                                       <img src={_mm.processImageUrl(item.titleImg)} width='150' height='70'/>
                                    </td>
                                    <td>{item.title}</td>
                                    <td>{item.baType == '0' ? '外链':'内链'}</td>

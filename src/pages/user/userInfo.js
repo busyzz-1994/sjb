@@ -9,6 +9,7 @@ import systemApi from 'api/system';
 import userApi from 'api/user/index.js';
 import config from 'base/config.json';
 import Icon from './icon';
+import _mm from 'util/mm.js';
 const Search = Input.Search
 class Sign extends Component{
     constructor(props){
@@ -142,7 +143,7 @@ class Sign extends Component{
                                 <tr key={index}>
                                     <td>{index+1}</td>
                                     <td>
-                                        <img src={config.server+item.userImg} alt="" style={{width:'50px',height:'50px'}}/>
+                                        <img src={_mm.processImageUrl(item.userImg)} alt="" style={{width:'50px',height:'50px'}}/>
                                     </td>
                                     <td>{item.userName}</td>
                                     <td>{item.phone}</td>

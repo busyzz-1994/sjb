@@ -6,6 +6,7 @@ import config from 'base/config.json';
 import ImgUpload from 'components/global/uploadImg';
 import newsApi from 'api/news/category.js';
 import Validate from 'util/validate/index.js';
+
 // import style from './index.scss';
 // 上传图片文件
 import ImgUrl from 'images/zs2.png';
@@ -148,7 +149,7 @@ class NewsCategorySave extends Component{
                             <ImgUpload
                              aspectRatio = {280 / 120}
                             defaultImgUrl={ImgUrl} 
-                            imgUrl={this.state.imgUrl? config.server +this.state.imgUrl:'' }
+                            imgUrl={_mm.processImageUrl(this.state.imgUrl)}
                             imgWidth ={280}
                             imgHeight = {120}
                             getUrl = {(res)=>{this.getImgUrl(res)}}

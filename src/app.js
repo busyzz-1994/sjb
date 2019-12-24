@@ -40,6 +40,7 @@ import UserRouter from 'pages/user/router.js';
 //裁剪img
 import CropperImg from 'components/global/cropper/index.js';
 class App extends Component{
+	
 	render(){
 		let layoutRouter = (
 			<Layout>

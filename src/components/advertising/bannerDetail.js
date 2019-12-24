@@ -269,7 +269,7 @@ class startDetail extends Component{
                     <Row>
                         <Col span='4'>广告图片*</Col>
                         <Col offset='1' span='16'>
-                            <UploadImg defaultImgUrl={defaultImg}  imgHeight={200} imgWidth={200}  aspectRatio={590/590} imgUrl={this.state.imgUrl? config.server + this.state.imgUrl:''} getUrl={(data)=>{this.getImgData(data)}}/>
+                            <UploadImg defaultImgUrl={defaultImg}  imgHeight={200} imgWidth={200}  aspectRatio={590/590} imgUrl={_mm.processImageUrl(imgUrl)} getUrl={(data)=>{this.getImgData(data)}}/>
                             <div>建议尺寸（590 * 590 px）</div>
                         </Col>
                     </Row>

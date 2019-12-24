@@ -240,7 +240,7 @@ class Banner extends Component{
                                <tr key={index}>
                                    <td>{index + 1}</td>
                                    <td>
-                                       <img src={config.server+item.titleImg} width='150' height='70'/>
+                                       <img src={_mm.processImageUrl(item.titleImg) } width='150' height='70'/>
                                    </td>
                                    <td>{item.title}</td>
                                    <td>{item.baType == '0' ? '外链':'内链'}</td>

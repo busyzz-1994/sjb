@@ -138,7 +138,7 @@ class TypeSave extends Component{
                         <Col offset='1' span='12'>
                             {
                                 flag? img.map((item,index)=>{
-                                    return  <img className={self.img} src={config.server + item} key={index} style={{maxWidth:'200px',maxHeight:'200px'}}/>
+                                    return  <img className={self.img} src={_mm.processImageUrl(item)} key={index} style={{maxWidth:'200px',maxHeight:'200px'}}/>
                                  }):'暂无上传图片'
                             }
                         </Col>

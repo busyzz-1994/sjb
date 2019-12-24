@@ -138,7 +138,7 @@ class Login extends Component{
         let { errorMsg , username ,password ,verifyCode,buttonIs} = this.state;
         return(
             <div className={style.container}>
-                 <iframe src="http://116.62.130.5/bg/"  frameBorder="0"></iframe>
+                 <iframe src="https://app-admin.scsjb.cn/bg/index.html"  frameBorder="0"></iframe>
                  <div className={style.loginBox} onKeyUp={e => { this.onInputKeyUp(e) }} onChange={ e =>{this.handle(e)}}>
                     <img src={Logo} />
                     <div className={style.errorBox}>

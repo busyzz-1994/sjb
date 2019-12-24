@@ -422,7 +422,7 @@ class TypeSave extends Component{
                     <Row>
                         <Col span='4'>商品缩略图*</Col>
                         <Col offset='1' span='12'>
-                            <ImgUpload aspectRatio={180/180} imgWidth={160} imgUrl={tpImg?config.server+tpImg:''}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
+                            <ImgUpload aspectRatio={180/180} imgWidth={160} imgUrl={_mm.processImageUrl(tpImg)}  imgHeight={140} defaultImgUrl={defaultImg} getUrl = {(data,index)=>this.getUrl(data,index)} />
                         </Col>
                     </Row>
                 </div>
